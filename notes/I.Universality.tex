@@ -1,0 +1,120 @@
+In this chapter we introduce the concept of \emph{universality}: eigenvalue statistics of random matrices are largely independent of the distribution of the entries. In particular, we will look at both \emph{global statistics}, i.e., what do histograms of all eigenvalues look like, and \emph{local statistics}, i.e., what do histograms of the largest eigenvalue look like. For the theory we focus on the global statistics (as proving results for the local statistics requires much higher level mathematics), and in particular, we focus on the phenomenon that symmetric matrices with independent, identically distributed (iid) entries have a global statistics that look like the \emph{semicircle}:
+\[
+{\sqrt{2-x^2} \over 2\ensuremath{\pi}} \qquad \text{for } x \in [-\sqrt{2}, \sqrt{2}] \text{ and } 0 \text{ otherwise.}
+\]
+\section{Central Limit Theorem}
+We begin with an introduction to the Central Limit Theorem (CLT) for classical matrices. Let $X_1, \ensuremath{\ldots}, X_n$ be iid random variables with mean 0 and variance 1. We consider the distribution of
+\[
+S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
+\]
+In particular we want to prove that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$, this distribution converges to a Gaussian distribution: $X \ensuremath{\sim} \ensuremath{\scrN}$ if its PDF is
+\[
+{\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}}.
+\]
+To do this we will take for granted that a distribution can be identified by its moments and prove convergence of moments.
+
+We therefore establish an explicit formula for the moments of a Gaussian. We will think of this in terms the following combinatorial object:
+
+\begin{definition}[double factorial]
+\[
+(2m-1)!! := {(2m)! \over 2^m m!} = 1 \ensuremath{\cdot} 3 \ensuremath{\cdot} 5 \ensuremath{\cdots} (2m-1).
+\]
+\end{definition}
+
+This counts the number of ways to pair up $2m$ objects into $m$ different pairs. For example, if $m = 2$ then we have the following pairings:
+\[
+\{1,2\}, \{3,4\} \qquad \{1,3\}, \{2,4\} \qquad \{1,4\}, \{2,3\}
+\]
+and thus $3!! = 3$. And if $m = 3$ then we have $5!! = 15$ total pairings:
+\begin{align*}
+\{1,2\}, \{3,4\}, \{5,6\} &\qquad \{1,2\}, \{3,5\}, \{4,6\} \qquad \{1,2\}, \{3,6\}, \{4,5\} \\
+\{1,3\}, \{2,4\}, \{5,6\} &\qquad \{1,3\}, \{2,5\}, \{4,6\} \qquad \{1,3\}, \{2,6\}, \{4,5\} \\
+\{1,4\}, \{2,3\}, \{5,6\} &\qquad \{1,4\}, \{2,5\}, \{3,6\} \qquad \{1,4\}, \{2,6\}, \{3,5\} \\
+\{1,5\}, \{2,3\}, \{4,6\} &\qquad \{1,5\}, \{2,4\}, \{3,6\} \qquad \{1,5\}, \{2,6\}, \{3,4\} \\
+\{1,6\}, \{2,3\}, \{4,5\} &\qquad \{1,6\}, \{2,4\}, \{3,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
+\end{align*}
+This can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. For $m > 1$, we can pair $1$ with a choice of the $2m-1$ numbers: $2,3,\ensuremath{\ldots},2m$. But then the remaining $2m-2$ numbers have exactly $(2m-3)!!$ pairings. Thus we have
+\[
+(2m-1)!! = (2m-1) \cdot (2m-3)!!
+\]
+which exactly matches our formula.
+
+The moments of a Gaussian are given in terms of the double factorial:
+
+\begin{lemma}[Gaussian moments]
+\[
+\ensuremath{\mu}_k := \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} x^k {\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}} \dx = \begin{cases}
+0 & \hbox{if  $k$ is odd} \\
+{(k-1)!!} & \hbox{if $k$ is even}
+\end{cases}
+\]
+\end{lemma}
+\textbf{Proof}
+
+The case of $k$ odd follows from symmetry. For even $k$ we can use a proof by induction. The case of $k = 0$ follows using the classic trick to compute the integral of a Gaussian using the classic trick of turning it into a 2D integral and using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
+\meeq{
+\pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)^2 = \pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)\pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-y^2/2} \dy) =
+\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-(x^2+y^2)/2} \dx \dy \ccr
+= \ensuremath{\int}_0^\ensuremath{\infty} \ensuremath{\int}_0^{2\ensuremath{\pi}}  r \E^{-r^2/2} \dr \D\ensuremath{\theta}  = 2\ensuremath{\pi} \ensuremath{\int}_0^\ensuremath{\infty}  \E^{-t} \dt =2\ensuremath{\pi},
+}
+hence
+\[
+\ensuremath{\mu}_0 = {\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx \over \sqrt{2\ensuremath{\pi}}} = 1.
+\]
+For even $k> 0$ assume it is true for all smaller $k$. Then we can integrate-by-parts to deduce:
+\meeq{
+\sqrt{2\ensuremath{\pi}} \ensuremath{\mu}_k = \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} x^k \E^{-x^2/2} \dx = \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} x^{k-1} \underbrace{x \E^{-x^2/2}}_{=-{\D \over \dx}  \E^{-x^2/2}} \dx \ccr
+= [-x^{k-1} \E^{-x^2/2}]_{-\ensuremath{\infty}}^\ensuremath{\infty} + (k-1) \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} x^{k-2} \E^{-x^2/2} \dx =  \sqrt{2\ensuremath{\pi}} (k-1) \ensuremath{\mu}_{k-2}.
+}
+I.e., $\ensuremath{\mu}_k = (k-1) \ensuremath{\mu}_{k-2}$, but this is exactly the formula that we showed $(k-1)!!$ satisfies above (if we write $k = 2m$).
+
+\ensuremath{\QED}
+
+Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments, and this gives a simplified proof of the CLT:
+
+\begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for $k = 0,1,\ensuremath{\ldots}$ we have, as $n \ensuremath{\rightarrow} \ensuremath{\infty}$,
+\[
+\ensuremath{\bbE}[S_n^k] \ensuremath{\rightarrow} \ensuremath{\mu}_k.
+\]
+\end{theorem}
+\textbf{Proof}
+
+We will use the properties of expectations, in particular,  if $X_k$ and $X_j$ are independent then we have
+\[
+\ensuremath{\bbE}[X_k^m X_j^\ensuremath{\ell}] = \ensuremath{\bbE}[X_k^m] \ensuremath{\bbE}[X_j^\ensuremath{\ell}].
+\]
+For the first moment we have (by linearity of expectation):
+\[
+\sqrt{n} \ensuremath{\bbE}[S_n] = \ensuremath{\bbE}[X_1] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n] = 0.
+\]
+For the second moment we have:
+\meeq{
+n \ensuremath{\bbE}[S_n^2] = \ensuremath{\bbE}[X_1^2] + \underbrace{\ensuremath{\bbE}[X_1]}_{=0} \underbrace{(\ensuremath{\bbE}[X_2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0} \\
+&\qquad+ \ensuremath{\bbE}[X_2^2] +
+  \underbrace{\ensuremath{\bbE}[X_2]}_{=0} \underbrace{(\ensuremath{\bbE}[X_1] + \ensuremath{\bbE}[X_2] \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}  + \ensuremath{\cdots} \ccr
+= \ensuremath{\bbE}[X_1^2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n]^2 = n
+}
+and hence $\ensuremath{\bbE}[S_n^2]=1$. We will do one last explicit example of the cubic moment. Here we have:
+\meeq{
+n^{3/2} \ensuremath{\bbE}[S_n^3] =
+\ensuremath{\bbE}[X_1^3] + \ensuremath{\bbE}[X_1^2] \underbrace{(\ensuremath{\bbE}[X_2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}\\
+&\qquad
++ \ensuremath{\bbE}[X_2^3] +  \ensuremath{\bbE}[X_2^2] \underbrace{(\ensuremath{\bbE}[X_1] + \ensuremath{\bbE}[X_2] \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}  + \ensuremath{\cdots}  \ccr
+= n \ensuremath{\bbE}[X_1^3]
+}
+so that
+\[
+\ensuremath{\bbE}[S_n^3] = {\ensuremath{\bbE}[X_1^3] \over \sqrt{n}} \ensuremath{\rightarrow} 0.
+\]
+\ensuremath{\QED}
+
+This is the most basic example of the principle of \emph{universality}: the details of the distribution of $X_k$ do not matter when we take sums, everything behaves the same.  In this chapter we are interested in random matrix analogues of this universality property.
+
+\textbf{Remark} Note the assumption of finite moments is essential. A classic counter example is if $X_k$ have a heavy-tail distribution like the Cauchy distribution:
+\[
+{1 \over \ensuremath{\pi}} {1 \over x^2 + 1}.
+\]
+Not even the first moment exists, that is, this distribution has no mean! (Symmetry may make one think that the mean should be zero, but if we average samples it never converges.) If we add iid samples of a Cauchy distribution and divide by $\sqrt{n}$ we always get back the same Cauchy  distribution: it does not converge to a Gaussian. 
+
+\section{Wigner ensembles}
+

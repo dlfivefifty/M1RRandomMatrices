@@ -1,0 +1,12 @@
+name = "M1RRandomMatrices"
+uuid = "0a490a75-5336-4334-8a6c-cab2138ed9e8"
+version = "0.1.0"
+authors = ["Sheehan Olver <solver@mac.com>"]
+
+[deps]
+Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
+
+[compat]
+Literate = "2.21.0"
+Weave = "0.10.12"

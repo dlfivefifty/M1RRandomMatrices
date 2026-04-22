@@ -1,18 +1,49 @@
 In this chapter we introduce the concept of \emph{universality}: eigenvalue statistics of random matrices are largely independent of the distribution of the entries. In particular, we will look at both \emph{global statistics}, i.e., what do histograms of all eigenvalues look like, and \emph{local statistics}, i.e., what do histograms of the largest eigenvalue look like. For the theory we focus on the global statistics (as proving results for the local statistics requires much higher level mathematics), and in particular, we focus on the phenomenon that symmetric matrices with independent, identically distributed (iid) entries have a global statistics that look like the \emph{semicircle}:
 \[
-{\sqrt{2-x^2} \over 2\ensuremath{\pi}} \qquad \text{for } x \in [-\sqrt{2}, \sqrt{2}] \text{ and } 0 \text{ otherwise.}
+{\sqrt{4-x^2} \over 2\ensuremath{\pi}} \qquad \text{for } x \in [-2, 2] \text{ and } 0 \text{ otherwise.}
 \]
-\section{Central Limit Theorem}
-We begin with an introduction to the Central Limit Theorem (CLT) for classical matrices. Let $X_1, \ensuremath{\ldots}, X_n$ be iid random variables with mean 0 and variance 1. We consider the distribution of
+The \emph{semicircle distribution} can be viewed as a random matrix analogue of  the \emph{normal distribution}
 \[
-S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
+{\E^{-x^2/2} \over \sqrt{2\ensuremath{\pi}}}.
 \]
-In particular we want to prove that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$, this distribution converges to a Gaussian distribution: $X \ensuremath{\sim} \ensuremath{\scrN}$ if its PDF is
-\[
-{\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}}.
-\]
-To do this we will take for granted that a distribution can be identified by its moments and prove convergence of moments.
+In this section we will show universality using the \emph{method of moments}: we will show that the moments of the results converge. Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments. This will mimic the Central Limit Theorem (CLT).
 
+\section{Experimental observation of universality}
+Before digging into the theory we will do an experimental exploration of universality. Let's begin with the classic CLT. Consider a 
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Bernoulli with mean=1 is impossible (p must be in [0,1])
+# Mean = p, Variance = p(1-p)
+# Variance = 1 is also impossible for Bernoulli
+# So we'll use mean=0.5 (p=0.5), variance=0.25, and demonstrate CLT
+
+p = 0.5
+n = 1000      # number of Bernoulli trials per sample
+N = 10000     # number of samples
+
+# Generate Bernoulli samples and compute scaled sums
+# CLT: (sum - n*p) / sqrt(n*p*(1-p)) -> N(0,1)
+samples = np.random.binomial(n, p, size=N)
+scaled = (samples - n * p) / np.sqrt(n * p * (1 - p))
+
+# Plot
+x = np.linspace(-4, 4, 300)
+plt.figure(figsize=(8, 5))
+plt.hist(scaled, bins=60, density=True, alpha=0.7, color='steelblue', label='Scaled Bernoulli sum')
+plt.plot(x, norm.pdf(x), 'r-', linewidth=2, label='N(0,1)')
+plt.title(f'CLT: Scaled Sum of Bernoulli(p={p}) vs Gaussian\n(n={n} trials, {N} samples)')
+plt.xlabel('Value')
+plt.ylabel('Density')
+plt.legend()
+plt.tight_layout()
+plt.savefig('bernoulli_clt.png', dpi=150)
+plt.show()
+\end{verbatim}
+\section{Moments of the normal distribution}
 We therefore establish an explicit formula for the moments of a Gaussian. We will think of this in terms the following combinatorial object:
 
 \begin{definition}[double factorial]
@@ -70,7 +101,18 @@ I.e., $\ensuremath{\mu}_k = (k-1) \ensuremath{\mu}_{k-2}$, but this is exactly t
 
 \ensuremath{\QED}
 
-Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments, and this gives a simplified proof of the CLT:
+\section{Central Limit Theorem}
+We begin with an introduction to the Central Limit Theorem (CLT) for classical matrices. Let $X_1, \ensuremath{\ldots}, X_n$ be iid random variables with mean 0 and variance 1. We consider the distribution of
+\[
+S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
+\]
+In particular we want to prove that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$, this distribution converges to a Gaussian distribution: $X \ensuremath{\sim} \ensuremath{\scrN}$ if its PDF is
+\[
+{\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}}.
+\]
+To do this we will take for granted that a distribution can be identified by its moments and prove convergence of moments.
+
+This gives a simplified proof of the CLT:
 
 \begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for $k = 0,1,\ensuremath{\ldots}$ we have, as $n \ensuremath{\rightarrow} \ensuremath{\infty}$,
 \[
@@ -114,7 +156,75 @@ This is the most basic example of the principle of \emph{universality}: the deta
 \[
 {1 \over \ensuremath{\pi}} {1 \over x^2 + 1}.
 \]
-Not even the first moment exists, that is, this distribution has no mean! (Symmetry may make one think that the mean should be zero, but if we average samples it never converges.) If we add iid samples of a Cauchy distribution and divide by $\sqrt{n}$ we always get back the same Cauchy  distribution: it does not converge to a Gaussian. 
+Not even the first moment exists, that is, this distribution has no mean! (Symmetry may make one think that the mean should be zero, but if we average samples it never converges.) If we take iid samples $X_k$ of the Cauchy distribution we know that
+\[
+{X_1 + \ensuremath{\cdots} + X_n \over n}
+\]
+is the same Cauchy distribution. (Note the division by $n$, not $\sqrt{n}$, which differs from the CLT above.) 
 
-\section{Wigner ensembles}
+\section{Wigner ensembles and global statistics}
+To discuss universality in the setting of random matrices we focus on symmetric matrices with iid entries, i.e., the \emph{Wigner ensembles}:
+
+\begin{definition}[Wigner] A random matrix $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ is a Wigner matrix if:
+
+\begin{itemize}
+\item[1. ] The entries $a_{kj}$ for $j \ensuremath{\geq} k$ are all iid with mean 0, variance 1, and all moments are finite.
+
+
+\item[2. ] \[
+A
+\]
+is symmetric: $a_{kj} = a_{jk}$.
+
+\end{itemize}
+\end{definition}
+
+We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ has $n$ eigenvalues $\ensuremath{\lambda}_1, \ensuremath{\ldots}, \ensuremath{\lambda}_n$ which can be viewed as $n$ random variables in their own right. Their distribution can be described in terms of the moments:
+\[
+\ensuremath{\sigma}_{nk} := \ensuremath{\bbE}[\ensuremath{\lambda}_1^k + \ensuremath{\ldots} + \ensuremath{\lambda}_n^k].
+\]
+We want to show that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $X$ itself via:
+\[
+\ensuremath{\sigma}_{nk} = \ensuremath{\bbE}[\Tr A^k]
+\]
+for the trace $\Tr A = a_{11} + \ensuremath{\cdots} + a_{nn}$.  This follows from the following:
+
+\begin{proposition}[Cyclic property of trace] For any $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} m}$ and $B \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ we have
+\[
+\Tr A B = \Tr B A
+\]
+\end{proposition}
+\textbf{Proof}
+
+We show this by direct inspection:
+\meeq{
+\Tr A B = \ensuremath{\sum}_{k=1}^n \ensuremath{\bm{\e}}_k^\ensuremath{\top} A B \ensuremath{\bm{\e}}_k = \ensuremath{\sum}_{k=1}^n  \begin{bmatrix} a_{k1} & \ensuremath{\cdots} & a_{km} \end{bmatrix} \begin{bmatrix} b_{1k} \\ \ensuremath{\vdots} \\ b_{m1} \end{bmatrix} = \ensuremath{\sum}_{k=1}^n \ensuremath{\sum}_{j=1}^m a_{kj} b_{jk} \ccr
+  = \ensuremath{\sum}_{j=1}^m \ensuremath{\sum}_{k=1}^n b_{jk} a_{kj} = \ensuremath{\sum}_{j=1}^m \begin{bmatrix} b_{j1} & \ensuremath{\cdots} & b_{jn} \end{bmatrix} \begin{bmatrix} a_{j1} \\ \ensuremath{\vdots} \\ a_{jn} \end{bmatrix} = \ensuremath{\sum}_{j=1}^m \ensuremath{\bm{\e}}_j^\ensuremath{\top} B A \ensuremath{\bm{\e}}_j = \Tr BA.
+}
+\ensuremath{\QED}
+
+\begin{proposition}[Traces, powers and eigenvalues] For any symmetric $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ with eigenvalues $\ensuremath{\lambda}_1,\ensuremath{\ldots},\ensuremath{\lambda}_n$ we have
+\[
+\Tr A^k = \ensuremath{\lambda}_1^k + \ensuremath{\ldots} + \ensuremath{\lambda}_n^k.
+\]
+\end{proposition}
+\textbf{Proof}
+
+We know that a symmetric matrix matrix is \emph{diagonalisable}:
+\[
+A = V \underbrace{\begin{bmatrix} \ensuremath{\lambda}_1 &  &  \\  & \ensuremath{\ddots} &  \\  &  & \ensuremath{\lambda}_n \end{bmatrix}}_{\ensuremath{\Lambda}} V^{-1}.
+\]
+Therefore
+\[
+A^k = V \ensuremath{\Lambda}^k V^{-1}.
+\]
+The proposition follows since the trace is equal to the sum of the eigenvalues, which follows from the cyclic property:
+\[
+\Tr A^k = \Tr V (\ensuremath{\Lambda}^k V^{-1}) = \Tr (\ensuremath{\Lambda}^k V^{-1})V = \Tr \ensuremath{\Lambda}^k = \ensuremath{\lambda}_1^k + \ensuremath{\ldots} + \ensuremath{\lambda}_n^k.
+\]
+\ensuremath{\QED}
+
+\section{Moments of the semicircle distribution}
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the normal distribution. 
+
 

@@ -140,6 +140,7 @@
 \def\z{ {\vc z} }
 \def\k{ {\vc k} }
 \def\dt{ {\rm d}t }
+\def\Tr{ {\rm Tr}\, }
 \def\ds{ {\rm d}s }
 \def\dy{ {\rm d}y }
 \def\dr{ {\rm d}r }

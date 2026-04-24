@@ -2,49 +2,76 @@ In this chapter we introduce the concept of \emph{universality}: eigenvalue stat
 \[
 {\sqrt{4-x^2} \over 2\ensuremath{\pi}} \qquad \text{for } x \in [-2, 2] \text{ and } 0 \text{ otherwise.}
 \]
-The \emph{semicircle distribution} can be viewed as a random matrix analogue of  the \emph{normal distribution}
+The \emph{semicircle distribution} can be viewed as a random matrix analogue of  the \emph{normal distribution} $\ensuremath{\scrN}$, whose Probability Density Function (PDF) is a Gaussian:
 \[
 {\E^{-x^2/2} \over \sqrt{2\ensuremath{\pi}}}.
 \]
 In this section we will show universality using the \emph{method of moments}: we will show that the moments of the results converge. Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments. This will mimic the Central Limit Theorem (CLT).
 
 \section{Experimental observation of universality}
-Before digging into the theory we will do an experimental exploration of universality. Let's begin with the classic CLT. Consider a 
+Before digging into the theory we will do an experimental exploration of universality. Let's begin with the classic CLT. Consider sampling iid discrete random variables $X_1,\ensuremath{\ldots},X_n$ each taking values $\ensuremath{\pm}1$ with equal probability, so that their expectation is zero and variance is one:
+\meeq{
+\ensuremath{\bbE} X_k = (-1) {1 \over 2} + 1 {1 \over 2} = 0, \ccr
+\ensuremath{\bbE} X_k^2 = (-1)^2 {1 \over 2} + 1^2 {1 \over 2} = 1.
+}
+By summing and rescaling these variables we can get a new random variable $S_n$:
+\[
+S_n := {X_1 + \ensuremath{\cdots} + X_n \over \sqrt{n}}.
+\]
+For large $n$ we can compare a histogram of samples of $S_n$ to a Gaussian:
 
-\begin{verbatim}
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
 
-# Bernoulli with mean=1 is impossible (p must be in [0,1])
-# Mean = p, Variance = p(1-p)
-# Variance = 1 is also impossible for Bernoulli
-# So we'll use mean=0.5 (p=0.5), variance=0.25, and demonstrate CLT
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_1_1.pdf}
 
-p = 0.5
-n = 1000      # number of Bernoulli trials per sample
-N = 10000     # number of samples
+This phenomena is independent of the distribution of $X_k$ provided the moments are finite: we always get a normal distribution (shifted and scaled to match the mean and variance).
 
-# Generate Bernoulli samples and compute scaled sums
-# CLT: (sum - n*p) / sqrt(n*p*(1-p)) -> N(0,1)
-samples = np.random.binomial(n, p, size=N)
-scaled = (samples - n * p) / np.sqrt(n * p * (1 - p))
+We are going to prove this using the Method of Moments: we want to show the moment $\ensuremath{\bbE}[S_n^k]$ tend to the moments of a Gaussian. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
 
-# Plot
-x = np.linspace(-4, 4, 300)
-plt.figure(figsize=(8, 5))
-plt.hist(scaled, bins=60, density=True, alpha=0.7, color='steelblue', label='Scaled Bernoulli sum')
-plt.plot(x, norm.pdf(x), 'r-', linewidth=2, label='N(0,1)')
-plt.title(f'CLT: Scaled Sum of Bernoulli(p={p}) vs Gaussian\n(n={n} trials, {N} samples)')
-plt.xlabel('Value')
-plt.ylabel('Density')
-plt.legend()
-plt.tight_layout()
-plt.savefig('bernoulli_clt.png', dpi=150)
-plt.show()
-\end{verbatim}
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_2_1.pdf}
+
+A sensible conjecture then is that $\ensuremath{\bbE}[S_n^k]$ is zero when $k$ is odd and
+\[
+\ensuremath{\bbE}[S_n^2] \ensuremath{\rightarrow} 1, \ensuremath{\bbE}[S_n^4] \ensuremath{\rightarrow} 3, \ensuremath{\bbE}[S_n^6] \ensuremath{\rightarrow} 15.
+\]
+Thus we are left with the tasks of:
+
+\begin{itemize}
+\item[1. ] Deducing an exact formula for these moments, and
+
+
+\item[2. ] Proving that the Gaussian has the same moments.
+
+\end{itemize}
+The matrix version involves a histogram of the eigenvalues. Consider $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ which is symmetric ($A_n = A_n^\ensuremath{\top}$) and whose entries above the diagonal are iid random variables taking values $\ensuremath{\pm}1$ with equal probability. Each sample of $A_n$ will have $n$ eigenvalues, which we denote $\ensuremath{\sigma}(A_n) = \ensuremath{\lambda}_1,\ensuremath{\ldots},\ensuremath{\lambda}_n$ (we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${\ensuremath{\sigma}(A_n) \over \sqrt{n}} = \set{{\ensuremath{\lambda}_1 \over \sqrt{n}}, \ensuremath{\ldots}, {\ensuremath{\lambda}_n \over \sqrt{n}}}$ of a \emph{single sample} $A_n$ we get a semicircle:
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_3_1.pdf}
+
+Just as in the CLT, this phenomena is independent of the distribution of the entries of $A_n$ provided the moments are finite: we always get a semicircle (shifted and scaled to match the mean and variance).
+
+Like the CLT we will show this observation using the Method of Moments, and again we can deduce the moments experimentally by letting $n$ increase (a single sample per $n$ works in this case):
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_4_1.pdf}
+
+Again the odd moments appear to be zero but now we might conjecture that the even moments satisfy
+\[
+\ensuremath{\bbE}[\Tr A_n^2] \ensuremath{\rightarrow} 1, \ensuremath{\bbE}[\Tr A_n^4] \ensuremath{\rightarrow} 2, \ensuremath{\bbE}[\Tr A_n^6] \ensuremath{\rightarrow} 5.
+\]
+Again we are left with the tasks of:
+
+\begin{itemize}
+\item[1. ] Deducing an exact formula for these moments, and
+
+
+\item[2. ] Proving that the semicircle has the same moments.
+
+\end{itemize}
+In the remainder of this chapter we sketch out a proof of both the CLT and the semicircle law for random matrices.
+
 \section{Moments of the normal distribution}
-We therefore establish an explicit formula for the moments of a Gaussian. We will think of this in terms the following combinatorial object:
+We will use the method of moments, so our first step is to establish an explicit formula for the moments of a Gaussian. We will think of this in terms the following combinatorial object:
 
 \begin{definition}[double factorial]
 \[
@@ -52,7 +79,17 @@ We therefore establish an explicit formula for the moments of a Gaussian. We wil
 \]
 \end{definition}
 
-This counts the number of ways to pair up $2m$ objects into $m$ different pairs. For example, if $m = 2$ then we have the following pairings:
+We can check the first few:
+\[
+1!! = 1, 3!! = 3, 4!! = 15
+\]
+which exactly match our predicted values for the even moments $\ensuremath{\bbE}[S_n^k]$. 
+
+To prove this result we will use a combinatorial argument. Note that the double factorial  counts the number of ways to partition $\{1,\ensuremath{\ldots},2m\}$ into $m$ different pairs, that is to write
+\[
+\{1,\ensuremath{\ldots},2m\} = \{x_1,y_1\} \ensuremath{\cup} \ensuremath{\cdots} \ensuremath{\cup} \{x_m,y_m\}
+\]
+where $x_1,\ensuremath{\ldots},x_m,y_1,\ensuremath{\ldots},y_m$ is a permutation of $1,\ensuremath{\ldots},2m$ and $x_k < y_k$ for all $k$. For example, if $m = 2$ then we have the following pairings of $1,2,3,4$:
 \[
 \{1,2\}, \{3,4\} \qquad \{1,3\}, \{2,4\} \qquad \{1,4\}, \{2,3\}
 \]
@@ -70,19 +107,19 @@ This can be deduced by a very simple inductive argument. When $m = 1$ we have ex
 \]
 which exactly matches our formula.
 
-The moments of a Gaussian are given in terms of the double factorial:
+We now show the moments of a Gaussian are given in terms of the double factorial:
 
 \begin{lemma}[Gaussian moments]
 \[
 \ensuremath{\mu}_k := \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} x^k {\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}} \dx = \begin{cases}
-0 & \hbox{if  $k$ is odd} \\
-{(k-1)!!} & \hbox{if $k$ is even}
+0 & \hbox{\textrm{if  $k$ is odd}} \\
+{(k-1)!!} & \hbox{\textrm{if $k$ is even}}
 \end{cases}
 \]
 \end{lemma}
 \textbf{Proof}
 
-The case of $k$ odd follows from symmetry. For even $k$ we can use a proof by induction. The case of $k = 0$ follows using the classic trick to compute the integral of a Gaussian using the classic trick of turning it into a 2D integral and using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
+The case of $k$ odd follows from symmetry. For even $k$ we  use a proof by induction. The base case of $k = 0$ follows using the classic trick of computing the integral of a Gaussian by turning it into a 2D integral, using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
 \meeq{
 \pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)^2 = \pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)\pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-y^2/2} \dy) =
 \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-(x^2+y^2)/2} \dx \dy \ccr
@@ -102,21 +139,15 @@ I.e., $\ensuremath{\mu}_k = (k-1) \ensuremath{\mu}_{k-2}$, but this is exactly t
 \ensuremath{\QED}
 
 \section{Central Limit Theorem}
-We begin with an introduction to the Central Limit Theorem (CLT) for classical matrices. Let $X_1, \ensuremath{\ldots}, X_n$ be iid random variables with mean 0 and variance 1. We consider the distribution of
+We now want to show that the moments $\ensuremath{\bbE}[S_n^k]$ for
 \[
 S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
 \]
-In particular we want to prove that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$, this distribution converges to a Gaussian distribution: $X \ensuremath{\sim} \ensuremath{\scrN}$ if its PDF is
-\[
-{\E^{-x^2/2}  \over \sqrt{2\ensuremath{\pi}}}.
-\]
-To do this we will take for granted that a distribution can be identified by its moments and prove convergence of moments.
+match those of the Gaussian, and hence are also given by the double factorial as $n \ensuremath{\rightarrow} \ensuremath{\infty}$. This implicitly tells us that the distribution converges to a Gaussian. 
 
-This gives a simplified proof of the CLT:
-
-\begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for $k = 0,1,\ensuremath{\ldots}$ we have, as $n \ensuremath{\rightarrow} \ensuremath{\infty}$,
+\begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for all $k$ we have
 \[
-\ensuremath{\bbE}[S_n^k] \ensuremath{\rightarrow} \ensuremath{\mu}_k.
+\ensuremath{\bbE}[S_n^k] \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} \ensuremath{\mu}_k.
 \]
 \end{theorem}
 \textbf{Proof}
@@ -150,8 +181,6 @@ so that
 \]
 \ensuremath{\QED}
 
-This is the most basic example of the principle of \emph{universality}: the details of the distribution of $X_k$ do not matter when we take sums, everything behaves the same.  In this chapter we are interested in random matrix analogues of this universality property.
-
 \textbf{Remark} Note the assumption of finite moments is essential. A classic counter example is if $X_k$ have a heavy-tail distribution like the Cauchy distribution:
 \[
 {1 \over \ensuremath{\pi}} {1 \over x^2 + 1}.
@@ -160,34 +189,31 @@ Not even the first moment exists, that is, this distribution has no mean! (Symme
 \[
 {X_1 + \ensuremath{\cdots} + X_n \over n}
 \]
-is the same Cauchy distribution. (Note the division by $n$, not $\sqrt{n}$, which differs from the CLT above.) 
+is the same Cauchy distribution. (Note the division by $n$, not $\sqrt{n}$, which differs from the CLT above.)
 
 \section{Wigner ensembles and global statistics}
 To discuss universality in the setting of random matrices we focus on symmetric matrices with iid entries, i.e., the \emph{Wigner ensembles}:
 
-\begin{definition}[Wigner] A random matrix $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ is a Wigner matrix if:
+\begin{definition}[Wigner] A random matrix $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ is a Wigner matrix if:
 
 \begin{itemize}
 \item[1. ] The entries $a_{kj}$ for $j \ensuremath{\geq} k$ are all iid with mean 0, variance 1, and all moments are finite.
 
 
-\item[2. ] \[
-A
-\]
-is symmetric: $a_{kj} = a_{jk}$.
+\item[2. ] The matrix $A_n$ is symmetric: $a_{kj} = a_{jk}$.
 
 \end{itemize}
 \end{definition}
 
-We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ has $n$ eigenvalues $\ensuremath{\lambda}_1, \ensuremath{\ldots}, \ensuremath{\lambda}_n$ which can be viewed as $n$ random variables in their own right. Their distribution can be described in terms of the moments:
+We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ has $n$ eigenvalues $\ensuremath{\lambda}_1, \ensuremath{\ldots}, \ensuremath{\lambda}_n$ which can be viewed as $n$ random variables in their own right. Their distribution can be described in terms of the moments:
 \[
 \ensuremath{\sigma}_{nk} := \ensuremath{\bbE}[\ensuremath{\lambda}_1^k + \ensuremath{\ldots} + \ensuremath{\lambda}_n^k].
 \]
-We want to show that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $X$ itself via:
+We want to show that as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $A_n$ itself via:
 \[
-\ensuremath{\sigma}_{nk} = \ensuremath{\bbE}[\Tr A^k]
+\ensuremath{\sigma}_{nk} = \ensuremath{\bbE}[\Tr A_n^k]
 \]
-for the trace $\Tr A = a_{11} + \ensuremath{\cdots} + a_{nn}$.  This follows from the following:
+for the trace $\Tr A_n = a_{11} + \ensuremath{\cdots} + a_{nn}$.  This follows from the following:
 
 \begin{proposition}[Cyclic property of trace] For any $A \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} m}$ and $B \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ we have
 \[
@@ -224,7 +250,86 @@ The proposition follows since the trace is equal to the sum of the eigenvalues, 
 \]
 \ensuremath{\QED}
 
-\section{Moments of the semicircle distribution}
-We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the normal distribution. 
+Thus we have a plan of attack: (1) compute the limit of $\ensuremath{\sigma}_{nk} = \ensuremath{\bbE}[\Tr A_n^k]$ as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ and (2) show this matches the moments of the semicircle distribution.
 
+\section{Moments of the semicircle distribution}
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the normal distribution. In particular they will be given in terms of the Catalan numbers (instead of the double factorial):
+
+\begin{definition}[Catalan numbers]
+\[
+C_n := {1 \over n+1} \begin{pmatrix} 2n \\ n \end{pmatrix} =  {(2n)! \over (n+1)! n!}.
+\]
+\end{definition}
+
+We can compute the first few:
+\[
+C_0 = C_1 = 1, C_2 = {4! \over 3! 2!} = 2, C_3 = {6! \over 4!3!} = 5,
+\]
+and indeed these match are prediction for the even moments. 
+
+A key property we will use is that Catalan numbers satisfy a simple recurrence:
+
+\begin{lemma}[Catalan recurrence]
+\[
+C_{n+1} = \ensuremath{\sum}_{k=0}^n C_k C_{n-k}.
+\]
+\end{lemma}
+\textbf{Proof}
+
+This proof is a quite involved generating function calculation. Going through it could be the basis of a poster project.
+
+\ensuremath{\QED}
+
+Catalan numbers are equivalent to a wide range of different combinatorial objects including (1) non-crossing partitions of $n$, (2) the number of \href{https://en.wikipedia.org/wiki/Dyck_language}{Dyck words} of length $2n$, (3) the number of full binary trees with $n+1$ leaves, etc.
+
+Here we are interested in the fact that they tell us exactly how many ways to partition $\{1,\ensuremath{\ldots},2n\}$ into pairs (like the Gaussian moments), but now with the restriction that the pairs are \emph{non-crossing}: for $k \ensuremath{\neq} j$ we never have $x_k < x_j < y_k < y_j$. For example, when $n = 2$ we have $C_2 = 4!/(3!2!) = 2$ non-crossing pairings:
+\[
+\{1,2\}, \{3,4\} \qquad \{1,4\}, \{2,3\},
+\]
+which excludes the pairing $\{1,3\}, \{2,4\}$ since $1 < 3 < 4 < 2$. (Note in the second non-crossing pair the second pair lies completely within the first pair, so they don't cross.) When $n =3$ we have $C_3 = 6!/(4!3!) = 5$ non-crossing pairings:
+\begin{align*}
+\{1,2\}, \{3,4\}, \{5,6\} &\qquad \{1,2\}, \{3,6\}, \{4,5\} \\
+\{1,4\}, \{2,3\}, \{5,6\} &\qquad \{1,6\}, \{2,3\}, \{4,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
+\end{align*}
+To see the number of such partitions are given by Catalan numbers we observe the following:
+
+\begin{itemize}
+\item[1. ] If $1$ is paired with $2$, there are $2(n-1)$ remaining numbers to pair.
+
+
+\item[2. ] \[
+1
+\]
+cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
+
+
+\item[3. ] If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(n-2)$ remaining numbers to pair. 
+
+
+\item[4. ] \[
+1
+\]
+cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over. By the same logic, $1$ cannot be paired with any odd number.
+
+
+\item[5. ] If $1$ is paired with an even number $2k$ we have to pair the $2(k-1)$ numbers $\{2,\ensuremath{\ldots},2k-1\}$ and the $2(n-k)$ numbers $\{2k+1,\ensuremath{\ldots},2n\}$.
+
+\end{itemize}
+Putting all this together we have, assuming $C_k$ gives the number of such pairings of $2k$ for $k < n$,
+\begin{align*}
+\underbrace{C_{n-1}}_{\hbox{when $\{1,2\}$ is a pair}} &+ 
+\underbrace{C_{n-2}}_{\hbox{when $\{1,4\}$ is a pair}} + 
+\underbrace{C_2 C_{n-3}}_{\hbox{when $\{1,6\}$ is a pair}} +
+\underbrace{C_3 C_{n-4}}_{\hbox{when $\{1,8\}$ is a pair}} \\
+& + \ensuremath{\cdots} + 
+\underbrace{C_{n-1}}_{\hbox{when $\{1,2k\}$ is a pair}}.
+\end{align*}
+But using the fact $C_0 = C_1 = 1$ this equals
+\[
+\ensuremath{\sum}_{k=0}^{n-1} C_k C_{n-k-1} = C_n
+\]
+by the above recurrence. 
+
+\section{Proof of the semicircle law}
+\section{Poster projects}
 

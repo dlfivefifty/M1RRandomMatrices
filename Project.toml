@@ -4,9 +4,11 @@ version = "0.1.0"
 authors = ["Sheehan Olver <solver@mac.com>"]
 
 [deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
+LaTeXStrings = "1.4.0"
 Literate = "2.21.0"
 Weave = "0.10.12"

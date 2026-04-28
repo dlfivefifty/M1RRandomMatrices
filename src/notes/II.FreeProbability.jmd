@@ -1,0 +1,102 @@
+---
+options:
+  out_width: "0.6\\linewidth"
+  out_height: "0.45\\linewidth"
+---
+
+We now switch our attention and ask: given two (symmetric) random matrices $A, B ∈ ℝ^{n × n}$ 
+and $B$, what are the distribution of the eigenvalues of $A+B$? 
+The rather remarkable fact is that, as $n → ∞$,  if we know the global distribution of $A$ and $B$, in the form of knowing the moments $𝐄 A^k$ and $𝐄 B^k$, under very broad conditions we can deduce the global distribution of $A+B$, in the form of knowing the moments $𝐄 (A+B)^k$, where again we use
+$$
+𝐄 f(A) := 𝔼 \Tr f(A).
+$$
+
+The key observation is that $A$ and $B$, which do not in general commute ($AB ≠ BA$), follow the rules of _freely independent_ non-commutative random variables.
+Thus the global statistics of $A+B$ can be thought of as a _free convolution_, a non-commutative analogue of convolution. 
+
+# Experimental observation of free convolutions
+
+We begin with an experimental observation of free convolution. Consider again a symmetric matrix $A_n ∈ ℝ^{n × n}$  whose
+entries on and above the diagonal are iid random variables taking values $±1$ with equal probability. We saw in the previous chapter the global statistics are given by the semicircle. Now consider adding a diagonal matrix $D_n ∈ ℝ^{n × n}$ with $±2$ on the diagonal with equal probability: what are the global statistics of $A_n + D_n$? We can explore this question numerically:
+```julia{julia; echo=false}
+using Plots, LinearAlgebra, LaTeXStrings
+function symbernoulli(n)
+    A = rand([-1,1], n, n)
+    for k = 2:n, j = 1:k-1
+        A[k,j] = A[j,k]
+    end
+    A
+end
+
+n = 1000
+histogram(eigvals(symbernoulli(n)/sqrt(n) + 2Diagonal(rand([-1,1],n))); nbins=100, normalized=true, legend=false, ylims=(0,0.3), title=LaTeXString("Eigenvalues of \$A_n + D_n\$"))
+```
+We see that we get two semicircle-like distributions, surrounding ±2. 
+
+What's remarkable is this distribution only depends on the eigenvalues of $A_n$ and $D_n$. For example, consider the case where we same randomly $Q_n ∈ O(n)$, i.e., a random orthogonal matrix and define $B_n := Q_n D_n Q_n^⊤$. This has exactly the same eigenvalues as $D_n$ itself. And when we add $A_n + B_n$ we get the exact same global statistics:
+```julia{julia; echo=false}
+n = 1000
+Q = qr(randn(n,n)).Q
+histogram(eigvals(symbernoulli(n)/sqrt(n) + 2*Q*Diagonal(rand([-1,1],n))*Q'); nbins=100, normalized=true, legend=false, ylims=(0,0.3), title=LaTeXString("Eigenvalues of \$A_n + B_n\$"))
+```
+This is a numerical demonstration of the fact that we can, under broad conditions, deduce the global eigenvalue statistics of $A_n + B_n$ from those of $A_n$ and $B_n$, and largely ignore the eigenvectors. To prove this we will again use the Method of Moments.
+
+
+# Free random variables
+
+We put aside viewing $A$ and $B$ as random matrices and instead think of them more abstractly as _free random variables_, which are non-commutative random variables which satisfy the following:
+
+**Definition (free random variables)** $A$ and $B$ are _free random variables_ equipped with an expectation $𝐄$ if for all polynomials $f_1,…,f_n$ and $g_1,…,g_n$ such that $𝐄 f_k(A) = 𝐄 g_k(B) = 0$ we have
+$$
+𝐄 f_1(A) g_1(B) … f_n(A) g_n(A) = 0,
+$$
+where the identity element satisfies $𝐄 I = 1$.
+∎
+
+We claim (without proof) that as $n → ∞$ that $𝐄 := 𝔼 \Tr$ behaves exactly like this for many families of random matrices. 
+
+Note that we assume linearity: for constants $c,d$ we have
+$$
+𝐄 (c A + d B) = c 𝐄  A + d 𝐄 B.
+$$
+It follows that (treating $𝐄A^k$ as a constant)
+$$
+𝐄(A^k - (𝐄A^k) I ) =  𝐄 A^k - 𝐄A^k 𝐄I  = 0.
+$$
+This simple observation guarantees that if we know the moments $𝐄 A^k$ and $𝐄 B^k$ we can deduce the moments $𝐄 A^k B^j$. To see this, we first consider some of the low order cases. First, we note that by subtracting off the free expectation of moments of $A$ and $B$ and treating $𝐄[A^k], 𝐄[B^j]$ as constants we deduce:
+$$
+\meeq{
+0 = 𝐄[(A^k-𝐄[A^k] I) (B^j-𝐄[B^j] I)] =𝐄[A^k B^j] - 𝐄A^k 𝐄B^j \qquad ⇒ \ccr
+𝐄[A^k B^j] = 𝐄A^k 𝐄B^j
+}
+$$
+which is identical to classical random variables. This apparent consistency with classic random variables works for one mixed moment:
+$$
+\meeq{
+0 = 𝐄[(A-𝐄[A] I) (B-𝐄[B] I)(A-𝐄[A] I)] \ccr
+= 
+𝐄[ABA] - 𝐄[A] 𝐄[AB] - 𝐄[B]𝐄[A^2] -𝐄[A] 𝐄[BA]+2𝐄[A]^2 𝐄[B] \ccr
+=
+𝐄[ABA] - 𝐄[B]𝐄[A^2]\qquad \Rightarrow \ccr
+𝐄[ABA] = 𝐄[A^2]𝐄[B]
+}
+$$
+where we use $𝐄[AB] = 𝐄[A] 𝐄[B]$.  But that's where the equivalence ends. In particular, consider:
+$$
+\meeq{
+0 = 𝐄[(A-𝐄[A] I) (B-𝐄[B] I)(A-𝐄[A] I) (B-𝐄[B] I) ]\ccr
+ = 
+𝐄[ABAB] - \underbrace{𝐄[ABA]}_{=𝐄[A^2]𝐄[B]}  𝐄[B] -𝐄[A] \underbrace{𝐄[A B^2]}_{=𝐄[A] 𝐄[B^2]}  + \underbrace{𝐄[AB]}_{=𝐄[A]𝐄[B]} 𝐄[A] 𝐄[B]\\
+&\qquad - \underbrace{𝐄[A^2B]}_{=𝐄[A^2]𝐄[B]} 𝐄[B] + 𝐄[A^2] 𝐄[B]^2 + \underbrace{𝐄[A B]}_{=𝐄[A]𝐄[B]} 𝐄[A] 𝐄[B] - 𝐄[A]^2 𝐄[B]^2\\
+&\qquad - 𝐄[A] \underbrace{𝐄[BA B]}_{=𝐄[A] 𝐄[B^2]} + 𝐄[A] 𝐄[B]\underbrace{𝐄[BA]}_{=𝐄[A]𝐄[B]}  + 𝐄[A]^2 𝐄[B^2] - 𝐄[A]^2 𝐄[B]^2\\
+&\qquad + 𝐄[A] 𝐄[B]\underbrace{𝐄[AB]}_{=𝐄[A]𝐄[B]} - 𝐄[A]^2 𝐄[B]^2  - 𝐄[A]^2 𝐄[B]^2 +  𝐄[A]^2 𝐄[B]^2 \ccr
+= 𝐄[ABAB] - 𝐄[A^2] 𝐄[B]^2 - 𝐄[A]^2 𝐄[B^2] + 𝐄[A]^2 𝐄[B]^2 \qquad \Rightarrow \ccr
+𝐄[ABAB] = 𝐄[A^2] 𝐄[B]^2 + 𝐄[A]^2 𝐄[B^2] - 𝐄[A]^2 𝐄[B]^2
+}
+$$
+which differs from the classical (commutative) case  where $𝐄[ABAB] = 𝐄[A^2] 𝐄[B^2]$. Nevertheless, we can see the central theme emerging: $𝐄[ABAB]$ is still given in terms of a function of the input moments $𝐄[A^k]$ and $𝐄[B^j]$.
+
+# Free convolution
+
+
+# Poster projects

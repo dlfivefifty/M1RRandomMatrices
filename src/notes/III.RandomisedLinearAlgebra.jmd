@@ -1,0 +1,14 @@
+---
+options:
+  out_width: "0.6\\linewidth"
+  out_height: "0.45\\linewidth"
+---
+
+Our last topic is _randomised linear algebra_: how can we incorporate random matrices into developing better algorithms for linear algebra?
+
+[Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf)
+
+# Least squares
+
+
+# Poster projects

@@ -217,4 +217,10 @@
 \chapter{Universality}
 \input{I.Universality}
 
+\chapter{Free Probability}
+\input{II.FreeProbability}
+
+\chapter{Randomised Linear Algebra}
+\input{III.RandomisedLinearAlgebra}
+
 \end{document}

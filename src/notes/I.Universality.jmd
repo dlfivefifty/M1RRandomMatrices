@@ -15,7 +15,18 @@ The _semicircle distribution_ can be viewed as a random matrix analogue of  the 
 $$
 {\E^{-x^2/2} \over \sqrt{2π}}.
 $$
-In this section we will show universality using the _method of moments_: we will show that the moments of the results converge. Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments. This will mimic the Central Limit Theorem (CLT).
+
+In this section we will show universality using the _method of moments_: we will show that the moments of the results converge.
+For a scalar random variable $X$ the distribution is generally encoded by the standard moments:
+$$
+𝔼 X^k
+$$
+We will see that in the matrix case the global distribution of eigenvalues is encoded by the matrix-analogue of moments:
+$$
+𝐄 A^k := 𝔼 \Tr A^k
+$$
+ where $\Tr$ is the trace of a matrix (sum of the diagonal). 
+ Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments. This will mimic the Central Limit Theorem (CLT).
 
 
 # Experimental observation of universality
@@ -63,7 +74,7 @@ Thus we are left with the tasks of:
 
 
 The matrix version involves a histogram of the eigenvalues. Consider $A_n ∈ ℝ^{n × n}$ which is symmetric ($A_n = A_n^⊤$) and whose
-entries above the diagonal are iid random variables taking values $±1$ with equal probability. Each sample of $A_n$ will have $n$ eigenvalues, which we denote $σ(A_n) = λ_1,…,λ_n$ (we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${σ(A_n) \over \sqrt{n}} = \set{{λ_1 \over \sqrt{n}}, …, {λ_n \over \sqrt{n}}}$
+entries on and above the diagonal are iid random variables taking values $±1$ with equal probability (and entries below the diagonal define dby symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $σ(A_n) = λ_1,…,λ_n$ (we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${σ(A_n) \over \sqrt{n}} = \set{{λ_1 \over \sqrt{n}}, …, {λ_n \over \sqrt{n}}}$
 of a _single sample_ $A_n$ we get a semicircle:
 ```julia{julia; echo=false}
 function symbernoullieigvals(n)
@@ -87,11 +98,11 @@ Like the CLT we will show this observation using the Method of Moments, and agai
 symbernoullieigvals(1)
 
 𝔼 = [mean(x-> x^k, symbernoullieigvals(n)) for n = 1:100, k = 1:6]
-plot(𝔼; label=[L"𝔼[Tr A_n]"  L"𝔼[Tr A_n^2]"  L"𝔼[Tr A_n^3]"  L"𝔼[Tr A_n^4]"  L"𝔼[Tr A_n^5]" L"𝔼[Tr A_n^6]"], xlabel=L"n")
+plot(𝔼; label=[L"𝐄 A_n"  L"𝐄A_n^2"  L"𝐄A_n^3"  L"𝐄A_n^4"  L"𝐄A_n^5" L"𝐄A_n^6"], xlabel=L"n")
 ```
 Again the odd moments appear to be zero but now we might conjecture that the even moments satisfy
 $$
-𝔼[\Tr A_n^2] → 1, 𝔼[\Tr A_n^4] → 2, 𝔼[\Tr A_n^6] → 5.
+𝐄A_n^2 → 1, 𝐄A_n^4 → 2, 𝐄A_n^6 → 5.
 $$
 Again we are left with the tasks of:
 1. Deducing an exact formula for these moments, and
@@ -256,13 +267,15 @@ To discuss universality in the setting of random matrices we focus on symmetric 
 2. The matrix $A_n$ is symmetric: $a_{kj} = a_{jk}$.
 ∎
 
+
+
 We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A_n ∈ ℝ^{n × n}$ has $n$ eigenvalues $λ_1, …, λ_n$ which can be viewed as $n$ random variables in their own right. Their distribution can be described in terms of the moments:
 $$
 σ_{nk} := 𝔼[λ_1^k + … + λ_n^k].
 $$
 We want to show that as $n → ∞$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $A_n$ itself via:
 $$
-σ_{nk} = 𝔼[\Tr A_n^k]
+σ_{nk} = 𝐄 A_n^k = 𝔼[\Tr A_n^k]
 $$
 for the trace $\Tr A_n = a_{11} + ⋯ + a_{nn}$.  This follows from the following:
 
@@ -305,7 +318,7 @@ $$
 
 ∎
 
-Thus we have a plan of attack: (1) compute the limit of $σ_{nk} = 𝔼[\Tr A_n^k]$ as $n → ∞$ and (2) show this matches the moments of the semicircle distribution.
+Thus we have a plan of attack: (1) compute the limit of $σ_{nk} = 𝐄 A_n^k$ as $n → ∞$ and (2) show this matches the moments of the semicircle distribution.
 
 # Moments of the semicircle distribution
 

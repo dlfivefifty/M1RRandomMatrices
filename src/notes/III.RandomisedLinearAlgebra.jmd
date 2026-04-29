@@ -11,4 +11,98 @@ Our last topic is _randomised linear algebra_: how can we incorporate random mat
 # Least squares
 
 
+We begin with an introduction to least squares.  For a rectangular matrix $A ∈ ℝ^{m × n}$ with $m > n$ and a right-hand side $𝐛 ∈ ℝ^m$ we cannot solve $A 𝐜 = 𝐛$ unless $𝐛$ happens to be in the column span of $A$. However, we can instead find $𝐜 ∈ ℝ^n$ that satisfies $A 𝐜 ≈ 𝐛$, in the sense that
+$$
+\| A𝐜 - 𝐛\|
+$$
+is minimised. This is called the _least squares_ solution.  Minimising a norm is equivalent to minimising its square, and expanding out we see that it is equivalent to a quadratic minimisation problem:
+$$
+\| A𝐜 - 𝐛\|^2 = (A𝐜 - 𝐛)^⊤ (A𝐜 - 𝐛) = 𝐜^⊤ A^⊤ A 𝐜 - 2 𝐜^⊤ A^⊤ 𝐛  + 𝐛^⊤ 𝐛.
+$$
+In the scalar case ($n = 1$ so that $𝐜$ is essentially a constant) we know we can solve this by differentiation with respect to $𝐜$, and we arrive at a linear system
+$$
+ A^⊤ A 𝐜  =  A^⊤ 𝐛
+$$
+This generalises (after some linear algebra) and in general we have that
+$$
+𝐜 =  (A^⊤ A)^{-1} A^⊤ 𝐛.
+$$
+
+
+A classic application of least squares is _polynomial regression_. In the case of linear regression, we want to approximation data $\{b_j\}$ on a grid of points $\{x_j\}$ by a linear function $c_0 + c_1 x$. In other words, we want to solve
+$$
+\underbrace{\begin{bmatrix} 1 & x_1 \\
+1 & x_2 \\
+⋮ & ⋮ \\
+1 & x_n
+\end{bmatrix}}_A \underbrace{\begin{bmatrix} c_0 \\
+c_1
+\end{bmatrix}}_𝐜 ≈ \underbrace{\begin{bmatrix}
+b_1 \\
+b_2 \\
+⋮ \\
+b_n
+\end{bmatrix}}_𝐛
+$$
+by using the least squares solution.
+
+
+Here is a depiction of $c_0 + c_1 x$, which is the least squares fit at  the (noisy) data at $n = 50$ points:
+```julia{julia; echo=false}
+using Plots, LaTeXStrings, LinearAlgebra, StatsBase
+n = 50
+t = range(0, 1, n)
+𝐛 = t .+ t.^2 .+ 0.1 .* randn.()
+A = [one.(t) t]
+c = A \ 𝐛
+
+scatter(t, 𝐛; label=L"𝐛")
+plot!(t, c[1] .+ c[2] .* t; label="Least squares")
+```
+
+
+# Randomised least squares
+
+In the above  data there is a lot of correlation between nearby points, hence, using every single point is unnecessary. An alternative is to _sketch_ the problem: use a sketch matrix $P ∈ ℝ^{r × m}$ where $r ≪ m$ and solve
+$$
+P A 𝐜 ≈ P 𝐛
+$$
+using least squares. Here we see a simple example where we use $P ∈ ℝ^{5 × 50}$ with random
+entries:
+
+```julia{julia; echo=false}
+r = 5
+P = randn(r,n)
+c̃ = P * A \ (P * 𝐛)
+plot!(t, c̃[1] .+ c̃[2] .* t; label="Randomised least squares (1x)")
+```
+
+This is a single sample and, to the eye, it performs equally well as least squares. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
+```julia{julia; echo=false}
+c̄ = mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:100)
+plot!(t, c̄[1] .+ c̄[2] .* t; label="Randomised least squares (100x)")
+```
+
+Now this particular example is a bit silly: its not at all clear that solving 100 least squares systems of size $5 × 2$ is preferred to a single least squares system of size $50 × 2$. But we can consider a much more extreme example of $n = 10,000$. Here we compare the average over samples for varying $r$:
+
+```julia
+n = 10_000
+t = range(0, 1, n)
+𝐛 = t .+ t.^2 .+ 0.1 .* randn.()
+A = [one.(t) t]
+c = A \ 𝐛
+
+
+err_1 = [norm(mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:1)-c) for r=1:100]
+err_10 = [norm(mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:10)-c) for r=1:100]
+err_100 = [norm(mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:100)-c) for r=1:100]
+
+plot(err_1;yscale=:log10, label="1×", xaxis=L"r", yaxis="Error")
+plot!(err_10; yscale=:log10, label="10×")
+plot!(err_100; yscale=:log10, label="100×")
+```
+That is to say, we can achieve accuracy to within about $1%$ by solving 100 least squares problems involving $10 × 2$ matrices.
+
+
+
 # Poster projects

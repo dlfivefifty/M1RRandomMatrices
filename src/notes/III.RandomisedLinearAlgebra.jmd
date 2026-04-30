@@ -8,6 +8,32 @@ Our last topic is _randomised linear algebra_: how can we incorporate random mat
 
 [Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf)
 
+
+# Randomised trace estimation
+
+
+We begin with a simple question: can we compute the trace of a matrix without computing all the entries on the diagonal? Often one has a matrix $A ∈ ℝ^{n × n}$ that we know how to compute matrix-vector $A𝐱$, lets say in $O(n^2)$ operations, but we do not have direct access to the entries of the matrix $a_{kj}$. Of course, we can deduce the entries of a matrix via $a_{kj} = 𝐞_k^⊤ (A 𝐞_j)$, and hence we can compute the trace via:
+$$
+\Tr A = ∑_{k=1}^n a_{kk} = ∑_{k=1}^n 𝐞_k^⊤ A 𝐞_k,
+$$
+but this takes $O(n^3)$ operations. 
+
+By the cyclic property of trace we have
+$$
+\Tr A = \Tr Q^⊤ A Q = ∑_{k=1}^n 𝐪_k^⊤ A 𝐪_j
+$$
+for any orthogonal matrix $Q$. Let's do an experiment where we take a fixed matrix $A$:
+```julia
+using LinearAlgebra, StatsBase
+n = 1000
+A = Tridiagonal(ones(n-1), (1:n) .^ (-2), ones(n-1))
+tr(A)
+mean((Q = qr(randn(n,n)).Q;
+m = 10;
+sum((𝐪ₖ = Q[:,k]; 𝐪ₖ'*(A*𝐪ₖ)) for k=1:m) * n/m) for _=1:100)
+```
+
+
 # Least squares
 
 

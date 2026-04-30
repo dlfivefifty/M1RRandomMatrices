@@ -3,5 +3,82 @@ Our last topic is \emph{randomised linear algebra}: how can we incorporate rando
 \href{https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf}{Martinsson \& Tropp 2020}
 
 \section{Least squares}
+We begin with an introduction to least squares.  For a rectangular matrix $A \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ with $m > n$ and a right-hand side $\ensuremath{\bm{\b}} \ensuremath{\in} \ensuremath{\bbR}^m$ we cannot solve $A \ensuremath{\bm{\c}} = \ensuremath{\bm{\b}}$ unless $\ensuremath{\bm{\b}}$ happens to be in the column span of $A$. However, we can instead find $\ensuremath{\bm{\c}} \ensuremath{\in} \ensuremath{\bbR}^n$ that satisfies $A \ensuremath{\bm{\c}} \ensuremath{\approx} \ensuremath{\bm{\b}}$, in the sense that
+\[
+\| A\ensuremath{\bm{\c}} - \ensuremath{\bm{\b}}\|
+\]
+is minimised. This is called the \emph{least squares} solution.  Minimising a norm is equivalent to minimising its square, and expanding out we see that it is equivalent to a quadratic minimisation problem:
+\[
+\| A\ensuremath{\bm{\c}} - \ensuremath{\bm{\b}}\|^2 = (A\ensuremath{\bm{\c}} - \ensuremath{\bm{\b}})^\ensuremath{\top} (A\ensuremath{\bm{\c}} - \ensuremath{\bm{\b}}) = \ensuremath{\bm{\c}}^\ensuremath{\top} A^\ensuremath{\top} A \ensuremath{\bm{\c}} - 2 \ensuremath{\bm{\c}}^\ensuremath{\top} A^\ensuremath{\top} \ensuremath{\bm{\b}}  + \ensuremath{\bm{\b}}^\ensuremath{\top} \ensuremath{\bm{\b}}.
+\]
+In the scalar case ($n = 1$ so that $\ensuremath{\bm{\c}}$ is essentially a constant) we know we can solve this by differentiation with respect to $\ensuremath{\bm{\c}}$, and we arrive at a linear system
+\[
+ A^\ensuremath{\top} A \ensuremath{\bm{\c}}  =  A^\ensuremath{\top} \ensuremath{\bm{\b}}
+\]
+This generalises (after some linear algebra) and in general we have that
+\[
+\ensuremath{\bm{\c}} =  (A^\ensuremath{\top} A)^{-1} A^\ensuremath{\top} \ensuremath{\bm{\b}}.
+\]
+A classic application of least squares is \emph{polynomial regression}. In the case of linear regression, we want to approximation data $\{b_j\}$ on a grid of points $\{x_j\}$ by a linear function $c_0 + c_1 x$. In other words, we want to solve
+\[
+\underbrace{\begin{bmatrix} 1 & x_1 \\
+1 & x_2 \\
+\ensuremath{\vdots} & \ensuremath{\vdots} \\
+1 & x_n
+\end{bmatrix}}_A \underbrace{\begin{bmatrix} c_0 \\
+c_1
+\end{bmatrix}}_\ensuremath{\bm{\c}} \ensuremath{\approx} \underbrace{\begin{bmatrix}
+b_1 \\
+b_2 \\
+\ensuremath{\vdots} \\
+b_n
+\end{bmatrix}}_\ensuremath{\bm{\b}}
+\]
+by using the least squares solution.
+
+Here is a depiction of $c_0 + c_1 x$, which is the least squares fit at  the (noisy) data at $n = 50$ points:
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_1_1.pdf}
+
+\section{Randomised least squares}
+In the above  data there is a lot of correlation between nearby points, hence, using every single point is unnecessary. An alternative is to \emph{sketch} the problem: use a sketch matrix $P \ensuremath{\in} \ensuremath{\bbR}^{r \ensuremath{\times} m}$ where $r \ensuremath{\ll} m$ and solve
+\[
+P A \ensuremath{\bm{\c}} \ensuremath{\approx} P \ensuremath{\bm{\b}}
+\]
+using least squares. Here we see a simple example where we use $P \ensuremath{\in} \ensuremath{\bbR}^{5 \ensuremath{\times} 50}$ with random entries:
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_2_1.pdf}
+
+This is a single sample and, to the eye, it performs equally well as least squares. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_3_1.pdf}
+
+Now this particular example is a bit silly: its not at all clear that solving 100 least squares systems of size $5 \ensuremath{\times} 2$ is preferred to a single least squares system of size $50 \ensuremath{\times} 2$. But we can consider a much more extreme example of $n = 10,000$. Here we compare the average over samples for varying $r$:
+
+
+\begin{lstlisting}
+(*@\HLJLn{n}@*) (*@\HLJLoB{=}@*) (*@\HLJLni{10{\_}000}@*)
+(*@\HLJLn{t}@*) (*@\HLJLoB{=}@*) (*@\HLJLnf{range}@*)(*@\HLJLp{(}@*)(*@\HLJLni{0}@*)(*@\HLJLp{,}@*) (*@\HLJLni{1}@*)(*@\HLJLp{,}@*) (*@\HLJLn{n}@*)(*@\HLJLp{)}@*)
+(*@\HLJLn{\ensuremath{\bm{\b}}}@*) (*@\HLJLoB{=}@*) (*@\HLJLn{t}@*) (*@\HLJLoB{.+}@*) (*@\HLJLn{t}@*)(*@\HLJLoB{.{\textasciicircum}}@*)(*@\HLJLni{2}@*) (*@\HLJLoB{.+}@*) (*@\HLJLnfB{0.1}@*) (*@\HLJLoB{.*}@*) (*@\HLJLn{randn}@*)(*@\HLJLoB{.}@*)(*@\HLJLp{()}@*)
+(*@\HLJLn{A}@*) (*@\HLJLoB{=}@*) (*@\HLJLp{[}@*)(*@\HLJLn{one}@*)(*@\HLJLoB{.}@*)(*@\HLJLp{(}@*)(*@\HLJLn{t}@*)(*@\HLJLp{)}@*) (*@\HLJLn{t}@*)(*@\HLJLp{]}@*)
+(*@\HLJLn{c}@*) (*@\HLJLoB{=}@*) (*@\HLJLn{A}@*) (*@\HLJLoB{{\textbackslash}}@*) (*@\HLJLn{\ensuremath{\bm{\b}}}@*)
+
+
+(*@\HLJLn{err{\_}1}@*) (*@\HLJLoB{=}@*) (*@\HLJLp{[}@*)(*@\HLJLnf{norm}@*)(*@\HLJLp{(}@*)(*@\HLJLnf{mean}@*)(*@\HLJLp{((}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{=}@*) (*@\HLJLnf{randn}@*)(*@\HLJLp{(}@*)(*@\HLJLn{r}@*)(*@\HLJLp{,}@*)(*@\HLJLn{n}@*)(*@\HLJLp{);}@*) (*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{A}@*) (*@\HLJLoB{{\textbackslash}}@*) (*@\HLJLp{(}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{\ensuremath{\bm{\b}}}@*)(*@\HLJLp{))}@*) (*@\HLJLk{for}@*) (*@\HLJLn{{\_}}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{1}@*)(*@\HLJLp{)}@*)(*@\HLJLoB{-}@*)(*@\HLJLn{c}@*)(*@\HLJLp{)}@*) (*@\HLJLk{for}@*) (*@\HLJLn{r}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{100}@*)(*@\HLJLp{]}@*)
+(*@\HLJLn{err{\_}10}@*) (*@\HLJLoB{=}@*) (*@\HLJLp{[}@*)(*@\HLJLnf{norm}@*)(*@\HLJLp{(}@*)(*@\HLJLnf{mean}@*)(*@\HLJLp{((}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{=}@*) (*@\HLJLnf{randn}@*)(*@\HLJLp{(}@*)(*@\HLJLn{r}@*)(*@\HLJLp{,}@*)(*@\HLJLn{n}@*)(*@\HLJLp{);}@*) (*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{A}@*) (*@\HLJLoB{{\textbackslash}}@*) (*@\HLJLp{(}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{\ensuremath{\bm{\b}}}@*)(*@\HLJLp{))}@*) (*@\HLJLk{for}@*) (*@\HLJLn{{\_}}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)(*@\HLJLoB{-}@*)(*@\HLJLn{c}@*)(*@\HLJLp{)}@*) (*@\HLJLk{for}@*) (*@\HLJLn{r}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{100}@*)(*@\HLJLp{]}@*)
+(*@\HLJLn{err{\_}100}@*) (*@\HLJLoB{=}@*) (*@\HLJLp{[}@*)(*@\HLJLnf{norm}@*)(*@\HLJLp{(}@*)(*@\HLJLnf{mean}@*)(*@\HLJLp{((}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{=}@*) (*@\HLJLnf{randn}@*)(*@\HLJLp{(}@*)(*@\HLJLn{r}@*)(*@\HLJLp{,}@*)(*@\HLJLn{n}@*)(*@\HLJLp{);}@*) (*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{A}@*) (*@\HLJLoB{{\textbackslash}}@*) (*@\HLJLp{(}@*)(*@\HLJLn{P}@*) (*@\HLJLoB{*}@*) (*@\HLJLn{\ensuremath{\bm{\b}}}@*)(*@\HLJLp{))}@*) (*@\HLJLk{for}@*) (*@\HLJLn{{\_}}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{100}@*)(*@\HLJLp{)}@*)(*@\HLJLoB{-}@*)(*@\HLJLn{c}@*)(*@\HLJLp{)}@*) (*@\HLJLk{for}@*) (*@\HLJLn{r}@*)(*@\HLJLoB{=}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{100}@*)(*@\HLJLp{]}@*)
+
+(*@\HLJLnf{plot}@*)(*@\HLJLp{(}@*)(*@\HLJLn{err{\_}1}@*)(*@\HLJLp{;}@*)(*@\HLJLn{yscale}@*)(*@\HLJLoB{=:}@*)(*@\HLJLn{log10}@*)(*@\HLJLp{,}@*) (*@\HLJLn{label}@*)(*@\HLJLoB{=}@*)(*@\HLJLs{"{}1\ensuremath{\times}"{}}@*)(*@\HLJLp{,}@*) (*@\HLJLn{xaxis}@*)(*@\HLJLoB{=}@*)(*@\HLJLso{L"{}r"{}}@*)(*@\HLJLp{,}@*) (*@\HLJLn{yaxis}@*)(*@\HLJLoB{=}@*)(*@\HLJLs{"{}Error"{}}@*)(*@\HLJLp{)}@*)
+(*@\HLJLnf{plot!}@*)(*@\HLJLp{(}@*)(*@\HLJLn{err{\_}10}@*)(*@\HLJLp{;}@*) (*@\HLJLn{yscale}@*)(*@\HLJLoB{=:}@*)(*@\HLJLn{log10}@*)(*@\HLJLp{,}@*) (*@\HLJLn{label}@*)(*@\HLJLoB{=}@*)(*@\HLJLs{"{}10\ensuremath{\times}"{}}@*)(*@\HLJLp{)}@*)
+(*@\HLJLnf{plot!}@*)(*@\HLJLp{(}@*)(*@\HLJLn{err{\_}100}@*)(*@\HLJLp{;}@*) (*@\HLJLn{yscale}@*)(*@\HLJLoB{=:}@*)(*@\HLJLn{log10}@*)(*@\HLJLp{,}@*) (*@\HLJLn{label}@*)(*@\HLJLoB{=}@*)(*@\HLJLs{"{}100\ensuremath{\times}"{}}@*)(*@\HLJLp{)}@*)
+\end{lstlisting}
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_4_1.pdf}
+
+That is to say, we can achieve accuracy to within about $1%$ by solving 100 least squares problems involving $10 \ensuremath{\times} 2$ matrices.
+
 \section{Poster projects}
 

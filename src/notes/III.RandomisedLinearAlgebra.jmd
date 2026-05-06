@@ -23,7 +23,7 @@ $$
 \Tr A = \Tr Q^⊤ A Q = ∑_{k=1}^n 𝐪_k^⊤ A 𝐪_j
 $$
 for any orthogonal matrix $Q$. Let's do an experiment where we take a fixed matrix $A$:
-```julia
+```julia{julia; echo=false}
 using LinearAlgebra, StatsBase
 n = 1000
 A = Tridiagonal(ones(n-1), (1:n) .^ (-2), ones(n-1))
@@ -63,12 +63,12 @@ $$
 1 & x_n
 \end{bmatrix}}_A \underbrace{\begin{bmatrix} c_0 \\
 c_1
-\end{bmatrix}}_𝐜 ≈ \underbrace{\begin{bmatrix}
+\end{bmatrix}}_{𝐜} ≈ \underbrace{\begin{bmatrix}
 b_1 \\
 b_2 \\
 ⋮ \\
 b_n
-\end{bmatrix}}_𝐛
+\end{bmatrix}}_{𝐛}
 $$
 by using the least squares solution.
 
@@ -111,7 +111,7 @@ plot!(t, c̄[1] .+ c̄[2] .* t; label="Randomised least squares (100x)")
 
 Now this particular example is a bit silly: its not at all clear that solving 100 least squares systems of size $5 × 2$ is preferred to a single least squares system of size $50 × 2$. But we can consider a much more extreme example of $n = 10,000$. Here we compare the average over samples for varying $r$:
 
-```julia
+```julia{julia; echo=false}
 n = 10_000
 t = range(0, 1, n)
 𝐛 = t .+ t.^2 .+ 0.1 .* randn.()
@@ -127,8 +127,14 @@ plot(err_1;yscale=:log10, label="1×", xaxis=L"r", yaxis="Error")
 plot!(err_10; yscale=:log10, label="10×")
 plot!(err_100; yscale=:log10, label="100×")
 ```
-That is to say, we can achieve accuracy to within about $1%$ by solving 100 least squares problems involving $10 × 2$ matrices.
+That is to say, we can achieve accuracy to within about $1\%$ by solving 100 least squares problems involving $10 × 2$ matrices.
 
 
 
 # Poster projects
+
+
+1. How does the approximation property depend on the distribution of the sketch matrix?
+2. What other algorithms are amenable to randomisation (low rank approximation, norm estimation, multiplication)?
+3. Can averaging over multiple sketch matrices be used to improve accuracy while preserving speed advantage?
+4. What applications are there to randomised linear algebra such as regression?

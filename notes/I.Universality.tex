@@ -1,4 +1,4 @@
-In this chapter we introduce the concept of \emph{universality}: eigenvalue statistics of random matrices are largely independent of the distribution of the entries. In particular, we will look at both \emph{global statistics}, i.e., what do histograms of all eigenvalues look like, and \emph{local statistics}, i.e., what do histograms of the largest eigenvalue look like. For the theory we focus on the global statistics (as proving results for the local statistics requires much higher level mathematics), and in particular, we focus on the phenomenon that symmetric matrices with independent, identically distributed (iid) entries have a global statistics that look like the \emph{semicircle}:
+In this chapter we introduce the concept of \emph{universality}: eigenvalue statistics of random matrices are largely independent of the distribution of the entries. In particular, we will look at both \emph{global statistics}, i.e., what do histograms of all eigenvalues look like, and \emph{local statistics}, i.e., what do histograms of the largest eigenvalue look like. For the theory we focus on the global statistics (as proving results for the local statistics requires much more sophisticated  mathematical tools), and in particular, we focus on the phenomenon that symmetric matrices with independent, identically distributed (iid) entries have a global statistics that look like the \emph{semicircle}:
 \[
 {\sqrt{4-x^2} \over 2\ensuremath{\pi}} \qquad \text{for } x \in [-2, 2] \text{ and } 0 \text{ otherwise.}
 \]
@@ -6,7 +6,7 @@ The \emph{semicircle distribution} can be viewed as a random matrix analogue of 
 \[
 {\E^{-x^2/2} \over \sqrt{2\ensuremath{\pi}}}.
 \]
-In this section we will show universality using the \emph{method of moments}: we will show that the moments of the results converge. For a scalar random variable $X$ the distribution is generally encoded by the standard moments:
+In this section we will show universality using the \emph{Method of Moments}: we will show that the moments of the statistics converge to the moments of a known distribution. For a scalar random variable $X$ the distribution is generally encoded by the standard moments:
 \[
 \ensuremath{\bbE} X^k
 \]
@@ -14,12 +14,16 @@ We will see that in the matrix case the global distribution of eigenvalues is en
 \[
 \ensuremath{\bm{\mathrm{E}}} A^k := \ensuremath{\bbE} \Tr A^k
 \]
-where $\Tr$ is the trace of a matrix (sum of the diagonal).   Moments are only guaranteed to uniquely define a density in the special case where probability density decays sufficiently fast, but this is something the Gaussian satisfies. Thus under broad conditions it suffices to prove convergence of moments. This will mimic the Central Limit Theorem (CLT).
+where $\Tr$ is the trace of a matrix (sum of the diagonal). 
+
+In particular, we will first discuss the Central Limit Theorem (CLT), a scalar version of universality where the moments of rescaled sums of random variables with finite moments always tend to the moments of a Gaussian. We will then see a similar result for semicircle law, where rescaled matrix moments tend to the moments of a semicircle as the matrix size tends to infinity.
+
+Note that moments are only guaranteed to uniquely define a density in the special case where the probability density decays sufficiently fast, but this is something the Gaussian and semicircle both satisfy.
 
 \section{Experimental observation of universality}
-Before digging into the theory we will do an experimental exploration of universality. Let's begin with the classic CLT. Consider sampling iid discrete random variables $X_1,\ensuremath{\ldots},X_n$ each taking values $\ensuremath{\pm}1$ with equal probability, so that their expectation is zero and variance is one:
+Before digging into the theory we will do an experimental exploration of universality. Let's begin with the classical Central Limit Theorem (CLT). Consider sampling iid discrete random variables $X_1,\ensuremath{\ldots},X_n$ each taking values $\ensuremath{\pm}1$ with equal probability, so that their expectation is zero and variance is one:
 \meeq{
-\ensuremath{\bbE} X_k = (-1) {1 \over 2} + 1 {1 \over 2} = 0, \ccr
+\ensuremath{\bbE} X_k = (-1) {1 \over 2} + 1 {1 \over 2} = 0, \qquad
 \ensuremath{\bbE} X_k^2 = (-1)^2 {1 \over 2} + 1^2 {1 \over 2} = 1.
 }
 By summing and rescaling these variables we can get a new random variable $S_n$:
@@ -33,25 +37,18 @@ For large $n$ we can compare a histogram of samples of $S_n$ to a Gaussian:
 
 This phenomena is independent of the distribution of $X_k$ provided the moments are finite: we always get a normal distribution (shifted and scaled to match the mean and variance).
 
-We are going to prove this using the Method of Moments: we want to show the moment $\ensuremath{\bbE}[S_n^k]$ tend to the moments of a Gaussian. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
+We are going to show why this phenomena is true using the Method of Moments: we want to show the moment $\ensuremath{\bbE}[S_n^k]$ tend to the moments of a Gaussian. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
 
 
 \includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_2_1.pdf}
 
 A sensible conjecture then is that $\ensuremath{\bbE}[S_n^k]$ is zero when $k$ is odd and
 \[
-\ensuremath{\bbE}[S_n^2] \ensuremath{\rightarrow} 1, \ensuremath{\bbE}[S_n^4] \ensuremath{\rightarrow} 3, \ensuremath{\bbE}[S_n^6] \ensuremath{\rightarrow} 15.
+\ensuremath{\bbE}[S_n^2] \ensuremath{\rightarrow} 1,\quad \ensuremath{\bbE}[S_n^4] \ensuremath{\rightarrow} 3, \quad \ensuremath{\bbE}[S_n^6] \ensuremath{\rightarrow} 15.
 \]
-Thus we are left with the tasks of:
+Thus we are left with the tasks of: (1) deducing an exact formula for these moments, and (2) proving that the Gaussian has the same moments.
 
-\begin{itemize}
-\item[1. ] Deducing an exact formula for these moments, and
-
-
-\item[2. ] Proving that the Gaussian has the same moments.
-
-\end{itemize}
-The matrix version involves a histogram of the eigenvalues. Consider $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ which is symmetric ($A_n = A_n^\ensuremath{\top}$) and whose entries on and above the diagonal are iid random variables taking values $\ensuremath{\pm}1$ with equal probability (and entries below the diagonal define dby symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $\ensuremath{\sigma}(A_n) = \ensuremath{\lambda}_1,\ensuremath{\ldots},\ensuremath{\lambda}_n$ (we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${\ensuremath{\sigma}(A_n) \over \sqrt{n}} = \set{{\ensuremath{\lambda}_1 \over \sqrt{n}}, \ensuremath{\ldots}, {\ensuremath{\lambda}_n \over \sqrt{n}}}$ of a \emph{single sample} $A_n$ we get a semicircle:
+The matrix version of universality involves a histogram of the eigenvalues. Consider $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ which is symmetric ($A_n = A_n^\ensuremath{\top}$) and whose entries on and above the diagonal are iid random variables taking values $\ensuremath{\pm}1$ with equal probability (and entries below the diagonal defined by symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $\ensuremath{\sigma}(A_n) = \set{\ensuremath{\lambda}_1,\ensuremath{\ldots},\ensuremath{\lambda}_n}$ (for concreteness we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${\ensuremath{\sigma}(A_n) \over \sqrt{n}} = \set{{\ensuremath{\lambda}_1 \over \sqrt{n}}, \ensuremath{\ldots}, {\ensuremath{\lambda}_n \over \sqrt{n}}}$ of a \emph{single sample} $A_n$ we get a semicircle:
 
 
 \includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_3_1.pdf}
@@ -65,17 +62,10 @@ Like the CLT we will show this observation using the Method of Moments, and agai
 
 Again the odd moments appear to be zero but now we might conjecture that the even moments satisfy
 \[
-\ensuremath{\bm{\mathrm{E}}}A_n^2 \ensuremath{\rightarrow} 1, \ensuremath{\bm{\mathrm{E}}}A_n^4 \ensuremath{\rightarrow} 2, \ensuremath{\bm{\mathrm{E}}}A_n^6 \ensuremath{\rightarrow} 5.
+\ensuremath{\bm{\mathrm{E}}}A_n^2 \ensuremath{\rightarrow} 1,\quad \ensuremath{\bm{\mathrm{E}}}A_n^4 \ensuremath{\rightarrow} 2,\quad \ensuremath{\bm{\mathrm{E}}}A_n^6 \ensuremath{\rightarrow} 5.
 \]
-Again we are left with the tasks of:
+Again we are left with the tasks of: (1) deducing an exact formula for these moments, and (2) proving that the semicircle has the same moments.
 
-\begin{itemize}
-\item[1. ] Deducing an exact formula for these moments, and
-
-
-\item[2. ] Proving that the semicircle has the same moments.
-
-\end{itemize}
 In the remainder of this chapter we sketch out a proof of both the CLT and the semicircle law for random matrices.
 
 \section{Moments of the normal distribution}
@@ -87,9 +77,13 @@ We will use the method of moments, so our first step is to establish an explicit
 \]
 \end{definition}
 
-We can check the first few:
+Note this satisfies a simple recurrence:
 \[
-1!! = 1, 3!! = 3, 4!! = 15
+(2m-1)!! = (2m-1) \ensuremath{\cdot} (2m-3)!! \quad \hbox{for} \quad m > 1.
+\]
+We can check the first few double factorials:
+\[
+1!! = 1,\quad 3!! = 3,\quad 4!! = 15
 \]
 which exactly match our predicted values for the even moments $\ensuremath{\bbE}[S_n^k]$. 
 
@@ -109,11 +103,11 @@ and thus $3!! = 3$. And if $m = 3$ then we have $5!! = 15$ total pairings:
 \{1,5\}, \{2,3\}, \{4,6\} &\qquad \{1,5\}, \{2,4\}, \{3,6\} \qquad \{1,5\}, \{2,6\}, \{3,4\} \\
 \{1,6\}, \{2,3\}, \{4,5\} &\qquad \{1,6\}, \{2,4\}, \{3,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
 \end{align*}
-This can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. For $m > 1$, we can pair $1$ with a choice of the $2m-1$ numbers: $2,3,\ensuremath{\ldots},2m$. But then the remaining $2m-2$ numbers have exactly $(2m-3)!!$ pairings. Thus we have
+This can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. For $m > 1$,  assuming the number of pairings for $n < m$ is given by $(2n-1)!!$. We can pair $1$ with a choice of the $2m-1$ numbers: $2,3,\ensuremath{\ldots},$ or $2m$. But then by the induction hypothesis the remaining $2m-2$ numbers have exactly $(2m-3)!!$ pairings. Thus we have
 \[
 (2m-1)!! = (2m-1) \cdot (2m-3)!!
 \]
-which exactly matches our formula.
+which exactly matches the simple recurrence formula.
 
 We now show the moments of a Gaussian are given in terms of the double factorial:
 
@@ -125,9 +119,9 @@ We now show the moments of a Gaussian are given in terms of the double factorial
 \end{cases}
 \]
 \end{lemma}
-\textbf{Proof}
+\textbf{Proof} 
 
-The case of $k$ odd follows from symmetry. For even $k$ we  use a proof by induction. The base case of $k = 0$ follows using the classic trick of computing the integral of a Gaussian by turning it into a 2D integral, using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
+We begin with a more formal explanation.  The case of $k$ odd follows from symmetry. For even $k$ we  use a proof by induction. The base case of $k = 0$ follows using the classic trick of computing the integral of a Gaussian by turning it into a 2D integral, using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
 \meeq{
 \pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)^2 = \pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-x^2/2} \dx)\pr(\ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-y^2/2} \dy) =
 \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \ensuremath{\int}_{-\ensuremath{\infty}}^\ensuremath{\infty} \E^{-(x^2+y^2)/2} \dx \dy \ccr
@@ -151,7 +145,28 @@ We now want to show that the moments $\ensuremath{\bbE}[S_n^k]$ for
 \[
 S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
 \]
-match those of the Gaussian, and hence are also given by the double factorial as $n \ensuremath{\rightarrow} \ensuremath{\infty}$. This implicitly tells us that the distribution converges to a Gaussian. 
+match those of the Gaussian, and hence are also given by the double factorial as $n \ensuremath{\rightarrow} \ensuremath{\infty}$. This implicitly tells us that the distribution converges to a Gaussian.  We will use the \emph{multinomial theorem}:
+
+\begin{theorem}[multinomial theorem] 
+\[
+(X_1 + \ensuremath{\cdots} + X_n)^k = \ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_n = k}  {k! \over k_1! \ensuremath{\cdots} k_n!} X_1^{k_1} \ensuremath{\cdots} X_n^{k_n}.
+\]
+\end{theorem}
+\textbf{Proof} This is a generalisation of the binomial theorem, and can be proved by induction on $k$. The base case of $n = 1$ is trivial and the case $n = 2$ is equivalent to the binomial theorem. For $n \ensuremath{\geq} 2$ we write:
+\begin{align*}
+(X_1 + \ensuremath{\cdots} +& X_{n-1} + X_n + X_{n+1})^k = (X_1 + \ensuremath{\cdots} + X_{n-1} + (X_n + X_{n+1}))^k \ccr 
+= \ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_{n-1} + \ensuremath{\kappa} = k}  {k! \over k_1! \ensuremath{\cdots} k_{n-1}! \ensuremath{\kappa}!} X_1^{k_1} \ensuremath{\cdots} X_{n-2}^{k_{n-2}} (X_n + X_{n+1})^\ensuremath{\kappa} \ccr
+= \ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_{n-1} + \ensuremath{\kappa} = k}  {k! \over k_1! \ensuremath{\cdots} k_{n-1}!\ensuremath{\kappa}!} X_1^{k_1} \ensuremath{\cdots} X_{n-2}^{k_{n-2}} \ensuremath{\sum}_{k_n + k_{n+1} = \ensuremath{\kappa}}  {\ensuremath{\kappa}! \over k_n! k_{n+1}!} X_n^{k_n} X_{n+1}^{k_{n+1}}
+\end{align*}
+where we have used the binomial theorem in the last step. But we now note we can combine the two sums as a single sum to deduce:
+\begin{align*}
+(X_1 + \ensuremath{\cdots} +& X_{n-1} + X_n + X_{n+1})^k = 
+\ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_{n+1} = k}  {k! \over k_1! \ensuremath{\cdots} k_{n-1}!\ensuremath{\kappa}!}  {\ensuremath{\kappa}! \over k_n! k_{n+1}!}   X_1^{k_1} \ensuremath{\cdots} X_{n+1}^{k_{n+1}} \ccr
+= \ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_{n+1} = k}  {k! \over k_1! \ensuremath{\cdots} k_{n-1}!k_n!k_{n+1}!}     X_1^{k_1} \ensuremath{\cdots} X_{n+1}^{k_{n+1}}.
+\end{align*}
+\ensuremath{\QED}
+
+This basic result allows us to exapnd out the moments and deduce the main result:
 
 \begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for all $k$ we have
 \[
@@ -160,33 +175,30 @@ match those of the Gaussian, and hence are also given by the double factorial as
 \end{theorem}
 \textbf{Proof}
 
-We will use the properties of expectations, in particular,  if $X_k$ and $X_j$ are independent then we have
+We have from the multinomial theorem and independence:
 \[
-\ensuremath{\bbE}[X_k^m X_j^\ensuremath{\ell}] = \ensuremath{\bbE}[X_k^m] \ensuremath{\bbE}[X_j^\ensuremath{\ell}].
+\ensuremath{\bbE}[S_n^k] = n^{-k/2} \ensuremath{\sum}_{k_1 + \ensuremath{\cdots} + k_n = k}  {k! \over k_1! \ensuremath{\cdots} k_n!}  \ensuremath{\bbE}[X_1^{k_1}] \ensuremath{\cdots}  \ensuremath{\bbE}[X_n^{k_n}].
 \]
-For the first moment we have (by linearity of expectation):
+We claim when $k = 2m$ that the sum is dominated by the terms where the $k_j$ are either zero or 2, in particular, where there are precisely $m$ 2s. In particular, we have to choose $m$ indices to have $k_j = 2$ from a total of $n$, and  there are exactly
 \[
-\sqrt{n} \ensuremath{\bbE}[S_n] = \ensuremath{\bbE}[X_1] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n] = 0.
+\begin{pmatrix} n \\ m \end{pmatrix} = {n! \over m! (n-m)!}
 \]
-For the second moment we have:
-\meeq{
-n \ensuremath{\bbE}[S_n^2] = \ensuremath{\bbE}[X_1^2] + \underbrace{\ensuremath{\bbE}[X_1]}_{=0} \underbrace{(\ensuremath{\bbE}[X_2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0} \\
-&\qquad+ \ensuremath{\bbE}[X_2^2] +
-  \underbrace{\ensuremath{\bbE}[X_2]}_{=0} \underbrace{(\ensuremath{\bbE}[X_1] + \ensuremath{\bbE}[X_2] \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}  + \ensuremath{\cdots} \ccr
-= \ensuremath{\bbE}[X_1^2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n]^2 = n
-}
-and hence $\ensuremath{\bbE}[S_n^2]=1$. We will do one last explicit example of the cubic moment. Here we have:
-\meeq{
-n^{3/2} \ensuremath{\bbE}[S_n^3] =
-\ensuremath{\bbE}[X_1^3] + \ensuremath{\bbE}[X_1^2] \underbrace{(\ensuremath{\bbE}[X_2] + \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}\\
-&\qquad
-+ \ensuremath{\bbE}[X_2^3] +  \ensuremath{\bbE}[X_2^2] \underbrace{(\ensuremath{\bbE}[X_1] + \ensuremath{\bbE}[X_2] \ensuremath{\cdots} + \ensuremath{\bbE}[X_n])}_{=0}  + \ensuremath{\cdots}  \ccr
-= n \ensuremath{\bbE}[X_1^3]
-}
-so that
+of these. Noting that $\ensuremath{\bbE}[X_k^2] = \ensuremath{\bbE}[X_k^0]$,  these terms each take a value of
 \[
-\ensuremath{\bbE}[S_n^3] = {\ensuremath{\bbE}[X_1^3] \over \sqrt{n}} \ensuremath{\rightarrow} 0.
+n^{-m} {(2m)! \over 2^m}  \ensuremath{\bbE}[X_1^{k_1}] \ensuremath{\cdots}  \ensuremath{\bbE}[X_n^{k_n}] = {(2m)! \over (2n)^m},
 \]
+giving a total contribution of
+\[
+{n! (2m)! \over (2n)^m m! (n-m)!}  \ensuremath{\rightarrow} {(2m)! \over 2^m m!}  = (2m-1)!!
+\]
+where we use the fact that, for $m$ fixed,
+\[
+{n! \over (n-m)! n^m} = {n (n-1) \ensuremath{\cdots} (n-m+1) \over n^m} = {n^m + O(n^{m-1}) \over n^m} \ensuremath{\rightarrow} 1
+\]
+as $n \ensuremath{\rightarrow} \ensuremath{\infty}$.
+
+We are just left with showing the total contribution from all other choices of $k_1 + \ensuremath{\cdots} + k_n = k$ tend to zero. Note that the terms where any $k_j = 1$ contribute zero as $\ensuremath{\bbE}[X_j] = 0$. Showing the remaining terms don't contribute as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ (and that in the odd case no terms contribute) is a bit technical so we omit the details.
+
 \ensuremath{\QED}
 
 \textbf{Remark} Note the assumption of finite moments is essential. A classic counter example is if $X_k$ have a heavy-tail distribution like the Cauchy distribution:
@@ -305,19 +317,13 @@ To see the number of such partitions are given by Catalan numbers we will do a p
 \item[1. ] If $1$ is paired with $2$, there are $2(n-1)$ remaining numbers to pair.
 
 
-\item[2. ] \[
-1
-\]
-cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
+\item[2. ] The number $1$ cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
 
 
 \item[3. ] If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(n-2)$ remaining numbers to pair. 
 
 
-\item[4. ] \[
-1
-\]
-cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over. By the same logic, $1$ cannot be paired with any odd number.
+\item[4. ] Th number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over. By the same logic, $1$ cannot be paired with any odd number.
 
 
 \item[5. ] If $1$ is paired with an even number $2k$ we have to pair the $2(k-1)$ numbers $\{2,\ensuremath{\ldots},2k-1\}$ and the $2(n-k)$ numbers $\{2k+1,\ensuremath{\ldots},2n\}$.
@@ -339,5 +345,29 @@ using the fact that $C_0 = C_1 = 1$ this reduces to
 by the above recurrence, and hence the result is true by induction.
 
 \section{Proof of the semicircle law}
+\section{Local eigenvalue statistics}
+One can also ask about the statistics of the largest eigenvalue. Here we plot a Histogram of the largest eigenvalue:
+
+
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.Universality_5_1.pdf}
+
 \section{Poster projects}
+The possibilities for projects related to universality are endless and I encourage you to think about an original idea. Here are some example projects to help guide you:
+
+\begin{itemize}
+\item[1. ] Hermitian random matrices also satisfy universality properties. How do histograms of their eigenvalue statistics (both global and local) compare to the symmetric case?
+
+
+\item[2. ] A \emph{Wishart ensemble} is a random symmetric matrix $X X^\ensuremath{\top}$ where $X \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ is a rectangular matrix with random entries. It also exhibits universality but depending on the ratio $\ensuremath{\alpha} = m/n$. Can you explore how the global and local statistics behave? Do they match the Wigner ensemble case?
+
+
+\item[3. ] The spacing of zeros of the Riemann Zeta function on the critical line match the universality. to higher accuracy?
+
+
+\item[4. ] What happens when the 4-moment condition breaks down? I.e. what are eigenvalue statistics for matrices with heavytailed entries?
+
+
+\item[5. ] One can consider matrices associated with random networks, a la as discussed in Introduction to Applied Mathematics. How connected does a random network need to be to exhibit universality?
+
+\end{itemize}
 

@@ -412,24 +412,62 @@ But now we just sum over $j$ to get the trace:
   \end{cases}
 \]
 \end{theorem}
-\textbf{Proof} We begin with the case of $k=2m$ even, where
-\meeq{
-\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^{2m}] = n^{-m} \ensuremath{\bm{\mathrm{E}}}\br[\ensuremath{\sum}_{i_1,\ensuremath{\ldots},i_{2m} = 1}^n a_{i_1 i_2} a_{i_2 i_3} \ensuremath{\cdots} a_{i_{2m} i_1}] \ccr
-= n^{-m} \ensuremath{\sum}_{i_1,\ensuremath{\ldots},i_{2m} = 1}^n \ensuremath{\bm{\mathrm{E}}}[a_{i_1 i_2} a_{i_2 i_3} \ensuremath{\cdots} a_{i_{2m} i_1}].
-}
-Let's look at some low order cases beginning with $m = 1$. Here we have using symmetry $a_{kj} = a_{jk}$ and $\ensuremath{\bm{\mathrm{E}}}[a_{kj}^2 = 1$:
-\meeq{
-\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^2] = {1 \over n^2} \ensuremath{\sum}_{k,j=1}^n \ensuremath{\bm{\mathrm{E}}}[a_{kj} a_{jk}] \ccr
-{1 \over n^2} \ensuremath{\sum}_{k,j=1}^n \ensuremath{\bm{\mathrm{E}}}[a_{kj}^2] = 1.
-}
-For $m = 2$ we have:
-\meeq{
-\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^4] = {1 \over n^3} \ensuremath{\sum}_{i_1,i_2,i_3,i_4}^n \ensuremath{\bm{\mathrm{E}}}[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
-}
-Note because of independence ($\ensuremath{\bm{\mathrm{E}}}[a_{i_1i_2}] = 0$), the only terms that remain are those where $a_{i_1i_2}$ and $a_{i_2i_1}$ together appear at least twice. thus this sum reduces to:
+\textbf{Proof} We will only give a brief sketch of the argument. The entries  are iid and we can write their moments as
 \[
-\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^4] = {1 \over n^3} \ensuremath{\sum}_{k=1}^n \ensuremath{\bm{\mathrm{E}}}[a_{kk}^4]
+\ensuremath{\mu}_k = \ensuremath{\bbE}[a_{ij}^k]
 \]
+where $\ensuremath{\mu}_0 = 1$ and by assumption $\ensuremath{\mu}_1 = 0$ and $\ensuremath{\mu}_2 = 1$.
+
+Let's look at some low order cases. When $k = 1$ or 2 the result is trivial:
+\meeq{
+\ensuremath{\bm{\mathrm{E}}}[A_n/\sqrt{n}] = {1 \over n^{3/2}} \ensuremath{\sum}_{k=1}^n \ensuremath{\bbE}[a_{kk}] = 0, \ccr
+\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^2] = {1 \over n^2} \ensuremath{\sum}_{k,j=1}^n \ensuremath{\bbE}[a_{kj} a_{jk}]  = {1 \over n^2} \ensuremath{\sum}_{k,j=1}^n \ensuremath{\bbE}[a_{kj}^2] = {1 \over n^2} \ensuremath{\sum}_{k,j=1}^n \ensuremath{\mu}_2 = 1.
+}
+For $k = 3$ we consider different cases of writing
+\[
+\ensuremath{\bm{\mathrm{E}}}[A_n/\sqrt{n}] = {1 \over n^{5/2}} \ensuremath{\sum}_{i_1,i_2,i_3=1}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_1i_2}].
+\]
+We want to think of the ways in which each of these three terms can be equal. This has  the same number of ways as partitioning a set of 3. Assuming $k \ensuremath{\neq} j \ensuremath{\neq} \ensuremath{\ell}$ we have the following types of terms, each associated with the specified partition of 3:
+\begin{align*}
+\hbox{All three terms are different:} & \ensuremath{\bbE}[a_{kj} a_{j\ensuremath{\ell}} a_{\ensuremath{\ell}k}] = 0   &  n (n-1)(n-2) = n^3 + O(n^2) &  (\{1\}, \{2\}, \{3\}) \\
+\hbox{Only the 1st and 2nd terms are the same:} & \ensuremath{\bbE}[a_{kj} a_{jk} a_{kk}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1 = 0  &  n (n-1)= n^3 + O(n^2) & (\{1,2\}, \{3\}) \\
+\hbox{Only the 1st and 3rd term are the same:} & \ensuremath{\bbE}[a_{kj} a_{jj} a_{jk}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1 = 0&  n (n-1)= n^3 + O(n^2)  &  (\{1,3\}, \{3\}) \\
+\hbox{Only the 2nd and 3rd terms are the same:} & \ensuremath{\bbE}[a_{kk} a_{k\ensuremath{\ell}} a_{\ensuremath{\ell}k}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1 = 0 &  n (n-1)= n^3 + O(n^2)  &  (\{1\},  \{2,3\}) \\
+\hbox{All three terms are the same:} & \ensuremath{\bbE}[a_{kk} a_{kk} a_{kk}] = \ensuremath{\mu}_3&  n & (\{1,2,3\}).
+\end{align*}
+Note that they combine to give all $n^3$ possibilities. But almost all of the moments are zero! Thus we can collapse the sum to be:
+\[
+\ensuremath{\bm{\mathrm{E}}}[A_n/\sqrt{n}] = {1 \over n^{5/2}} \ensuremath{\sum}_{k=1}^n \ensuremath{\bbE}[a_{kk} a_{kk} a_{kk}] = {\ensuremath{\mu}_3 \over n^{3/2}}  \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}}  0.
+\]
+Let's do one more example. For $k = 4$ we have:
+\meeq{
+\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^4] = {1 \over n^3} \ensuremath{\sum}_{i_1,i_2,i_3,i_4}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
+}
+Note because of independence ($\ensuremath{\bbE}[a_{i_1i_2}] = 0$), the only terms that remain are those where $a_{i_1i_2}$ and $a_{i_2i_1}$ together appear at least twice. There are four possible ways this can happen (here $i,j, k$ and $\ensuremath{\ell}$ are never equal):
+\meeq{
+\ensuremath{\bbE}[a_{ii}a_{ii} a_{ii} a_{ii}] = \ensuremath{\bbE}[a_{ii}^4] = \ensuremath{\mu}_4 \ccr
+\ensuremath{\bbE}[a_{ij}a_{ji} a_{ij} a_{ij}] = \ensuremath{\bbE}[a_{ij}^4] = \ensuremath{\mu}_4 \ccr
+\ensuremath{\bbE}[a_{ij}a_{jk} a_{k\ensuremath{\ell}} a_{\ensuremath{\ell}i}] = \ensuremath{\bbE}[a_{ij}]^4 = 0 \ccr
+\ensuremath{\bbE}[a_{ij}a_{jk} a_{kj} a_{ji}] = \ensuremath{\bbE}[a_{ij}^2 a_{kj}^2] = \ensuremath{\bbE}[a_{ij}^2 \ensuremath{\bbE}[a_{kj}^2] = \ensuremath{\mu}_2^2 = 1 \ccr
+\ensuremath{\bbE}[a_{ij}a_{ji} a_{ik} a_{ki}] = \ensuremath{\bbE}[a_{ij}^2 a_{ik}^2] = \ensuremath{\bbE}[a_{ij}^2 \ensuremath{\bbE}[a_{ik}^2] = \ensuremath{\mu}_2^2 = 1.
+}
+Thus this sum reduces to:
+\[
+\ensuremath{\bm{\mathrm{E}}}\br[(A_n/\sqrt{n})^4] = {1 \over n^3} \underbrace{\ensuremath{\sum}_{i=1}^n \ensuremath{\bbE}[a_{ii}^4]}_{= O(n)} +
+{1 \over n^4} \underbrace{\ensuremath{\sum}_{i=1}^n \ensuremath{\sum}_{j\ensuremath{\neq}i} \ensuremath{\bbE}[a_{ij}^4]}_{=O(n^2)} \\
+&\qquad +
+{1 \over n^4} \underbrace{\ensuremath{\sum}_{i=1}^n \ensuremath{\sum}_{j\ensuremath{\neq}i} \ensuremath{\sum}_{k \ensuremath{\neq} i,j}  \ensuremath{\bbE}[a_{ij}^2 a_{kj}^2]}_{= n (n-1)(n-2) }  +
+{1 \over n^4} \underbrace{\ensuremath{\sum}_{i=1}^n \ensuremath{\sum}_{j\ensuremath{\neq}i} \ensuremath{\sum}_{k \ensuremath{\neq} i,j}  \ensuremath{\bbE}[a_{ij}^2 a_{ik}^2]}_{= n (n-1)(n-2) }\\
+&\underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} 2.
+\]
+Which matches the Catalan number $C_2$. 
+
+Now for the key insight: the only terms that contribute were when both the 1st and 2nd  and the 3rd and 4th terms matched, or when the 1st and 4th and 2nd and 3rd terms matched. This corresponds to exactly to the two non-crossing partitions of $2m$:
+\[
+\{1,2\}, \{3,4\} \qquad \{1,3\}, \{2,4\} \qquad \{1,4\}, \{2,3\}.
+\]
+This applies to any even moment. For example, when $m = 3$ we have 
+
 \ensuremath{\QED}
 
 \section{Local eigenvalue statistics}

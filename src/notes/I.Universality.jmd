@@ -21,9 +21,9 @@ For a scalar random variable $X$ the distribution is generally encoded by the st
 $$
 𝔼 X^k
 $$
-We will see that in the matrix case the global distribution of eigenvalues is encoded by the matrix-analogue of moments:
+We will see that in the matrix case the global distribution of eigenvalues is encoded by the matrix-analogue of moments: for $A_n ∈ ℝ^{n × n}$ we define
 $$
-𝐄 A^k := 𝔼 \Tr A^k
+𝐄 A_n^k := {1 \over n} 𝔼 \Tr A_n^k
 $$
  where $\Tr$ is the trace of a matrix (sum of the diagonal). 
 
@@ -33,6 +33,8 @@ In particular, we will first discuss the Central Limit Theorem (CLT), a scalar v
 
 
  Note that moments are only guaranteed to uniquely define a density in the special case where the probability density decays sufficiently fast, but this is something the Gaussian and semicircle both satisfy.
+
+ **Further reading**: [Topics in Random Matrix Theory](https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf) by Terry Tao gives a more advanced, higher level introduction to random matrix theory.
 
 
 # Experimental observation of universality
@@ -80,7 +82,7 @@ Thus we are left with the tasks of:
 
 
 The matrix version of universality involves a histogram of the eigenvalues. Consider $A_n ∈ ℝ^{n × n}$ which is symmetric ($A_n = A_n^⊤$) and whose
-entries on and above the diagonal are iid random variables taking values $±1$ with equal probability (and entries below the diagonal defined by symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $σ(A_n) = \set{λ_1,…,λ_n}$ (for concreteness we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues ${σ(A_n) \over \sqrt{n}} = \set{{λ_1 \over \sqrt{n}}, …, {λ_n \over \sqrt{n}}}$
+entries on and above the diagonal are iid random variables taking values $±1$ with equal probability (and entries below the diagonal defined by symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $σ(A_n) = \set{λ_1,…,λ_n}$ (for concreteness we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues $σ(A_n/ \sqrt{n}) = \set{{λ_1 \over \sqrt{n}}, …, {λ_n \over \sqrt{n}}}$
 of a _single sample_ $A_n$ we get a semicircle:
 ```julia{julia; echo=false}
 function symbernoullieigvals(n)
@@ -299,13 +301,13 @@ To discuss universality in the setting of random matrices we focus on symmetric 
 
 
 
-We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A_n ∈ ℝ^{n × n}$ has $n$ eigenvalues $λ_1, …, λ_n$ which can be viewed as $n$ random variables in their own right. Their distribution can be described in terms of the moments:
+We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A_n ∈ ℝ^{n × n}$ has $n$ eigenvalues $λ_1, …, λ_n$ which can be viewed as $n$ random variables in their own right. The probability density associated with their histogram is described in terms of the moments:
 $$
-σ_{nk} := 𝔼[λ_1^k + … + λ_n^k].
+σ_{nk} := {1 \over n} 𝔼[λ_1^k + … + λ_n^k].
 $$
 We want to show that as $n → ∞$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $A_n$ itself via:
 $$
-σ_{nk} = 𝐄 A_n^k = 𝔼[\Tr A_n^k]
+σ_{nk} = {1 \over n} 𝔼[\Tr A_n^k] = 𝐄 A_n^k
 $$
 for the trace $\Tr A_n = a_{11} + ⋯ + a_{nn}$.  This follows from the following:
 
@@ -381,7 +383,7 @@ This proof is a quite involved generating function calculation. Going through it
 
 Catalan numbers are equivalent to a wide range of different combinatorial objects including (1) non-crossing partitions of $n$, (2) the number of [Dyck words](https://en.wikipedia.org/wiki/Dyck_language) of length $2n$, (3) the number of full binary trees with $n+1$ leaves, etc.
 
-Here we are interested in the fact that they tell us exactly how many ways to partition $\{1,…,2n\}$ into pairs (like the Gaussian moments), but now with the restriction that the pairs are _non-crossing_: for $k ≠ j$ we never have $x_k < x_j < y_k < y_j$. For example, when $n = 2$ we have $C_2 = 4!/(3!2!) = 2$ non-crossing pairings:
+Here we are interested in the fact that they tell us exactly how many ways to partition $\{1,…,2n\}$ into pairs $\{x_j,y_j\}$ (like the Gaussian moments), but now with the restriction that the pairs are _non-crossing_: for $k ≠ j$ we never have $x_k < x_j < y_k < y_j$. For example, when $n = 2$ we have $C_2 = 4!/(3!2!) = 2$ non-crossing pairings:
 $$
 \{1,2\}, \{3,4\} \qquad \{1,4\}, \{2,3\},
 $$
@@ -392,34 +394,137 @@ $$
 \{1,4\}, \{2,3\}, \{5,6\} &\qquad \{1,6\}, \{2,3\}, \{4,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
 \end{align*}
 $$
-To see the number of such partitions are given by Catalan numbers we will do a proof by induction, noting that the case of  $C_1 = 1$ is immediate (there is only one way to pair two numbers). Observe the following:
-1. If $1$ is paired with $2$, there are $2(n-1)$ remaining numbers to pair.
+To see the number of such partitions are given by Catalan numbers we will do a proof by induction, noting that the case of  $C_1 = 1$ is immediate (there is only one way to pair two numbers). If we assume the number of pairings of $2, 4, …, 2n$ are given by $C_1,C_2,…,C_n$ then we deduce the number of pairings of $2(n+1)$ as follows:
+1. If $1$ is paired with $2$, there are $2n$ remaining numbers to pair, i.e., $C_n$ possibilities.
 2. The number $1$ cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
-3. If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(n-2)$ remaining numbers to pair. 
+3. If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(n-1)$ remaining numbers to pair. 
 4. Th number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over. By the same logic, $1$ cannot be paired with any odd number.
-5. If $1$ is paired with an even number $2k$ we have to pair the $2(k-1)$ numbers $\{2,…,2k-1\}$ and the $2(n-k)$ numbers $\{2k+1,…,2n\}$.
+5. If $1$ is paired with an even number $2k$ we have to pair the $2(k-1)$ numbers $\{2,…,2k-1\}$ and the $2(n+1-k)$ numbers $\{2k+1,…,2(n+1)\}$. Thus there are $C_{k-1} C_{n+1-k}$ possibilities.
 
-Putting all this together we have, assuming $C_k$ gives the number of such pairings of $2k$ for $k < n$,
+Putting all this together we have:
 $$
 \begin{align*}
-\underbrace{C_{n-1}}_{\hbox{when $\{1,2\}$ is a pair}} &+ 
-\underbrace{C_{n-2}}_{\hbox{when $\{1,4\}$ is a pair}} + 
-\underbrace{C_2 C_{n-3}}_{\hbox{when $\{1,6\}$ is a pair}} +
-\underbrace{C_3 C_{n-4}}_{\hbox{when $\{1,8\}$ is a pair}} \\
+\underbrace{C_n}_{\hbox{when $\{1,2\}$ is a pair}} &+ 
+\underbrace{C_{n-1}}_{\hbox{when $\{1,4\}$ is a pair}} + 
+\underbrace{C_2 C_{n-2}}_{\hbox{when $\{1,6\}$ is a pair}} +
+\underbrace{C_3 C_{n-3}}_{\hbox{when $\{1,8\}$ is a pair}} \\
 & + ⋯ + 
-\underbrace{C_{n-1}}_{\hbox{when $\{1,2k\}$ is a pair}}.
+\underbrace{C_n}_{\hbox{when $\{1,2(n+1)\}$ is a pair}}.
 \end{align*}
 $$
 using the fact that $C_0 = C_1 = 1$ this reduces to
 $$
-∑_{k=0}^{n-1} C_k C_{n-k-1} = C_n
+∑_{k=0}^n  C_k C_{n-k} = C_{n+1}
 $$
 by the above recurrence, and hence the result is true by induction.
 
+We now establish the moments of the semicircle distribution. 
 
+**Lemma (semicircle moments)**
+$$
+μ_k := ∫_{-2}^2 x^k {\sqrt{4-x^2} \over 2π} \dx = \begin{cases}
+0 & \hbox{\textrm{if  $k$ is odd}} \\
+C_{k/2} & \hbox{\textrm{if $k$ is even}}
+\end{cases}
+$$
+
+**Proof**
+The case of $k$ odd follows from symmetry. For even $k$ we use the change of variables $x = 2 \cos θ$ to deduce:
+$$
+\begin{align*}
+μ_k &= ∫_{-2}^2 x^k {\sqrt{4-x^2} \over 2π} \dx = ∫_0^π (2 \cos θ)^k {\sqrt{4-(2 \cos θ)^2} \over 2π} 2 \sin θ \Dθ \\
+&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \sin^2 θ \Dθ = {2^{k+1} \over 2π} ∫_0^π \cos^k θ (1-\cos^2 θ) \Dθ \\
+&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \Dθ - {2^{k+1} \over 2π} ∫_0^π \cos^{k+2} θ \Dθ.
+\end{align*}
+$$
+Now we can use the following formula for the integral of powers of cosine:
+$$
+∫_0^π \cos^k θ \Dθ = \begin{cases}
+0 & \hbox{\textrm{if  $k$ is odd}} \\
+{π \over 2} & \hbox{\textrm{if $k$ is even}}
+\end{cases}
+$$
+
+∎
 
 # Proof of the semicircle law
 
+We now show for Wigner ensembles that
+$$
+𝐄\br[(A_n/\sqrt{n})^k]
+$$
+tend to the Catalan numbers as $n → ∞$. We first establish a formula for the trace of powers of a (non-random) matrix which we write the entries as
+$$
+A = \begin{bmatrix} a_{11} & ⋯ & a_{1n} \\ ⋮ & ⋱ & ⋮ \\ a_{n1} & ⋯ & a_{nn} 
+\end{bmatrix}.
+$$
+
+
+**Proposition (Trace of powers)** For any $k$ we have
+$$
+\Tr A^k = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
+$$
+
+**Proof**
+
+The case of $k = 1$ is trivial. We first deduce a formula for the $j$-th column of $A^k$ by induction. We compute the first few:
+$$
+\meeq{
+A 𝐞_j = \Vectt[a_{1j}, ⋮, a_{nj}], \ccr
+A^2 𝐞_j = \Vectt[∑_{i_2=1}^n a_{1i_2} a_{i_2 j}, ⋮, ∑_{i_2=1}^n a_{ni_2} a_{i_2 j}], \ccr
+A^3 𝐞_j = \Vectt[∑_{i_2,i_3} a_{1 i_2} a_{i_2 i_3} a_{i_3 j}, ⋮, ∑_{i_1,i_2} a_{n i_1} a_{i_1 i_2} a_{i_2 j}].
+}
+$$
+By induction we deduce that the $j$-th column of $A^k$ is given by
+$$
+A^k 𝐞_j = \Vectt[∑_{i_2,…,i_k} a_{1 i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}, ⋮, ∑_{i_2,…,i_k} a_{n i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}].
+$$
+But now we just sum over $j$ to get the trace:
+$$
+∑_{j=1}^n 𝐞_j^⊤ A^k 𝐞_j = ∑_{j=1}^n ∑_{i_2,…,i_k} a_{j i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j} = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
+$$
+
+∎
+
+**Theorem (semicircle law)** For any Wigner ensemble $A_n$ we have for even $k$ that
+$$
+  𝐄\br[(A_n/\sqrt{n})^k] \underset{n → ∞}{⟶} \begin{cases}
+    C_{k/2} & \hbox{\textrm{if $k$ is even}} \\
+    0 & \hbox{\textrm{if $k$ is odd}}
+  \end{cases}
+$$
+
+
+**Proof**
+We begin with the case of $k=2m$ even, where
+$$
+\meeq{
+𝐄\br[(A_n/\sqrt{n})^{2m}] = n^{-m} 𝐄\br[∑_{i_1,…,i_{2m} = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_{2m} i_1}] \ccr
+= n^{-m} ∑_{i_1,…,i_{2m} = 1}^n 𝐄[a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_{2m} i_1}].
+}
+$$
+
+Let's look at some low order cases beginning with $m = 1$. Here we have using symmetry $a_{kj} = a_{jk}$ and $𝐄[a_{kj}^2 = 1$:
+$$
+\meeq{
+𝐄\br[(A_n/\sqrt{n})^2] = {1 \over n^2} ∑_{k,j=1}^n 𝐄[a_{kj} a_{jk}] \ccr
+{1 \over n^2} ∑_{k,j=1}^n 𝐄[a_{kj}^2] = 1.
+}
+$$
+For $m = 2$ we have:
+$$
+\meeq{
+𝐄\br[(A_n/\sqrt{n})^4] = {1 \over n^3} ∑_{i_1,i_2,i_3,i_4}^n 𝐄[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
+}
+$$
+Note because of independence ($𝐄[a_{i_1i_2}] = 0$), the only terms that remain are those where $a_{i_1i_2}$ and $a_{i_2i_1}$ together appear at least twice. thus this sum reduces to:
+$$
+𝐄\br[(A_n/\sqrt{n})^4] = {1 \over n^3} ∑_{k=1}^n 𝐄[a_{kk}^4]
+$$
+
+
+
+∎
 
 
 # Local eigenvalue statistics

@@ -516,13 +516,15 @@ $$
 $$
 We want to think of the ways in which each of these three terms can be equal. This has  the same number of ways as partitioning a set of 3. Assuming $k ≠ j ≠ ℓ$ we have the following types of terms, each associated with the specified partition of 3:
 $$
-\begin{align*}
-\hbox{All three terms are different:} & 𝔼[a_{kj} a_{jℓ} a_{ℓk}] = 0   &  n (n-1)(n-2) = n^3 + O(n^2) &  (\{1\}, \{2\}, \{3\}) \\
-\hbox{Only the 1st and 2nd terms are the same:} & 𝔼[a_{kj} a_{jk} a_{kk}] = μ_2 μ_1 = 0  &  n (n-1)= n^3 + O(n^2) & (\{1,2\}, \{3\}) \\
-\hbox{Only the 1st and 3rd term are the same:} & 𝔼[a_{kj} a_{jj} a_{jk}] = μ_2 μ_1 = 0&  n (n-1)= n^3 + O(n^2)  &  (\{1,3\}, \{3\}) \\
-\hbox{Only the 2nd and 3rd terms are the same:} & 𝔼[a_{kk} a_{kℓ} a_{ℓk}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  &  (\{1\},  \{2,3\}) \\
-\hbox{All three terms are the same:} & 𝔼[a_{kk} a_{kk} a_{kk}] = μ_3&  n & (\{1,2,3\}).
-\end{align*}
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+  \{1\}, \{2\}, \{3\}  & 𝔼[a_{kj} a_{jℓ} a_{ℓk}] = 0   &  n (n-1)(n-2) = n^3 + O(n^2) \\
+  \{1,2\}, \{3\}  & 𝔼[a_{kj} a_{jk} a_{kk}] = μ_2 μ_1 = 0  &  n (n-1)= n^3 + O(n^2) \\
+  \{1,3\}, \{3\}  & 𝔼[a_{kj} a_{jj} a_{jk}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  \\
+  \{1\},  \{2,3\}  & 𝔼[a_{kk} a_{kℓ} a_{ℓk}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  \\
+ \{1,2,3\} & 𝔼[a_{kk} a_{kk} a_{kk}] = μ_3&  n.
+\end{array}
 $$
 Note that they combine to give all $n^3$ possibilities. But almost all of the moments are zero! Thus we can collapse the sum to be:
 $$
@@ -538,28 +540,32 @@ $$
 $$
 We can again divide the sum up by which terms are equal, which are one-to-one with the number of partitions of 4. Explicitly, for $i,j, k$ and $ℓ$  never equal we have the following cases:
 $$
-\begin{align*}
- 𝔼[a_{ik} a_{kj} a_{jℓ} a_{ℓi}] = 0   &  n (n-1)(n-2)(n-3) = n^4 + O(n^2) &  (\{1\}, \{2\}, \{3\}, \{4\}) \\
- \hbox{Not possible!} & 0 & (\{1,2\}, \{3\}, \{4\}) \\
-𝔼[a_{ik} a_{kk} a_{ki} a_{ii}] = 0&  n (n-1) = n^2 + O(n)  &  (\{1,3\}, \{2\}, \{4\}) \\
-\hbox{Not possible!} & 0   &  (\{1,4\}, \{2\}, \{3\}) \\
- 𝔼[a_{ik} a_{ki} a_{ij} a_{ji}] = μ_2^2 = 1 & n (n-1)(n-2) = n^3 + (n^2)  &  (\{1,2\}, \{3,4\}) \\
-\hbox{Not possible!} & 0   &  (\{1,3\}, \{2,4\}) \\
-𝔼[a_{ik} a_{kj} a_{jk} a_{ki}] = μ_2^2 = 1 & n (n-1)(n-2) = n^3 + (n^2)   &  (\{1,4\}, \{2,3\}) \\
- \hbox{Not possible!} & 0 &  (\{1,2,3\}, \{4\}) \\
- \hbox{Not possible!} & 0 &  (\{1,2,4\}, \{3\}) \\
- \hbox{Not possible!} & 0 &  (\{1\}, \{2,3,4\}) \\
- 𝔼[a_{kk} a_{kk} a_{kk} a_{kk}] = μ_4 &  n & (\{1,2,3,4\}).
-\end{align*}
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+\{1\}, \{2\}, \{3\}, \{4\} & 𝔼[a_{ik} a_{kj} a_{jℓ} a_{ℓi}] = 0 & n (n-1)(n-2)(n-3) = n^4 + O(n^2) \\
+\{1,2\}, \{3\}, \{4\} & \hbox{Not possible!} & 0 \\
+\{1,3\}, \{2\}, \{4\} & 𝔼[a_{ik} a_{kk} a_{ki} a_{ii}] = 0 & n (n-1) = n^2 + O(n) \\
+\{1,4\}, \{2\}, \{3\} & \hbox{Not possible!} & 0 \\
+\{1,2\}, \{3,4\} & 𝔼[a_{ik} a_{ki} a_{ij} a_{ji}] = μ_2^2 = 1 & n (n-1)(n-2) = n^3 + (n^2) \\
+\{1,3\}, \{2,4\} & \hbox{Not possible!} & 0 \\
+\{1,4\}, \{2,3\} & 𝔼[a_{ik} a_{kj} a_{jk} a_{ki}] = μ_2^2 = 1 & n (n-1)(n-2) = n^3 + (n^2) \\
+\{1,2,3\}, \{4\} & \hbox{Not possible!} & 0 \\
+\{1,2,4\}, \{3\} & \hbox{Not possible!} & 0 \\
+\{1\}, \{2,3,4\} & \hbox{Not possible!} & 0 \\
+\{1,2,3,4\} & 𝔼[a_{kk} a_{kk} a_{kk} a_{kk}] = μ_4 & n
+\end{array}
 $$
-Thus this sum reduces to:
+Thus the moment reduces to:
 $$
+\meeq{
 𝐄\br[(A_n/\sqrt{n})^4] = {1 \over n^3} \underbrace{∑_{i=1}^n 𝔼[a_{ii}^4]}_{= O(n)} +
-{1 \over n^4} \underbrace{∑_{i=1}^n ∑_{j≠i} 𝔼[a_{ij}^4]}_{=O(n^2)} \\
+{1 \over n^3} \underbrace{∑_{i=1}^n ∑_{j≠i} 𝔼[a_{ij}^4]}_{=O(n^2)} \\
 &\qquad +
-{1 \over n^4} \underbrace{∑_{i=1}^n ∑_{j≠i} ∑_{k ≠ i,j}  𝔼[a_{ij}^2 a_{kj}^2]}_{= n^3 + O(n^2) }  +
-{1 \over n^4} \underbrace{∑_{i=1}^n ∑_{j≠i} ∑_{k ≠ i,j}  𝔼[a_{ij}^2 a_{ik}^2]}_{= n^3 + O(n^2) }\\
+{1 \over n^3} \underbrace{∑_{i=1}^n ∑_{j≠i} ∑_{k ≠ i,j}  𝔼[a_{ij}^2 a_{kj}^2]}_{= n^3 + O(n^2) }  +
+{1 \over n^3} \underbrace{∑_{i=1}^n ∑_{j≠i} ∑_{k ≠ i,j}  𝔼[a_{ij}^2 a_{ik}^2]}_{= n^3 + O(n^2) }\\
 &\underset{n → ∞}{⟶} 2.
+}
 $$
 Which matches the Catalan number $C_2$. 
 

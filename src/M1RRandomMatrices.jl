@@ -29,26 +29,15 @@ function fixwhitespace(path)
 end
 
 function fixunderbars(path)
-    write(path, replace(read(path, String), "f\\ensuremath{\\underbar}" => "\\underline{f}"))
-    write(path, replace(read(path, String), "g\\ensuremath{\\underbar}" => "\\underline{g}"))
-    write(path, replace(read(path, String), "M\\ensuremath{\\tilde}" => "\\tilde{M}"))
-    write(path, replace(read(path, String), "L\\ensuremath{\\tilde}" => "\\tilde{L}"))
-    write(path, replace(read(path, String), "U\\ensuremath{\\tilde}" => "\\tilde{U}"))
-    write(path, replace(read(path, String), "P\\ensuremath{\\tilde}" => "\\tilde{P}"))
-    write(path, replace(read(path, String), "V\\ensuremath{\\tilde}" => "\\tilde{V}"))
+    for ℓ in ('a':'z') ∪ ('A':'Z')
+        write(path, replace(read(path, String), "$ℓ\\ensuremath{\\underbar}" => "\\underline{$ℓ}"))
+        for bar in ("tilde", "hat", "check")
+            write(path, replace(read(path, String), "$ℓ\\ensuremath{\\$bar}" => "\\$bar{$ℓ}"))
+            write(path, replace(read(path, String), "\\ensuremath{\\bm{\\$ℓ}}\\ensuremath{\\$bar}" => "\\$bar{\\$ℓ}"))
+        end
+    end
+    
     write(path, replace(read(path, String), "\\ensuremath{\\Sigma}\\ensuremath{\\tilde}" => "\\tilde{\\Sigma}"))
-    write(path, replace(read(path, String), "Q\\ensuremath{\\hat}" => "\\hat{Q}"))
-    write(path, replace(read(path, String), "Q\\ensuremath{\\tilde}" => "\\tilde{Q}"))
-    write(path, replace(read(path, String), "R\\ensuremath{\\hat}" => "\\hat{R}"))
-    write(path, replace(read(path, String), "a\\ensuremath{\\hat}" => "\\hat{a}"))
-    write(path, replace(read(path, String), "f\\ensuremath{\\hat}" => "\\hat{f}"))
-    write(path, replace(read(path, String), "g\\ensuremath{\\hat}" => "\\hat{g}"))
-    write(path, replace(read(path, String), "c\\ensuremath{\\hat}" => "\\hat{c}"))
-    write(path, replace(read(path, String), "f\\ensuremath{\\check}" => "\\check{f}"))
-    write(path, replace(read(path, String), "g\\ensuremath{\\check}" => "\\check{g}"))
-    write(path, replace(read(path, String), "\\ensuremath{\\bm{\\x}}\\ensuremath{\\tilde}" => "\\tilde{\\x}"))
-    write(path, replace(read(path, String), "\\ensuremath{\\bm{\\a}}\\ensuremath{\\hat}" => "\\hat{\\a}"))
-    write(path, replace(read(path, String), "\\ensuremath{\\bm{\\f}}\\ensuremath{\\hat}" => "\\hat{\\f}"))
     write(path, replace(read(path, String), "\\ensuremath{\\theta}\\ensuremath{\\tilde}" => "\\tilde{\\theta}"))
 end
 

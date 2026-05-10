@@ -8,11 +8,13 @@ We now switch our attention and ask: given two (symmetric) random matrices $A, B
 and $B$, what are the distribution of the eigenvalues of $A+B$? 
 The rather remarkable fact is that, as $n → ∞$,  if we know the global distribution of $A$ and $B$, in the form of knowing the moments $𝐄 A^k$ and $𝐄 B^k$, under very broad conditions we can deduce the global distribution of $A+B$, in the form of knowing the moments $𝐄 (A+B)^k$, where again we use
 $$
-𝐄 f(A) := 𝔼 \Tr f(A).
+𝐄 f(A) := {1 \over n} 𝔼 \Tr f(A).
 $$
 
 The key observation is that $A$ and $B$, which do not in general commute ($AB ≠ BA$), follow the rules of _freely independent_ non-commutative random variables.
 Thus the global statistics of $A+B$ can be thought of as a _free convolution_, a non-commutative analogue of convolution. 
+
+**Further Reading** [Free Probabilty Theory](https://rolandspeicher.com/wp-content/uploads/2025/04/free-probability_v2.pdf) by Roland Speicher is an advanced introduction to the topic whilst [Random Matrix Theory](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B291B4E6728E10537C2406CE4C341923/S0962492904000236a.pdf/div-class-title-random-matrix-theory-div.pdf) by Edelman and Rao gives a gentle but brief introduction.  Free Probability was introduced by [Dan Voiculescu](https://en.wikipedia.org/wiki/Dan-Virgil_Voiculescu), a prominant Berkeley operator theorist, in the 1980s. The connection with random matrix theory actually came much later in the early 1990s, as well as a detailed combinatorial description of Free Probability in terms of non-crossing partitions by Speicher.  It is a very modern and technical subject, and there is unfortunately limited material written for 1st year students beyond these notes.
 
 # Experimental observation of free convolutions
 
@@ -44,26 +46,39 @@ This is a numerical demonstration of the fact that we can, under broad condition
 
 # Free random variables
 
-We put aside viewing $A$ and $B$ as random matrices and instead think of them more abstractly as _free random variables_, which are non-commutative random variables which satisfy the following:
+Since we aim to describe the behaviour of random matrices when the dimension becomes infinite, it's helpful to   put aside viewing $A$ and $B$ as matrices and instead think of them more abstractly as _free random variables_, which are non-commutative random variables. With this convention, we will denote the identity element (the limit of the identity matrix $I_n$ as $n → ∞$) as $1$.   On free random variables expectation $𝐄$ is no longer given explicitly in terms of a trace of a matrix, and instead we describe it more abstractly in terms of the properties it satisfies. 
+
+With classical probability we have the feature that the expectations of the product of independent random variable equals the product of the expectation. More generally if $f$ and $g$ are polynomials and $X$ and $Y$ are independent we know:
+$$
+𝔼[f(X) g(Y)] = 𝔼[f(X)] 𝔼[g(Y)].
+$$
+We will see this particular property _does_ hold true for free probabilty. Where free probability differs to classical random variables is in alternating products: since $X$ and $Y$ are _commutative_, if we have polynomials $f_1,…,f_n$ and $g_1,…,g_n$ then we clearly have
+$$
+𝔼[f_1(X) g_1(Y) ⋯ f_n(X) g_n(Y)] = 𝔼[f_1(X) ⋯ f_n(X)] 𝔼[g_1(Y) ⋯ g_n(Y)],
+$$
+but this is no longer possible when $X$ and $Y$ do not commute.
+
+Free probability comes from defining how these mixed moments behave in the case where the expectation vanishes:
+
 
 **Definition (free random variables)** $A$ and $B$ are _free random variables_ equipped with an expectation $𝐄$ if for all polynomials $f_1,…,f_n$ and $g_1,…,g_n$ such that $𝐄 f_k(A) = 𝐄 g_k(B) = 0$ we have
 $$
-𝐄 f_1(A) g_1(B) … f_n(A) g_n(A) = 0,
+𝐄[f_1(A) g_1(B) … f_n(A) g_n(A)] = 0,
 $$
-where the identity element satisfies $𝐄 I = 1$.
+where the identity element satisfies $𝐄 1 = 1$.
 ∎
 
-We claim (without proof) that as $n → ∞$ that $𝐄 := 𝔼 \Tr$ behaves exactly like this for many families of random matrices. 
+We claim (without proof) that as $n → ∞$ that ${1 \over n} 𝔼 \Tr$ behaves exactly like this for many families of random matrices. 
 
 Note that we assume linearity: for constants $c,d$ we have
 $$
-𝐄 (c A + d B) = c 𝐄  A + d 𝐄 B.
+𝐄[c A + d B] = c 𝐄  A + d 𝐄 B.
 $$
 It follows that (treating $𝐄A^k$ as a constant)
 $$
-𝐄(A^k - (𝐄A^k) I ) =  𝐄 A^k - 𝐄A^k 𝐄I  = 0.
+𝐄[A^k - (𝐄A^k)] =  𝐄 A^k - 𝐄A^k 𝐄1  = 0.
 $$
-This simple observation guarantees that if we know the moments $𝐄 A^k$ and $𝐄 B^k$ we can deduce the moments $𝐄 A^k B^j$. To see this, we first consider some of the low order cases. First, we note that by subtracting off the free expectation of moments of $A$ and $B$ and treating $𝐄[A^k], 𝐄[B^j]$ as constants we deduce:
+This simple observation guarantees that if we know the moments $𝐄 A^k$ and $𝐄 B^k$ we can deduce the moments $𝐄[A^k B^j]$. To see this, we first consider some of the low order cases. First, we note that by subtracting off the free expectation of moments of $A$ and $B$ and treating $𝐄[A^k], 𝐄[B^j]$ as constants we deduce:
 $$
 \meeq{
 0 = 𝐄[(A^k-𝐄[A^k] I) (B^j-𝐄[B^j] I)] =𝐄[A^k B^j] - 𝐄A^k 𝐄B^j \qquad ⇒ \ccr
@@ -94,17 +109,152 @@ $$
 𝐄[ABAB] = 𝐄[A^2] 𝐄[B]^2 + 𝐄[A]^2 𝐄[B^2] - 𝐄[A]^2 𝐄[B]^2
 }
 $$
-which differs from the classical (commutative) case  where $𝐄[ABAB] = 𝐄[A^2] 𝐄[B^2]$. Nevertheless, we can see the central theme emerging: $𝐄[ABAB]$ is still given in terms of a function of the input moments $𝐄[A^k]$ and $𝐄[B^j]$.
+which differs from the classical (commutative) case  where $𝐄[ABAB] = 𝐄[A^2] 𝐄[B^2]$. Nevertheless, we can see the central theme emerging: $𝐄[ABAB]$ is still given in terms of a function of the input moments $𝐄[A^k]$ and $𝐄[B^j]$:
+
+**Lemma (mixed moments)** For $k_1,…,k_n$ and $j_1,…,j_n$ the mixed moments
+$$
+𝐄[A^{k_1} B^{j_1} ⋯ A^{k_n} B^{j_n}]
+$$
+can be expressed as functions of the moments
+$$
+𝐄A, 𝐄 A^2 …, 𝐄A^{k_1 + ⋯ + k_n}, 𝐄B, 𝐄B^2  …, 𝐄B^{j_1 + ⋯ + j_n}.
+$$
+
+**Proof**
+The proceeding example can be turned into a proof by induction. We leave this as a possible poster project.
+∎
+
+Unfortunately, there is no simple formula for the relationship between the moments of $A$ and $B$ and those of the mixed moments, but they can be derived systematically like we did for the first four moments. Note the cyclic property of trace we can be used to simplify some calculations because we have
+$$
+𝐄[A^{k_1} B^{j_1} ⋯ A^{k_n} B^{j_n}] = 𝐄[ B^{j_1} ⋯ A^{k_n} B^{j_n} A^{k_1}] = 
+𝐄[B^{j_n} A^{k_1} B^{j_1} ⋯ A^{k_n}].
+$$
+For example, we can deduce all moments up to degree 4 using the above calculations:
+$$
+\meeq{
+𝐄[AB] = 𝐄[BA] = 𝐄A 𝐄B \ccr
+𝐄[ABA] =𝐄[A^2 B]  =𝐄[B A^2] = 𝐄A^2 𝐄B \ccr
+𝐄[BAB] =𝐄[B^2 A]  =𝐄[A B^2] = 𝐄A 𝐄B^2 \ccr
+𝐄[A^2BA] = 𝐄[ABA^2] = 𝐄[A^3 B] = 𝐄[B A^3] = 𝐄A^3 𝐄 B \ccr
+𝐄[B^2AB] = 𝐄[BAB^2] = 𝐄[B^3 A] = 𝐄[A B^3] = 𝐄A 𝐄 B^3 \ccr
+𝐄[A B^2 A] = 𝐄[B A^2 B] = 𝐄[A^2 B^2] = 𝐄[B^2 A^2] =  𝐄A^2 𝐄 B^2 \ccr
+𝐄[BABA] = 𝐄[ABAB] = 𝐄A^2 𝐄[B]^2 + 𝐄[A]^2 𝐄B^2 - 𝐄[A]^2 𝐄[B]^2.
+}
+$$
+Note that there $2^k$ moments of degree $k$ since each "slot" can be either $A$ or $B$, and we can confirm we have all of them, when we include in the two trivial cases of $𝐄A^k$ and $𝐄B^k$. 
+
 
 # Free convolution
 
+An implication of the previous lemma is that the expectation of all polynomials of $A$ and $B$ can be expressed in terms of the moments of $A$ and $B$. Note the moments of $A+B$ are polynomials in mixed moments, for example, here we walk through the first few examples using the explicit formulæ for mixed moments (noting powers $(A+B)^k$ pick up every possible one of the $2^k$ mixed moments exactly once):
+$$
+\meeq{
+𝐄[A+B] = 𝐄A+  𝐄 B \ccr
+𝐄[(A+B)^2] = 𝐄A^2 + \underbrace{𝐄[AB]}_{=𝐄A 𝐄B} + \underbrace{𝐄[BA]}_{=𝐄A 𝐄B} + 𝐄B^2 =  𝐄A^2+ 2𝐄A 𝐄B  + 𝐄B^2  \ccr
+𝐄[(A+B)^3] = 𝐄A^3  + \underbrace{𝐄[A^2 B]}_{=𝐄A^2 𝐄B} + \underbrace{𝐄[ABA]}_{=𝐄A^2 𝐄B} + \underbrace{𝐄[AB^2]}_{=𝐄A 𝐄B^2}  + \underbrace{𝐄[BA^2]}_{=𝐄A^2 𝐄B}  + \underbrace{𝐄[BAB]}_{=𝐄A 𝐄B^2}+ \underbrace{𝐄[B^2A]}_{=𝐄A 𝐄B^2}+ 𝐄B^3 =  𝐄A^3 + 3 𝐄 A^2 𝐄 B + 3 𝐄A B^2 + 𝐄B^3 \ccr
+𝐄[(A+B)^4] = 𝐄A^4  + \underbrace{𝐄[A^3 B]}_{=𝐄A^3 𝐄B} + \underbrace{𝐄[A^2BA]}_{=𝐄A^3 𝐄B} + \underbrace{𝐄[A^2 B^2]}_{=𝐄A^2 𝐄B^2}  + \underbrace{𝐄[ABA^2]}_{=𝐄A^3 𝐄B}  + \underbrace{𝐄[ABAB]}_{=𝐄A^2 𝐄[B]^2 + 𝐄[A]^2 𝐄B^2 - 𝐄[A]^2 𝐄[B]^2}+ \underbrace{𝐄[AB^2A]}_{=𝐄A^2 𝐄B^2} + \underbrace{𝐄[AB^3]}_{=𝐄A 𝐄B^3} + \underbrace{𝐄[BA^3]}_{=𝐄A^3 𝐄B}+ \underbrace{𝐄[BA^2B]}_{=𝐄A^2 𝐄B^2} + \underbrace{𝐄[BABA]}_{=𝐄A^2 𝐄[B]^2 + 𝐄[A]^2 𝐄B^2 - 𝐄[A]^2 𝐄[B]^2} + \underbrace{𝐄[BAB^2]}_{=𝐄A 𝐄B^3} + \underbrace{𝐄[B^2A^2]}_{=𝐄A^2 𝐄B^2}+ \underbrace{𝐄[B^2AB]}_{=𝐄A 𝐄B^3} + \underbrace{𝐄[B^3 A]}_{=𝐄A 𝐄B^3}  + 𝐄B^4 \ccr
+=  𝐄A^4 + 4𝐄A^3 𝐄B + 4𝐄A^2 𝐄B^2 + 4𝐄A 𝐄B^3 + 𝐄B^4  + 2(𝐄A^2 𝐄[B]^2 + 𝐄[A]^2 𝐄B^2 - 𝐄[A]^2 𝐄[B]^2)
+}
+$$
+Note that up until the 4th moment the calculation is equivalent to classical convolution, and in particular the calcluation is an affine function of each of the "input" moments. The 4th moment is where free convolution starts to differ, and the last term is a truely nonlinear function of the moments.  
 
-# Free Central Limit Theorem
+Unfortunately there is no simple combinatorial formula for these expressions. But there is a miraculous equivalent way of constructing them. Consider the Stieltjes transform associated with the moments of $A$, i.e., the moment generating function of the form:
+$$
+G_A(z) := {1 \over z} + {𝐄 A \over z^2} + {𝐄 A^2  \over z^3} + ⋯.
+$$
+I like to think of this as a "Taylor series around ∞"; actually, in a neighbourhood of ∞ in the complex plane (hence the usage of $z$) but this is beyond what you have learned as 1st year students. Thus it is conceptually easier to think of this as a Taylor series around the origin via the transformation:
+$$
+G̃_A(z) := G_A(z^{-1}) = z + ∑_{k=2}^∞ 𝐄 A^{k-1} z^k.
+$$
+Because its derivative at zero is nonzero (its 1) we know from the _Inverse Function Theorem_ that $G̃_A$ is invertible for small $z$, thus there exists a function $G̃_A^{-1}$ so that $G̃_A(G̃_A^{-1}(w)) = w$    which also has some Taylor series:
+$$
+G̃_A^{-1}(w) = w + ∑_{k=2}^∞ r̃_{A,k} w^k
+$$
+where $r̃_{A,k}$ are some functions of $𝐄 A^k$.  (One can actually deduce them systematically by matching terms!)
+We can further deduce $G_A$ that $G_A^{-1}$ has an inverse for small $w$ via:
+$$
+G_A^{-1}(w) := 1/G̃_A^{-1}(w) = {1 \over w} + {r_{A,2} \over w^2} + {r_{A,3} \over w^3} + ⋯,
+$$
+where $r_{A,k}$ can be deduced from $r̃_{A,k}$, since we have 
+$$
+G_A(G_A^{-1}(w)) = G̃_A(1/G_A^{-1}(w)) = G̃_A(G̃_A^{-1}(w)) = w.
+$$
+
+We now define the _R-transform_:
+$$
+R_A(w) := G_A^{-1}(w) - {1 \over w} = {r_{A,2} \over w^2} + {r_{A,3} \over w^3} + ⋯.
+$$
+where $G_A^{-1}$ is the functional inverse of $G_A$.
+The miraculous fact is that the R-transform of $A+B$ is given by the sum of the R-transforms of $A$ and $B$:
+$$
+R_{A+B}(z) = R_A(z) + R_B(z).
+$$
+Proving this is a very serious combinatorial problem connected to noncrossing partitions.
+
+**Example (adding two semicircles)** We conclude with a precise example. Suppose $A$ and $B$ are the large $n$ limits of two indepedent Wigner ensembles. We know that $A+B$ is also a Wigner ensemble (but with double the variance) so will also have a semicircle eigenvalue distribution. How do we see this fact come out of free convolution? In this case the moments are identical:
+$$
+𝐄 A^k = 𝐄 B^k = \begin{cases} C_{k/2} & k\hbox{ even} \\
+    0 & k\hbox{ odd} \end{cases}.
+$$
+We therefore have
+$$
+G̃_A(z) = z + ∑_{k=2}^∞ 𝐄 A^{k-1} z^k = C_0 z + C_1 z^3 + C_2 z^4 + ⋯.
+$$
+Now comes the key trick: we can use the recurrence for Catalan numbers to deduce
+$$
+\meeq{
+G̃_A(z)^2 = z^2 \br[C_0^2 + (C_0 C_1 + C_1 C_0) z^2 + (C_0 C_2 + C_1 C_1 + C_1 C_2) z^4 + ⋯]\ccr
+ = z^2 ∑_{k=0}^∞ z^{2k} \underbrace{∑_{j=0}^k C_j C_{k-j}}_{= C_{k+1}} = 
+C_1 z^2 + C_2 z^4 + C_3 z^6 ⋯ = {G̃_A(z) \over z} - 1.
+}
+$$
+We can now use the quadratic formula to deduce
+$$
+G̃_A(z) = {z^{-1} ± \sqrt{z^{-2} -4} \over 2} = {1 - \sqrt{1 -4 z^2} \over 2 z}
+$$
+where the negative sign is chosen so that $G̃_A$ does not blow up at $0$ (by L'Hopital's rule). 
+A consequence of this is that:
+$$
+G_A(z) = {z - \sqrt{z^2 -4} \over 2}
+$$
+which _does_ decay as $z → ∞$ (Why?). 
+
+Now we want to find the functional inverse by solving:
+$$
+w = G_A(z) = {z - \sqrt{z^2 -4} \over 2}\qquad  ⇒ \qquad  (2w-z)^2 = z^2 - 4 \qquad ⇒ \qquad -4wz + 4w^2 = -4 \qquad  ⇒ \qquad  z = {1 \over w} +w,
+$$
+i.e. we have
+$$
+G_A^{-1}(w) = {1 \over w} +w.
+$$
+Thus the R-transform is particularly simple:
+$$
+R_A(w) = G_A^{-1}(w) - {1 \over w} = w
+$$
+which is also the R-transform for $B$. Thus we know
+$$
+R_{A+B}(w) = 2 w \qquad ⇒ \qquad G_{A+B}^{-1}(w) = {1 \over w} + 2w.
+$$
+We can now solve
+$$
+z = {1 \over w} + 2w \qquad \Rightarrow \qquad zw = 1 + 2w^2 \qquad \Rightarrow \qquad w = {z - \sqrt{z^2 - 8} \over 4}
+$$
+i.e. we know that
+$$
+G_{A+B}(z) = {z - \sqrt{z^2 - 8} \over 4}.
+$$
+We leave the final step of finding the moments and distribution. But actually from this formula we can do an educated guess: since the square-root vanishes at $z = ±\sqrt{8} = ±2 \sqrt{2}$ we can guess that the distribution is a semicircle with the same endpoints, i.e.,
+$$
+{\sqrt{8 - x^2} \over 4 π}.
+$$
+
+
 
 # Poster projects
 
 Here are some ideas for poster projects related to free probability:
 
 1. Understanding all free probability operations including multiplication and truncation.
-2. What are the heavytail analogues of the Semicircle Law? 
+3. Explore the Free Central Limit Theorem either mathematically or experimentally,  where $A_1 + ⋯ + A_n$ tends to a semicircle when $A_k$ are free and independent.
+4. Complete the derivation of the addition of two semicircles and explore further examples like the Marchenko–Pastur distribution.
 3. Do additions and multiplications of random matrices still exhibit universality in local statistics?

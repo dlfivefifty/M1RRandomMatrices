@@ -17,7 +17,7 @@ for any orthogonal matrix $Q$. Let's do an experiment where we take a fixed matr
 
 
 \begin{lstlisting}
-0.9303525062438385
+4.139209996927438
 \end{lstlisting}
 
 
@@ -58,7 +58,7 @@ by using the least squares solution.
 Here is a depiction of $c_0 + c_1 x$, which is the least squares fit at  the (noisy) data at $n = 50$ points:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_2_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/IV.RandomisedLinearAlgebra_2_1.pdf}
 
 \section{Randomised least squares}
 In the above  data there is a lot of correlation between nearby points, hence, using every single point is unnecessary. An alternative is to \emph{sketch} the problem: use a sketch matrix $P \ensuremath{\in} \ensuremath{\bbR}^{r \ensuremath{\times} m}$ where $r \ensuremath{\ll} m$ and solve
@@ -68,17 +68,17 @@ P A \ensuremath{\bm{\c}} \ensuremath{\approx} P \ensuremath{\bm{\b}}
 using least squares. Here we see a simple example where we use $P \ensuremath{\in} \ensuremath{\bbR}^{5 \ensuremath{\times} 50}$ with random entries:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_3_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/IV.RandomisedLinearAlgebra_3_1.pdf}
 
 This is a single sample and, to the eye, it performs equally well as least squares. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_4_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/IV.RandomisedLinearAlgebra_4_1.pdf}
 
 Now this particular example is a bit silly: its not at all clear that solving 100 least squares systems of size $5 \ensuremath{\times} 2$ is preferred to a single least squares system of size $50 \ensuremath{\times} 2$. But we can consider a much more extreme example of $n = 10,000$. Here we compare the average over samples for varying $r$:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.RandomisedLinearAlgebra_5_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/IV.RandomisedLinearAlgebra_5_1.pdf}
 
 That is to say, we can achieve accuracy to within about $1\%$ by solving 100 least squares problems involving $10 \ensuremath{\times} 2$ matrices.
 

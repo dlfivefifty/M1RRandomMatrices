@@ -214,13 +214,16 @@
 
 \vfill\eject
 
+\chapter{Central Limit Theorem}
+\input{I.CLT}
+
 \chapter{Universality}
-\input{I.Universality}
+\input{II.Universality}
 
 \chapter{Free Probability}
-\input{II.FreeProbability}
+\input{III.FreeProbability}
 
 \chapter{Randomised Linear Algebra}
-\input{III.RandomisedLinearAlgebra}
+\input{IV.RandomisedLinearAlgebra}
 
 \end{document}

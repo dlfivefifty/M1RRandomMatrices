@@ -10,14 +10,14 @@ The key observation is that $A$ and $B$, which do not in general commute ($AB \e
 We begin with an experimental observation of free convolution. Consider again a symmetric matrix $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$  whose entries on and above the diagonal are iid random variables taking values $\ensuremath{\pm}1$ with equal probability. We saw in the previous chapter the global statistics are given by the semicircle. Now consider adding a diagonal matrix $D_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ with $\ensuremath{\pm}2$ on the diagonal with equal probability: what are the global statistics of $A_n + D_n$? We can explore this question numerically:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/II.FreeProbability_1_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.FreeProbability_1_1.pdf}
 
 We see that we get two semicircle-like distributions, surrounding \ensuremath{\pm}2. 
 
 What's remarkable is this distribution only depends on the eigenvalues of $A_n$ and $D_n$. For example, consider the case where we same randomly $Q_n \ensuremath{\in} O(n)$, i.e., a random orthogonal matrix and define $B_n := Q_n D_n Q_n^\ensuremath{\top}$. This has exactly the same eigenvalues as $D_n$ itself. And when we add $A_n + B_n$ we get the exact same global statistics:
 
 
-\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/II.FreeProbability_2_1.pdf}
+\includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/III.FreeProbability_2_1.pdf}
 
 This is a numerical demonstration of the fact that we can, under broad conditions, deduce the global eigenvalue statistics of $A_n + B_n$ from those of $A_n$ and $B_n$, and largely ignore the eigenvectors. To prove this we will again use the Method of Moments.
 

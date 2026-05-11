@@ -1,0 +1,450 @@
+---
+options:
+  out_width: "0.6\\linewidth"
+  out_height: "0.45\\linewidth"
+---
+
+We now turn to universality for random matrices: eigenvalue statistics of symmetric random matrices are largely independent of the distribution of the entries. This can be viewed as an analogue of the CLT, but now instead of a simple sum the manipulation of the random variables involves computation of eigenvalues.  In particular, we will look at both _global statistics_, i.e., what do histograms of all eigenvalues look like,
+and _local statistics_, i.e., what do histograms of the largest eigenvalue look like. For the theory we focus on the global statistics
+(as proving results for the local statistics requires much more sophisticated  mathematical tools and the formula for the distribution involves [Painlevé transcendents](https://en.wikipedia.org/wiki/Painlevé_transcendents) with no exact formula), and in particular, we focus on the phenomenon that symmetric matrices with independent, identically distributed (iid) entries have global statistics that look like the _semicircle_:
+$$
+{\sqrt{4-x^2} \over 2π} \qquad \text{for } x \in [-2, 2].
+$$
+The _semicircle distribution_ can in multiple ways be viewed as a random matrix analogue of  the _normal distribution_ $𝒩$.
+
+In this section we will show universality again using the _Method of Moments_: we will show that the moments of the eigenvalue statistics converge to the moments of a known distribution.
+For a scalar random variable $X$ the distribution is generally encoded by the standard moments:
+$$
+𝔼 X^k
+$$
+We will see that in the matrix case the global distribution of eigenvalues is encoded by the matrix-analogue of moments: for $A_n ∈ ℝ^{n × n}$ we define
+$$
+𝐄 A_n^k := {1 \over n} 𝔼 \Tr A_n^k
+$$
+where $\Tr$ is the trace of a matrix (sum of the diagonal).  It may not be obvious but these simple matrix-versions of "expectations" are equivalent to moments of the eigenvalue distribution. As the dimension of the matrix becomes large ($n → ∞$) we will show these matrix moments tend to the moments of a semicircle.
+
+
+
+ Note that moments are only guaranteed to uniquely define a density in the special case where the probability density decays sufficiently fast, but this is something the Gaussian and semicircle both satisfy.
+
+ **Further reading**: [Topics in Random Matrix Theory](https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf) by Terry Tao gives a more advanced, higher level introduction to random matrix theory, though perhaps too high a level for most 1st year students. The field of Random Matrix Theory and universality grew out of a beautiful collaboration between theoretical physcists, statisticians, and pure mathematics and involves the synthesis of tools between these different areas.
+
+
+# Experimental observation of universality
+
+
+As a simple example,  consider $A_n ∈ ℝ^{n × n}$ which is symmetric ($A_n = A_n^⊤$) and whose
+entries on and above the diagonal are iid random variables taking values $±1$ with equal probability (and entries below the diagonal defined by symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $σ(A_n) = \set{λ_1,…,λ_n}$ (for concreteness we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues $σ(A_n/ \sqrt{n}) = \set{{λ_1 \over \sqrt{n}}, …, {λ_n \over \sqrt{n}}}$
+of a _single sample_ $A_n$ we get a semicircle:
+```julia{julia; echo=false}
+using Plots, LaTeXStrings, LinearAlgebra, StatsBase
+function symbernoullieigvals(n)
+    A = rand([-1,1], n, n)
+    for k = 2:n, j = 1:k-1
+        A[k,j] = A[j,k]
+    end
+    eigvals(A)/sqrt(n)
+end
+n = 1000
+histogram(symbernoullieigvals(n); normed=true, label=LaTeXString("\$ σ(A_{$n})/\\sqrt{$n} \$"), alpha=0.5, color=:red, nbins=30, ylims=(0,0.5))
+plot!(x -> sqrt(4-x^2)/(2π), label=L"\sqrt{4-x^2}/(2π)", -2, 2, linewidth=2, color=:blue, title=LaTeXString("Histogram of \$σ(A_n/\\sqrt{n})\$ for \$n = $n\$"))
+```
+Just as in the CLT, this phenomena is independent of the distribution of the entries of $A_n$ provided the moments are finite: we always get a semicircle (shifted and scaled to match the mean and variance).
+
+
+Like the CLT we will show this observation using the Method of Moments, and again we can deduce the moments experimentally by letting $n$ increase (a single sample per $n$ works in this case):
+
+```julia{julia; echo=false}
+
+symbernoullieigvals(1)
+
+𝔼 = [mean(x-> x^k, symbernoullieigvals(n)) for n = 1:100, k = 1:6]
+plot(𝔼; label=[L"𝐄 A_n/n^{1/2}"  L"𝐄A_n^2/n"  L"𝐄A_n^3/n^{3/2}"  L"𝐄A_n^4/n^2"  L"𝐄A_n^5/n^{5/2}" L"𝐄A_n^6/n^3"], xlabel=L"n", title = L"Matrix moments of $A_n/\sqrt{n}$", legend=:topleft)
+```
+Again the odd moments appear to be zero but now we might conjecture that the even moments satisfy
+$$
+𝐄A_n^2/n → 1,\quad 𝐄A_n^4/n^2 → 2,\quad 𝐄A_n^6/n^3 → 5.
+$$
+Again we are left with the tasks of:
+(1) deducing an exact formula for these moments, and
+(2) proving that the semicircle has the same moments.
+
+
+# Wigner ensembles and global statistics
+
+To discuss universality in the setting of random matrices we focus on symmetric matrices with iid entries, i.e., the _Wigner ensembles_:
+
+**Definition (Wigner)** A random matrix $A_n ∈ ℝ^{n × n}$ is a Wigner matrix if:
+1. The entries $a_{kj}$ for $j ≥ k$ are all iid with mean 0, variance 1, and all moments are finite.
+2. The matrix $A_n$ is symmetric: $a_{kj} = a_{jk}$.
+∎
+
+
+
+We are interested in the global distribution of the eigenvalues. A Wigner ensemble $A_n ∈ ℝ^{n × n}$ has $n$ eigenvalues $λ_1, …, λ_n$ which can be viewed as $n$ random variables in their own right. The probability density associated with their histogram is described in terms of the moments:
+$$
+σ_{nk} := {1 \over n} 𝔼[λ_1^k + … + λ_n^k].
+$$
+It's a little delicate explaining why these encode the distribution of the histogram so we will just take it for granted in what follows.
+
+We want to show that as $n → ∞$ that these go to the moments of the semicircle. But before that we observe that we can rewrite these moments in terms of $A_n$ itself. Recall the following:
+
+**Proposition (Cyclic property of trace)** For any $A ∈ ℝ^{n × m}$ and $B ∈ ℝ^{m × n}$ we have
+$$
+\Tr[A B] = \Tr[B A]
+$$
+for the trace $\Tr A_n = a_{11} + ⋯ + a_{nn}$.
+
+**Proof**
+We show this by direct inspection:
+$$
+\meeq{
+\Tr A B = ∑_{k=1}^n 𝐞_k^⊤ A B 𝐞_k = ∑_{k=1}^n  \begin{bmatrix} a_{k1} & ⋯ & a_{km} \end{bmatrix} \begin{bmatrix} b_{1k} \\ ⋮ \\ b_{m1} \end{bmatrix} = ∑_{k=1}^n ∑_{j=1}^m a_{kj} b_{jk} \ccr
+  = ∑_{j=1}^m ∑_{k=1}^n b_{jk} a_{kj} = ∑_{j=1}^m \begin{bmatrix} b_{j1} & ⋯ & b_{jn} \end{bmatrix} \begin{bmatrix} a_{j1} \\ ⋮ \\ a_{jn} \end{bmatrix} = ∑_{j=1}^m 𝐞_j^⊤ B A 𝐞_j = \Tr BA.
+}
+$$
+∎
+
+A consequence is that we can relate traces of powers of symmetric matrices to sums of powers of their eigenvalues:
+
+**Proposition (Traces, powers and eigenvalues)** For any symmetric $A ∈ ℝ^{n × n}$ with eigenvalues $λ_1,…,λ_n$ we have
+$$
+\Tr A^k = λ_1^k + … + λ_n^k.
+$$
+
+**Proof**
+We know that a symmetric matrix matrix is _diagonalisable_:
+$$
+A = V \underbrace{\begin{bmatrix} λ_1 &  &  \\  & ⋱ &  \\  &  & λ_n \end{bmatrix}}_{Λ} V^{-1}.
+$$
+(You hopefully learned that for a symmetric matrix we can choose the eigenvector matrix $V$ to be an orthogonal matrix, i.e., where its inverse is its transpose, but we won't need that here.) Therefore
+$$
+A^k = V Λ^k V^{-1}.
+$$
+The proposition follows since the trace is equal to the sum of the eigenvalues, which follows from the cyclic property:
+$$
+\Tr A^k = \Tr V (Λ^k V^{-1}) = \Tr (Λ^k V^{-1})V = \Tr Λ^k = λ_1^k + … + λ_n^k.
+$$
+
+∎
+
+
+Thus we deduce
+$$
+σ_{nk} = {1 \over n} 𝔼[\Tr A_n^k] = 𝐄 A_n^k.
+$$
+We now have a plan of attack mirroring the CLT: (1) deduce a formula for the limit of $σ_{nk} = 𝐄 A_n^k$ as $n → ∞$ and (2) show these match the moments of the semicircle distribution.
+
+# Moments of the semicircle distribution
+
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the the Catalan numbers $C_m$ which play a very similar row as $(2m-1)!!$:
+
+**Definition (Catalan numbers)**
+$$
+C_m := {1 \over n+1} \begin{pmatrix} 2m \\ m \end{pmatrix} =  {(2m)! \over (m+1)! m!}.
+$$
+∎
+
+We can compute the first few:
+$$
+C_0 = C_1 = 1, C_2 = {4! \over 3! 2!} = 2, C_3 = {6! \over 4!3!} = 5,
+$$
+and indeed these match our experimental prediction for the even moments of the global distribution of random matrix eigenvalues. 
+
+A key property we will use is that Catalan numbers satisfy a simple recurrence:
+
+**Lemma (Catalan recurrence)**
+$$
+C_{m+1} = ∑_{k=0}^m C_k C_{m-k}.
+$$
+
+**Proof**
+This proof is a quite involved generating function calculation. Going through it could be the basis of a poster project.
+
+∎
+
+
+Catalan numbers are equivalent to a wide range of different combinatorial objects including (1) non-crossing partitions of $m$, (2) the number of [Dyck words](https://en.wikipedia.org/wiki/Dyck_language) of length $2m$, (3) the number of full binary trees with $m+1$ leaves, etc.
+
+Here we are interested in the fact that they tell us exactly how many ways to partition $\{1,…,2m\}$ into pairs $\{x_j,y_j\}$ (like the Gaussian moments), but now with the restriction that the pairs are _non-crossing_: for $k ≠ j$ we never have $x_k < x_j < y_k < y_j$. For example, when $m = 2$ we have $C_2 = 4!/(3!2!) = 2$ non-crossing pairings:
+$$
+\{1,2\}, \{3,4\} \qquad \{1,4\}, \{2,3\},
+$$
+which excludes the pairing $\{1,3\}, \{2,4\}$ since $1 < 3 < 4 < 2$. (Note in the second non-crossing pair the second pair lies completely within the first pair, so they don't cross.) When $m =3$ we have $C_3 = 6!/(4!3!) = 5$ non-crossing pairings:
+$$
+\begin{align*}
+\{1,2\}, \{3,4\}, \{5,6\} &\qquad \{1,2\}, \{3,6\}, \{4,5\} \\
+\{1,4\}, \{2,3\}, \{5,6\} &\qquad \{1,6\}, \{2,3\}, \{4,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
+\end{align*}
+$$
+We now show the general case:
+
+**Lemma (non-crossing pair partitions)**
+The number of partitions of $2m$ into non-crossing pairs equals $C_m$.
+
+**Proof**
+
+We will do a proof by induction similar to that showing the number of all pair partitions is $(2m-1)!!$.  The case of  $C_1 = 1$ is immediate (there is only one way to pair two numbers). If we assume the number of pairings of $2, 4, …, 2m$ are given by $C_1,C_2,…,C_m$ then we deduce the number of pairings of $2(m+1)$ as follows:
+1. If $1$ is paired with $2$, there are $2m$ remaining numbers to pair, i.e., $C_m$ possibilities.
+2. The number $1$ cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
+3. If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(m-1)$ remaining numbers to pair. 
+4. Th number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over.
+
+
+Thus we see the pattern: $1$ cannot be paired with any odd number since then there will always be one left over. Otherwise, if $1$ is paired with an even number $2k$ we have to independently pair the $2(k-1)$ numbers $\{2,…,2k-1\}$ and the $2(n+1-k)$ numbers $\{2k+1,…,2(n+1)\}$. Thus there are $C_{k-1} C_{n+1-k}$ possibilities.
+
+Putting all this together we have the total number of pairings:
+$$
+\begin{align*}
+\underbrace{C_n}_{\hbox{$\{1,2\}$ is a pair}} &+ 
+\underbrace{C_{n-1}}_{\hbox{$\{1,4\}$ is a pair}} + 
+\underbrace{C_2 C_{n-2}}_{\hbox{$\{1,6\}$ is a pair}} +
+\underbrace{C_3 C_{n-3}}_{\hbox{$\{1,8\}$ is a pair}} \\
+& + ⋯ + 
+\underbrace{C_m}_{\hbox{$\{1,2(m+1)\}$ is a pair}}.
+\end{align*}
+$$
+using the fact that $C_0 = C_1 = 1$ this reduces to
+$$
+∑_{k=0}^m  C_k C_{m-k} = C_{m+1}
+$$
+by the above recurrence, and hence the result is true by induction.
+
+∎
+
+We now establish the moments of the semicircle distribution are also given by Catalan numbers: 
+
+**Lemma (semicircle moments)**
+$$
+∫_{-2}^2 x^k {\sqrt{4-x^2} \over 2π} \dx = \begin{cases}
+0 & \hbox{\textrm{if  $k$ is odd}} \\
+C_{k/2} & \hbox{\textrm{if $k$ is even}}
+\end{cases}
+$$
+
+**Proof**
+The case of $k$ odd follows from symmetry. For even $k$ we use the change of variables $x = 2 \cos θ$ to deduce:
+$$
+\meeq{
+∫_{-2}^2 x^k {\sqrt{4-x^2} \over 2π} \dx = ∫_0^π (2 \cos θ)^k {\sqrt{4-(2 \cos θ)^2} \over 2π} 2 \sin θ \Dθ \\
+&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \sin^2 θ \Dθ = {2^{k+1} \over 2π} ∫_0^π \cos^k θ (1-\cos^2 θ) \Dθ \\
+&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \Dθ - {2^{k+1} \over 2π} ∫_0^π \cos^{k+2} θ \Dθ.
+}
+$$
+
+We claim that
+$$
+∫_0^π \cos^{2k} θ \Dθ = {π \over 2^{2n}} \begin{pmatrix}
+2n \\ n
+\end{pmatrix}
+$$
+which can be seen, eg., by writing
+$$
+\cos θ = {\E^{\I θ} + \E^{-\I θ} \over 2}
+$$
+and using the binomial theorem. 
+We leave the remaining details of this proof as an exercise.
+
+∎
+
+# Proof of the semicircle law
+
+We now show for Wigner ensembles that the matrix moments
+$$
+𝐄\br[(A_n/\sqrt{n})^k] = {𝐄A_n^k \over n^{k/2}}
+$$
+tend to the Catalan numbers as $n → ∞$. We first establish a formula for the trace of powers of a (non-random) matrix which we write the entries as
+$$
+A = \begin{bmatrix} a_{11} & ⋯ & a_{1n} \\ ⋮ & ⋱ & ⋮ \\ a_{n1} & ⋯ & a_{nn} 
+\end{bmatrix}.
+$$
+
+
+**Proposition (Trace of powers)** For any $k$ we have
+$$
+\Tr A^k = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
+$$
+
+**Proof**
+The case of $k = 1$ is trivial. We first deduce a formula for the $j$-th column of $A^k$. We compute the first few:
+$$
+\meeq{
+A 𝐞_j = \Vectt[a_{1j}, ⋮, a_{nj}], \qquad 
+A^2 𝐞_j = \Vectt[∑_{i_2=1}^n a_{1i_2} a_{i_2 j}, ⋮, ∑_{i_2=1}^n a_{ni_2} a_{i_2 j}], \ccr
+A^3 𝐞_j = \Vectt[∑_{i_2,i_3} a_{1 i_2} a_{i_2 i_3} a_{i_3 j}, ⋮, ∑_{i_1,i_2} a_{n i_1} a_{i_1 i_2} a_{i_2 j}].
+}
+$$
+By induction (exercise) we can thus deduce that the $j$-th column of $A^k$ is given by
+$$
+A^k 𝐞_j = \Vectt[∑_{i_2,…,i_k} a_{1 i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}, ⋮, ∑_{i_2,…,i_k} a_{n i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}].
+$$
+But now we just sum over $j$ to get the trace:
+$$
+∑_{j=1}^n 𝐞_j^⊤ A^k 𝐞_j = ∑_{j=1}^n ∑_{i_2,…,i_k} a_{j i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j} = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
+$$
+
+∎
+
+We arrive at the main result: the rescaled matrix moments that encode the global distribution of eigenvalues tend to the Catalan numbers, i.e., the moments of a semicircle:
+
+**Theorem (semicircle law)** For any Wigner ensemble $A_n$ we have
+$$
+  {𝐄 A_n^k \over n^{k/2}} \underset{n → ∞}{⟶} \begin{cases}
+    C_{k/2} & \hbox{\textrm{if $k$ is even}} \\
+    0 & \hbox{\textrm{if $k$ is odd}}
+  \end{cases}.
+$$
+
+
+**Proof**
+We will only give a sketch of the argument, leaving the technical details to a possible poster project. The entries  are iid and we can write their moments as
+$$
+μ_k = 𝔼 a_{ij}^k
+$$
+where $μ_0 = 1$ and by assumption $μ_1 = 0$ and $μ_2 = 1$.
+
+
+Let's look at some low order cases using the explicit expansion of the trace of powers of a matrix. When $k = 1$ the result is trivial:
+$$
+{𝐄 A_n \over \sqrt{n}} = {1 \over n^{3/2}} ∑_{i=1}^n 𝔼[a_{ii}] = 0.
+$$
+For the $k = 2$ case we first write
+$$
+{𝐄 A_n^2 \over n}  = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[a_{i_1i_2} a_{i_2i_1}].
+$$
+Now this clearly simplifies, but to prepare for the general case we again break the sum into two different cases: either the two terms equal ($a_{i_1i_2} = a_{i_1i_2}$ or $a_{i_1i_2} = a_{i_2i_1}$) or they differ. But in this case all terms fall into the first category:
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+  \{1\}, \{2\}  & 𝔼[a_{i_1i_2} a_{i_2i_1}] = 𝔼a_{i_1i_2}^2 = μ_2 = 1  & n^2 \\
+  \{1,2\}  &  \hbox{Not possible!} &  0.
+\end{array}
+$$
+We thus have 
+$$
+{𝐄 A_n \over n} = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1.
+$$
+
+For $k = 3$ we consider different cases of writing
+$$
+{𝐄 A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} ∑_{i_1,i_2,i_3=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_1i_2}].
+$$
+We want to think of the ways in which each of these three terms can be equal (note we are interested in the terms matching, _not_ the indices). This has  the same number of ways as partitioning a set of 3. Assuming now $i_1 ≠ i_2 ≠ i_3$ we note $a_{i_1i_2} ≠ a_{i_2 i_3} ≠ a_{i_3 i_1}$ (of course since they are random variables they might accidentally be equal, so here I just mean that they aren't guaranteed to be the same by symmetry). Thus we have the following types of terms, each associated with the specified partition of 3:
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+  \{1\}, \{2\}, \{3\}  & 𝔼[a_{i_1 i_2} a_{i_2i_3} a_{i_3i_1}] = μ_1^3  = 0   &  n (n-1)(n-2) = n^3 + O(n^2) \\
+  \{1,2\}, \{3\}  & 𝔼[a_{i_1i_2} a_{i_2i_1} a_{i_1i_1}] = 𝔼[a_{i_1i_2}^2 a_{i_1i_1}] = μ_2 μ_1 = 0  &  n (n-1)= n^3 + O(n^2) \\
+  \{1,3\}, \{3\}  & 𝔼[a_{i_1i_2} a_{i_2i_2} a_{i_2i_1}] = 𝔼[a_{i_1i_2}^2 a_{i_2i_2}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  \\
+  \{1\},  \{2,3\}  & 𝔼[a_{i_1i_1} a_{i_1i_3} a_{i_3i_1}]  = 𝔼[a_{i_1i_1} a_{i_1i_3}^2]  = μ_1 μ_2 = 0 &  n (n-1)= n^3 + O(n^2)  \\
+ \{1,2,3\} & 𝔼[a_{i_1i_1} a_{i_1i_1} a_{i_1i_1}] = 𝔼 a_{i_1i_1}^3 = μ_3&  n
+\end{array}
+$$
+Note that they combine to give all $n^3$ possibilities. But the only non-zero moments are those associated with $\{1,2,3\}$, i.e., when all three terms match. Thus we can collapse the sum to be:
+$$
+{𝐄A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} ∑_{i_1=1}^n 𝔼[a_{i_1i_1} a_{i_1i_1} a_{i_1i_1}] = {μ_3 \over n^{3/2}}  \underset{n → ∞}{⟶}  0.
+$$
+
+
+Let's do one more example. For $k = 4$ we have:
+$$
+\meeq{
+{𝐄 A_n \over n^2} = {1 \over n^3} ∑_{i_1,i_2,i_3,i_4=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
+}
+$$
+We can again divide the sum up by which terms are equal, which are one-to-one with the number of partitions of 4 (here the restrictions on when $i_α$ can be equal is quite complicated so we leave the count as an exercise, the first one being the most challenging!):
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+\{1\}, \{2\}, \{3\}, \{4\} & 𝔼[a_{i_1i_2} a_{i_2i_3} a_{i_3i_4} a_{i_4i_1}] = 0 & (n+1)n(n-1)(n-2)  = n^4 + O(n^3) \\
+\{1,2\}, \{3\}, \{4\} & \hbox{Not possible!} & 0 \\
+\{1,3\}, \{2\}, \{4\} & 𝔼[a_{i_1i_2} a_{i_2i_2} a_{i_2i_1} a_{i_1i_1}] = 0 & n (n-1) = n^2 + O(n) \\
+\{1,4\}, \{2\}, \{3\} & \hbox{Not possible!} & 0 \\
+\{1\}, \{2,3\}, \{4\} & \hbox{Not possible!} & 0 \\
+\{1\}, \{2,4\}, \{3\} & 𝔼[a_{i_1i_1} a_{i_1i_3} a_{i_3i_3} a_{i_3 i_1}] = 0  & n(n-1) = n^2 + O(n) \\
+\{1\}, \{2\}, \{3,4\} & \hbox{Not possible!} & 0 \\
+\{1,2\}, \{3,4\} & 𝔼[a_{i_1i_2} a_{i_2i_1} a_{i_1i_3} a_{i_3i_1}] = μ_2^2 = 1 & n^2 (n-1) = n^3 + O(n^2) \\
+\{1,3\}, \{2,4\} & \hbox{Not possible!} & 0 \\
+\{1,4\}, \{2,3\} & 𝔼[a_{i_1i_2} a_{i_2i_3} a_{i_3i_2} a_{i_2i_1}] = μ_2^2 = 1 &  n^2 (n-1) = n^3 + O(n^2) \\
+\{1,2,3\}, \{4\} & \hbox{Not possible!} & 0 \\
+\{1,2,4\}, \{3\} & \hbox{Not possible!} & 0 \\
+\{1,3,4\}, \{2\} & \hbox{Not possible!} & 0 \\
+\{1\}, \{2,3,4\} & \hbox{Not possible!} & 0 \\
+\{1,2,3,4\} & 𝔼[a_{i_1i_2} a_{i_2i_1} a_{i_1i_2} a_{i_2i_1}] = μ_4 & n^2
+\end{array}
+$$
+One could go through case-by-case and argue why the "Not possible!" cases aren't possible. For example, we know $\{1,2\}, \{3\}, \{4\}$ cannot happen as if the first two terms are equal they must be of the form $a_{i_1i_2} a_{i_2 i_1}$, but that implies the last two terms also have to be equal. But we don't even need to do this: when you add up all the possible terms we get exactly $n^4$, and hence there cannot be any more. 
+
+Thus the moment reduces to (where the summation index indicates which type of partition the terms correspond to)
+$$
+\meeq{
+{𝐄A_n^4 \over n^2} = {1 \over n^3} \br[ \underbrace{∑_{\{1,2,3,4\}\hbox{ terms}} μ_4}_{= n^2 μ_4} +
+ \underbrace{∑_{\{1,2\},\{3,4\}\hbox{ terms}} μ_2^2}_{= n^3 + O(n^2) }  +
+ \underbrace{∑_{\{1,4\},\{2,3\}\hbox{ terms}} μ_2^2}_{= n^3 + O(n^2) }] \\
+&\underset{n → ∞}{⟶} 2,
+}
+$$
+which matches the Catalan number $C_2$. 
+
+Now for the key insight that mirrors the proof the CLT: when we break apart the sum into different categories of partitions, the the  largest terms that do not vanish are those corresponding to non-crossing pairs of $4$, in this case
+$$
+(\{1,2\}, \{3,4\}) \qquad (\{1,4\}, \{2,3\})
+$$
+Each of these contributes exactly $n^3 + O(n^2)$, and hence as $n → ∞$ the moment tends to the number of non-crossing pairs of $4$.
+
+This pattern holds true for all $k$. When $k$ is odd, we have $n^k$ total terms which we can divide up according to the partitions of $k$ numbers. But the only ones that actually contribute are those with no single element in a partition. We omit the details but what remains grows slower than $n^{-k/2-1}$ and hence the moment tends to zero. When $k$ is even, the only terms that grow precisely like $n^{-k/2-1}$ are those corresponding to non-crossing pair partitions of $k$. Since each of these corresponds to a pair we know its expectation is
+$$
+μ_2^{k/2} = 1.
+$$
+The number of terms (and therefore the sum) exactly equals the Catalan number $C_{k/2}$!
+
+∎
+
+
+# Local eigenvalue statistics
+
+One can also ask about the statistics of the largest eigenvalue. Here we plot a histogram of the largest eigenvalue divided of two different Wigner ensembles (one with entries equal to $±1$ and the other with normally distributed eigenvalues). If $λ_k^{\hbox{max}}$ denotes independent samples of the largest eigenvalue, to normalise the distribution we actually plot a histogram of
+$$
+  {λ_k^{\hbox{max}} - 𝔼 λ_k^{\hbox{max}} \over {\rm std}(λ_k^{\hbox{max}})}
+$$
+where ${\rm std}$ denotes the standard deviation. We see that the two different ensembles have the same largest eigenvalue distribution:
+
+```julia{julia; echo=false}
+using Plots, StatsBase, RandomMatrices
+function symbernoullieigvals(n)
+    A = rand([-1,1], n, n)
+    for k = 2:n, j = 1:k-1
+        A[k,j] = A[j,k]
+    end
+    eigvals(A)/sqrt(n)
+end
+
+
+
+
+
+bern_ev = [maximum(symbernoullieigvals(200)) for _=1:2000]
+goe_ev = [maximum(eigvalrand(GaussianHermite(1), 200)) for _=1:2000]
+
+
+
+histogram((bern_ev .- mean(bern_ev))/std(bern_ev); normalized=true,nbins=30, alpha=0.7, label="±1 entries", title="Largest eigenvalue, n = 200", xlims=(-3,5))
+histogram!((goe_ev .- mean(goe_ev))/std(goe_ev); normalized=true,nbins=30, alpha=0.7, label="Normal entries", xlims=(-3,5))
+```
+
+This distribution is known as the [Tracy–Widom distribution](https://en.wikipedia.org/wiki/Tracy–Widom_distribution). It has no simple formula but can be written either in terms of a Painlevé function (which solves a nonlinear ODE). 
+
+
+# Poster projects
+
+The possibilities for projects related to universality are endless and I encourage you to think about an original idea. Here are some example projects to help guide you:
+
+1. Give a detailed explanation of Catalan numbers and the full proof of the semicircle law.
+2. Hermitian random matrices also satisfy universality properties. How do histograms of their eigenvalue statistics (both global and local) compare to the symmetric case?
+2. A _Wishart ensemble_ is a random symmetric matrix $X X^⊤$ where $X ∈ ℝ^{m × n}$ is a rectangular matrix with random entries. It also exhibits universality but depending on the ratio $α = m/n$. Can you explore how the global and local statistics behave? Do they match the Wigner ensemble case?
+2. The spacing of zeros of the Riemann Zeta function on the critical line match the universality. to higher accuracy?
+2. What happens when the 4-moment condition breaks down? I.e. what are eigenvalue statistics for matrices with heavytailed entries?
+3. One can consider matrices associated with random networks, a la as discussed in Introduction to Applied Mathematics. How connected does a random network need to be to exhibit universality?

@@ -1,0 +1,301 @@
+---
+options:
+  out_width: "0.6\\linewidth"
+  out_height: "0.45\\linewidth"
+---
+
+Before delving into universality for random matrices we explore the scalar random variable version: the Central Limit Theorem (CLT).
+You would have already seen the _Normal distribution_ $𝒩$ (with mean zero and variance one), which has a Probability Density Function (PDF) which is a Gaussian:
+$$
+{\E^{-x^2/2} \over \sqrt{2π}}.
+$$
+The CLT is the fundamental result that when we add many independent samples of a random number it behaves like a Normal distribution.
+More precisely, if $X_1,…,X_n$ are all iid and (for simplicity) have zero mean and variance:
+$$
+\meeq{
+𝔼 X_k = 0, \qquad
+𝔼 X_k^2 = 1,
+}
+$$
+then we claim that the rescaled sum
+$$
+S_n := {X_1 + ⋯ + X_n \over \sqrt{n}}.
+$$
+looks like $𝒩$ as $n → ∞$.
+
+We will show this using the Method of Moments: we want to show the moments
+$𝔼 S_n^k$ tend to the moments of $𝒩$. When moments do not grow too fast, convergence in moments tells us convergence in probability densities (the precise details of this are beyond the scope of these notes), so it suffices to show convergence of moments to establish the CLT.  This argument serves as a blueprint for a similar Method of Moments that can be used to prove universality for random matrices.
+
+# Experimental observation of the Central Limit Theorem
+
+Consider sampling
+iid discrete random variables $X_1,…,X_n$ each taking values $±1$ with equal probability, so that their expectation is zero and variance is one:
+$$
+\meeq{
+𝔼 X_k = (-1) {1 \over 2} + 1 {1 \over 2} = 0, \qquad
+𝔼 X_k^2 = (-1)^2 {1 \over 2} + 1^2 {1 \over 2} = 1.
+}
+$$
+By summing and rescaling these variables we can get a new random variable $S_n$:
+$$
+S_n := {X_1 + ⋯ + X_n \over \sqrt{n}}.
+$$
+For large $n$ we can compare a histogram of samples of $S_n$ to a Gaussian:
+
+```julia{julia; echo=false}
+using Plots, LaTeXStrings, LinearAlgebra, StatsBase
+n = 1000
+N = 10000
+S = n -> sum(rand([-1,1], n)) / sqrt(n)
+histogram([S(n) for _ in 1:N], normed=true, label=LaTeXString("\$S_{$n}\$"), alpha=0.5, color=:red, nbins=30, ylims=(0,0.5), title=LaTeXString("Histogram of \$S_{$n}\$, sampled $N times"))
+plot!(x -> exp(-x^2/2) / sqrt(2π), -4, 4, label=L"\exp(-x^2/2)/\sqrt{2\pi}", linewidth=2, color=:blue)
+```
+They look very close! In fact, by making $n$ and the number of samples large enough we can make the histogram look arbitrarily close to a Gaussian.
+This phenomena is independent of the distribution of $X_k$ provided the moments are finite: we always get a normal distribution (shifted and scaled to match the mean and variance).
+
+We are going to show why this phenomena is true using the Method of Moments: we want to show the moment $𝔼[S_n^k]$ tend to the moments of a Normal distribution. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
+
+```julia{julia; echo=false}
+𝔼 = [mean(x-> x^k, [S(n) for _=1:N]) for n = 1:100, k = 1:6]
+plot(𝔼; label=[L"𝔼[S_n]"  L"𝔼[S_n^2]"  L"𝔼[S_n^3]"  L"𝔼[S_n^4]"  L"𝔼[S_n^5]" L"𝔼[S_n^6]"], xlabel=L"n", title=LaTeXString("Moments of \$S_{$n}\$"))
+```
+
+A sensible conjecture then is that $𝔼[S_n^k]$ is zero when $k$ is odd whilst
+$$
+𝔼[S_n^2] → 1,\quad 𝔼[S_n^4] → 3, \quad 𝔼[S_n^6] → 15.
+$$
+Thus we are left with the tasks of:
+(1) deducing an exact formula for these moments, and
+(2) proving that the Gaussian has the same moments.
+
+# Moments of the normal distribution
+
+
+We will use the Method of Moments, so our first step is to establish an explicit formula for the moments of a Normal distribution, i.e., we want to compute
+$$
+μ_k^N := ∫_{-∞}^∞ x^k {\E^{-x^2/2}  \over \sqrt{2π}} \dx.
+$$
+We will relate these integrals to
+the following combinatorial object:
+
+**Definition (double factorial)**
+$$
+(2m-1)!! := {(2m)! \over 2^m m!} = 1 ⋅ 3 ⋅ 5 ⋯ (2m-1).
+$$
+∎
+
+Note this satisfies a simple recurrence:
+$$
+(2m-1)!! = (2m-1) ⋅ (2m-3)!! \quad \hbox{for} \quad m > 1.
+$$
+
+We can check the first few double factorials:
+$$
+1!! = 1,\quad 3!! = 3,\quad 4!! = 15
+$$
+which exactly match our predicted values for the first few even moments $𝔼[S_n^2],𝔼[S_n^4],𝔼[S_n^6]$.  We claim this holds true for all even moments: $𝔼[S_n^{2m}] = (2m-1)!!$.
+
+To prove this result we will combine a combinatorial argument (to reduce $𝔼[S_n^{2m}]$ to $(2m-1)!!$) with an integration-by-parts argument (to reduce $μ_{2m}^N$ to $(2m-1)!!$). For the combinatorial argument we note that the double factorial  counts the number of ways to partition $\{1,…,2m\}$ into $m$ different pairs, that is to write
+$$
+\{1,…,2m\} = \{x_1,y_1\} ∪ ⋯ ∪ \{x_m,y_m\}
+$$
+where $x_1,…,x_m,y_1,…,y_m$ is a permutation of $1,…,2m$ and $x_k < y_k$ for all $k$.
+For example, if $m = 2$ then we have the following pairings of $1,2,3,4$:
+$$
+\{1,2\}, \{3,4\} \qquad \{1,3\}, \{2,4\} \qquad \{1,4\}, \{2,3\}
+$$
+and  $3!! = 3$. And if $m = 3$ then we have $5!! = 15$ total pairings:
+$$
+\begin{align*}
+\{1,2\}, \{3,4\}, \{5,6\} &\qquad \{1,2\}, \{3,5\}, \{4,6\} \qquad \{1,2\}, \{3,6\}, \{4,5\} \\
+\{1,3\}, \{2,4\}, \{5,6\} &\qquad \{1,3\}, \{2,5\}, \{4,6\} \qquad \{1,3\}, \{2,6\}, \{4,5\} \\
+\{1,4\}, \{2,3\}, \{5,6\} &\qquad \{1,4\}, \{2,5\}, \{3,6\} \qquad \{1,4\}, \{2,6\}, \{3,5\} \\
+\{1,5\}, \{2,3\}, \{4,6\} &\qquad \{1,5\}, \{2,4\}, \{3,6\} \qquad \{1,5\}, \{2,6\}, \{3,4\} \\
+\{1,6\}, \{2,3\}, \{4,5\} &\qquad \{1,6\}, \{2,4\}, \{3,5\} \qquad \{1,6\}, \{2,5\}, \{3,4\}.
+\end{align*}
+$$
+This relationship holds for all $m$:
+
+**Lemma (pair partitions)**
+The number of partitions of $2m$ into pairs equals $(2m-1)!!$.
+
+**Proof**
+The relationship between the double factorial and the number of pair partitions can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. If we assume the number of pairings of $2, 4, …, 2m$ are given by $3!!,4!!,…,(2m-1)!!$ then we deduce the number of pairings of $2(m+1)$ as follows. We can pair the first number ($1$) with a choice of the $2m+1$ other numbers ($2,3,…,$ or $2m+2$). But then by the induction hypothesis the remaining $2m$ numbers have exactly $(2m-1)!!$ pairings. Thus we have
+$$
+\underbrace{(2m+1)}_{\hbox{Choices for $1$}} \times \underbrace{(2m-1)!!}_{\hbox{Choices for pairing remaining $2m$ elements}} = (2m+1)!!
+$$
+where the last equality follows from the recurrence for double factorials.
+
+∎
+
+We now show the moments of a Gaussian are also given in terms of the double factorial:
+
+
+**Lemma (Gaussian moments)**
+$$
+μ_k^N := ∫_{-∞}^∞ x^k {\E^{-x^2/2}  \over \sqrt{2π}} \dx = \begin{cases}
+0 & \hbox{\textrm{if  $k$ is odd}} \\
+{(k-1)!!} & \hbox{\textrm{if $k$ is even}}
+\end{cases}
+$$
+
+**Proof**
+The case of $k$ odd follows from symmetry. For even $k$ we  use a proof by induction. The base case of $k = 0$ follows using the classic trick of computing the integral of a Gaussian by turning it into a 2D integral, using polar coordinates ($r^2 = x^2 + y^2$) and the change of variables $t = r^2/2$:
+$$
+\meeq{
+\pr(∫_{-∞}^∞ \E^{-x^2/2} \dx)^2 = \pr(∫_{-∞}^∞ \E^{-x^2/2} \dx)\pr(∫_{-∞}^∞ \E^{-y^2/2} \dy) =
+∫_{-∞}^∞ ∫_{-∞}^∞ \E^{-(x^2+y^2)/2} \dx \dy \ccr
+= ∫_0^∞ ∫_0^{2π}  r \E^{-r^2/2} \dr \Dθ  = 2π ∫_0^∞  \E^{-t} \dt =2π,
+}
+$$
+hence
+$$
+μ_0^N = {∫_{-∞}^∞ \E^{-x^2/2} \dx \over \sqrt{2π}} = 1.
+$$
+
+For even $k> 0$ assume it is true for all smaller $k$. Then we can integrate-by-parts to deduce:
+$$
+\meeq{
+\sqrt{2π} μ_k^N = ∫_{-∞}^∞ x^k \E^{-x^2/2} \dx = ∫_{-∞}^∞ x^{k-1} \underbrace{x \E^{-x^2/2}}_{=-{\D \over \dx}  \E^{-x^2/2}} \dx \ccr
+= [-x^{k-1} \E^{-x^2/2}]_{-∞}^∞ + (k-1) ∫_{-∞}^∞ x^{k-2} \E^{-x^2/2} \dx =  \sqrt{2π} (k-1) μ_{k-2}^N.
+}
+$$
+I.e., $μ_k^N = (k-1) μ_{k-2}^N$, but this is exactly the formula that we showed $(k-1)!!$ satisfies above (if we write $k = 2m$).
+
+∎
+
+# Proof of CLT using Method of Moments
+
+We now want to show that the moments $𝔼[S_n^k]$ for
+$$
+S_n := {X_1 + … + X_n \over \sqrt{n}}.
+$$
+ are also given by the double factorial as $n → ∞$ and hence match the moments of a Normal Distribution.  We show this by relating the moments to the number of pair partitions:
+
+**Theorem (CLT)**
+Let $X_1, X_2, …$ be iid variables with $𝔼[X_j] = 0$, $𝔼[X_j^2] = 1$, and all other moments are finite. Then for all $k$ we have
+$$
+𝔼[S_n^k] \underset{n → ∞}{⟶} μ_k^N.
+$$
+
+**Proof**
+We are going to mimick the proof of the semicircle law as much as possible. The $X_j$  are iid and we can write their moments as
+$$
+μ_k = 𝔼[X_j^k]
+$$
+where $μ_0 = 1$ and by assumption $μ_1 = 0$ and $μ_2 = 1$.
+
+ We first note we can naively expand
+$$
+(X_1 + ⋯ + X_n)^k = ∑_{i_1,…,i_k=1}^n X_{i_1} ⋯ X_{i_k},
+$$
+i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the differen $i_ℓ$ match, but instead we are going to divide the sum into different partitions to capture this in a more combinatorial way.
+
+Let's walk through some simple cases. For $k= 1$ the result is trivial:
+$$
+\meeq{
+𝔼[S_n] = n^{-1/2} ∑_{i=1}^n 𝔼[X_i] = 0.
+}
+$$
+For $k = 2$ we consider two different cases: either $i_1 = i_2$ or $i_1 ≠ i_2$.  We can associate these with partitions of $2$ numbers as $\{1,2\}$ (when they match) or $\{1\}, \{2 \}$ (when they differ). Here is a table of which partitions correspond to which terms, and how many of each term we have, where now we assume $i_1 ≠ i_2$:
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+  \{1\}, \{2\}  & 𝔼[X_{i_1} X_{i_2}] = μ_1^2  = 0  & n(n-1) = n^2 + O(n)\\
+  \{1,2\}  & 𝔼 X_{i_1}^2 = μ_1^2 = 1 &  n
+\end{array}
+$$
+Note since $n^2 = n + n(n-1)$ we have accounted for all terms. But the only terms that are non-zero are those associated with $\{1,2\}$. Thus we find:
+$$
+𝔼 S_n^2 = n^{-1} ∑_{i_1=1}^n  𝔼 X_{i_1}^2 = 1.
+$$
+For $n = 3$ we can similarly divide the cases according to the different partitions of 3 elements based on which terms match, where  now we assume $i_1 ≠ i_2 ≠ i_3$:
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+  \{1\}, \{2\} , \{3\}  & 𝔼[X_{i_1} X_{i_2} X_{i_3}] =μ_1^3  = 0  &  n(n-1)(n-2) = n^3 + O(n^2) \\
+  \{1,2\}, \{3\}  & 𝔼[X_{i_1}^2 X_{i_3}] =μ_2 μ_1  = 0  & n(n-1) \\
+  \{1,3\}, \{2\}  & 𝔼[X_{i_1}^2 X_{i_2}] =μ_2 μ_1  = 0  & n(n-1) \\
+  \{1\}, \{2,3\}  & 𝔼[X_{i_1} X_{i_2}^2] =μ_1 μ_2  = 0  & n(n-1) \\
+  \{1,2,3\}  & 𝔼 X_{i_1}^3 = μ_3   &  n 
+\end{array}
+$$
+We have accounted for all $n^3 = n(n-1)(n-2) + 3n(n-1) + n$ terms and in this case all terms vanish.
+We do one last explicit example: for $n = 4$ where   we assume $i_1 ≠ i_2 ≠ i_3 ≠ i_4$ we have the following cases:
+$$
+\begin{array}{c | c | c}
+\hbox{Partition} & \hbox{Term} & \hbox{Count} \\
+\hline
+\{1\}, \{2\}, \{3\}, \{4\} & 𝔼[X_{i_1} X_{i_2} X_{i_3} X_{i_4}] = μ_1^4 0 & n (n-1)(n-2)(n-3) = n^4 + O(n^2) \\
+\{1,2\}, \{3\}, \{4\} & 𝔼[X_{i_1}^2 X_{i_3} X_{i_4}] = μ_2 μ_1^2 = 0 & n(n-1)(n-2)= n^3 + O(n^2) \\
+\{1,3\}, \{2\}, \{4\} & 𝔼[X_{i_1}^2 X_{i_2} X_{i_4}] = μ_2 μ_1^2 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
+\{1,4\}, \{2\}, \{3\} & 𝔼[X_{i_1}^2 X_{i_2} X_{i_3}] = μ_2 μ_1^2 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
+\{1\}, \{2,3\}, \{4\} & 𝔼[X_{i_1} X_{i_2}^2 X_{i_4}] = μ_1 μ_2 μ_1 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
+\{1\}, \{2,4\}, \{3\} & 𝔼[X_{i_1} X_{i_2}^2 X_{i_3}] = μ_1 μ_2 μ_1 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
+\{1\}, \{2\}, \{3,4\} & 𝔼[X_{i_1} X_{i_2} X_{i_3}^2] = μ_1^2 μ_2  = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
+\{1,2\}, \{3,4\} &  𝔼[X_{i_1}^2 X_{i_3}^2] =μ_2^2 = 1 & n(n-1)=n^2 + O(n) \\
+\{1,3\}, \{2,4\} &  𝔼[X_{i_1}^2 X_{i_2}^2] =μ_2^2 = 1 & n(n-1)=n^2 + O(n) \\
+\{1,4\}, \{2,3\} & 𝔼[X_{i_1}^2 X_{i_2}^2] =μ_2^2 = 1 & n(n-1)=n^2 + O(n) \\
+\{1,2,3\}, \{4\} & 𝔼[X_{i_1}^3 X_{i_4}] =μ_3 μ_1 = 0 & n(n-1) = n^2 + O(n) \\
+\{1,2,4\}, \{3\} & 𝔼[X_{i_1}^3 X_{i_3}] =μ_3 μ_1 = 0 & n(n-1) = n^2 + O(n) \\
+\{1\}, \{2,3,4\} & 𝔼[X_{i_1} X_{i_2}^3] = μ_1 μ_3 = 0 & n(n-1) = n^2 + O(n) \\
+\{1,2,3,4\} & 𝔼[X_{i_1}^4] = μ_4 & n
+\end{array}
+$$
+The only non-zero terms are those of pair partitions (there are $n^2 + O(n)$ of those) and a partition with 4 elements (there are only $n$ of those). Hence we deduce:
+$$
+\meeq{
+𝔼 S_n^4 = n^{-2} ∑_{\hbox{pair partitions}} \underbrace{n(n-1)}_{\hbox{terms per partition}}\\
+&\qquad  + n^{-2} ∑_{\hbox{parititions with 4 elements}} \underbrace{n}_{\hbox{terms per partition}}    μ_4 \\
+&=
+n^{-2} \underbrace{3}_{\hbox{number of pair partitions}} (n^2 + O(n)) + n^{-1} μ_4\\
+& \underset{n → ∞}{⟶} 3!!
+}
+$$
+
+At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ partitions where each element differs, but because of independence these all contribute zero because indepedence guarantees:
+$$
+𝔼[X_{i_1} ⋯ X_{i_k}] = μ_1^k = 0
+$$
+Each partition with a single pair has $n^{k-1} + O(n^{k-2})$ terms, but also vanishes by the same argument. For even $k$ this continues until we reach exactly $k/2$ pairs, in which case the moments are, eg.,
+$$
+𝔼[X_{i_1}^2 ⋯ X_{i_{k/2}}^2] = 𝔼X_{i_1}^2 ⋯ 𝔼X_{i_{k/2}}^2 = μ_2^{k/2} = 1,
+$$
+and each possible pairing has $n (n-1) ⋯ (n-k/2) = n^{k/2} + O(n^{k/2-1})$ terms. Thus the total is
+$$
+\meeq{
+𝔼 S_n^k = n^{-k/2} ∑_{\hbox{pair partitions of $k$}}  \underbrace{[n^{k/2} + O(n^{k/2-1})]}_{\hbox{number of terms per partition}} + O(n^{-1}) \ccr
+= (k-1)!! + O(n^{-1}) \\
+&\underset{n → ∞}{⟶} (k-1)!!.
+}
+$$
+
+When $k$ is odd, the non-vanishing partition with the most number of terms correspond to a single 3 elements and $(k-3)/2$ pairs. As there are only $n (n-1) ⋯ (n-(k-3)/2) = n^{(k-1)/2} + O(n^{(k-3)/2})$ of these, the scaling $n^{-k/2}$ dominates and we have
+$$
+𝔼 S_n^k \underset{n → ∞}{⟶} 0.
+$$
+
+∎
+
+
+**Remark** Note the assumption of finite moments is essential. A classic counter example is if $X_k$ have a heavy-tail distribution like the Cauchy distribution:
+$$
+{1 \over π} {1 \over x^2 + 1}.
+$$
+Not even the first moment exists, that is, this distribution has no mean! (Symmetry may make one
+think that the mean should be zero, but if we average samples it never converges.)
+If we take iid samples $X_k$ of the Cauchy distribution we know that
+$$
+{X_1 + ⋯ + X_n \over n}
+$$
+is the same Cauchy distribution. (Note the division by $n$, not $\sqrt{n}$, which differs from the CLT above.)
+
+# Poster projects
+
+While I expect most projects to be on random matrices, there are some interesting angles for projects that focus more on the CLT. Here are a few examples:
+
+1. Give a detailed explanation of the Method of Moments and a comparison to an alternative analysis-based proof using the moment generating function $𝔼[\E^{t X}]$.
+2. Explore multiplicative version of the CLT involving rescaled products of positive iid random numbers. What distribution arises as the number of products becomes infinite?
+2. Exploration (either experimental or mathematical) of the CLT for heavytailed distributions like the Cauchy distribution where the Method of Moments breaks down.

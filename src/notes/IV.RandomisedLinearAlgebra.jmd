@@ -4,34 +4,13 @@ options:
   out_height: "0.45\\linewidth"
 ---
 
-Our last topic is _randomised linear algebra_: how can we incorporate random matrices into developing better algorithms for linear algebra?
+Our last topic is _randomised linear algebra_: how can we incorporate random matrices into developing better algorithms for linear algebra? Numerical linear algebra (that is to say, linear algebra done on computer using algorithms) underlies much of modern computational mathematics, including the numerical solution of Partial Differential Equations (PDEs). Recently, incorporating randomness into numerical linear algebra has become a tool to design algorithms that can scale to much larger problems than non-randomised algorithms. For example, Stochastic Gradient Descent is a randomised version of a linear algebra algorithm (Gradient Descent, or in the linear case Conjugate Gradients) that underlies training of Neural Networks in Machine Learning. Without randomness, training can get stuck in local minima, and so it is absolutely essential.
 
-[Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf)
+In this section we will focus on a much simpler problem which can in many ways be viewed as a baby version of training a Neural Network: linear regression. (Indeed, linear regression can be thought of as a "one-layer" Neural Network.)  We will first review least squares, where rectangular systems are ``solved'' by finding a vector that minimises the error in norm, with linear regression being a classic application. We then explore experimentally how using a random _sketch matrix_ can substantially reduce the sizes of matrices involved, and by averaging over multiple sketches we can obtain a good approximation to the true least squares system. 
+
+**Further Reading**  For simplicity we focus on experimental implementation and observation of randomised linear algebra, but  [Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf) gives  an overview of the mathematical proofs of wat we observe. It also discusses some other simple problems that could form good posters like trace estimation (approximating the trace of a matrix without evaluating every single diagonal). Randomised linear algebra is a very active research area and so there will probably be a lot of progress in the next few years.
 
 
-# Randomised trace estimation
-
-
-We begin with a simple question: can we compute the trace of a matrix without computing all the entries on the diagonal? Often one has a matrix $A ∈ ℝ^{n × n}$ that we know how to compute matrix-vector $A𝐱$, lets say in $O(n^2)$ operations, but we do not have direct access to the entries of the matrix $a_{kj}$. Of course, we can deduce the entries of a matrix via $a_{kj} = 𝐞_k^⊤ (A 𝐞_j)$, and hence we can compute the trace via:
-$$
-\Tr A = ∑_{k=1}^n a_{kk} = ∑_{k=1}^n 𝐞_k^⊤ A 𝐞_k,
-$$
-but this takes $O(n^3)$ operations. 
-
-By the cyclic property of trace we have
-$$
-\Tr A = \Tr Q^⊤ A Q = ∑_{k=1}^n 𝐪_k^⊤ A 𝐪_j
-$$
-for any orthogonal matrix $Q$. Let's do an experiment where we take a fixed matrix $A$:
-```julia{julia; echo=false}
-using LinearAlgebra, StatsBase
-n = 1000
-A = Tridiagonal(ones(n-1), (1:n) .^ (-2), ones(n-1))
-tr(A)
-mean((Q = qr(randn(n,n)).Q;
-m = 10;
-sum((𝐪ₖ = Q[:,k]; 𝐪ₖ'*(A*𝐪ₖ)) for k=1:m) * n/m) for _=1:100)
-```
 
 
 # Least squares
@@ -47,12 +26,13 @@ $$
 $$
 In the scalar case ($n = 1$ so that $𝐜$ is essentially a constant) we know we can solve this by differentiation with respect to $𝐜$, and we arrive at a linear system
 $$
- A^⊤ A 𝐜  =  A^⊤ 𝐛
+ A^⊤ A 𝐜  =  A^⊤ 𝐛.
 $$
-This generalises (after some linear algebra) and in general we have that
+This generalises (actually,  using linear algebra instead of calculus but we omit the details) and in general we know the least squares solution is given by
 $$
 𝐜 =  (A^⊤ A)^{-1} A^⊤ 𝐛.
 $$
+Assuming $A$ has full column rank we know $A^⊤ A ∈ ℝ^{n × n}$ is invertible (Why?) and so this is well-posed.
 
 
 A classic application of least squares is _polynomial regression_. In the case of linear regression, we want to approximation data $\{b_j\}$ on a grid of points $\{x_j\}$ by a linear function $c_0 + c_1 x$. In other words, we want to solve
@@ -73,7 +53,7 @@ $$
 by using the least squares solution.
 
 
-Here is a depiction of $c_0 + c_1 x$, which is the least squares fit at  the (noisy) data at $n = 50$ points:
+Here is a depiction of the linear regression fit of (noisy) data at $n = 50$ points:
 ```julia{julia; echo=false}
 using Plots, LaTeXStrings, LinearAlgebra, StatsBase
 n = 50
@@ -103,7 +83,7 @@ c̃ = P * A \ (P * 𝐛)
 plot!(t, c̃[1] .+ c̃[2] .* t; label="Randomised least squares (1x)")
 ```
 
-This is a single sample and, to the eye, it performs equally well as least squares. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
+This is a single sample and, to the eye, it performs fairly well even compared to the true least squares solution. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
 ```julia{julia; echo=false}
 c̄ = mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:100)
 plot!(t, c̄[1] .+ c̄[2] .* t; label="Randomised least squares (100x)")
@@ -127,14 +107,14 @@ plot(err_1;yscale=:log10, label="1×", xaxis=L"r", yaxis="Error")
 plot!(err_10; yscale=:log10, label="10×")
 plot!(err_100; yscale=:log10, label="100×")
 ```
-That is to say, we can achieve accuracy to within about $1\%$ by solving 100 least squares problems involving $10 × 2$ matrices.
-
+That is to say, we can achieve accuracy to within about $1\%$ by solving 100 least squares problems involving $10 × 2$ matrices. 
+I claim this is substantially faster, and so if $1\%$ accuracy suffices (which it does in _many_ applications) it is a big improvement.
 
 
 # Poster projects
 
+We will leave further investigation of randomised linear algebra to posters:
 
-1. How does the approximation property depend on the distribution of the sketch matrix?
-2. What other algorithms are amenable to randomisation (low rank approximation, norm estimation, multiplication)?
-3. Can averaging over multiple sketch matrices be used to improve accuracy while preserving speed advantage?
-4. What applications are there to randomised linear algebra such as regression?
+1. How does the approximation property depend on the distribution of the sketch matrix? Can we use different sketch matrices to get better accuracy?
+2. What other algorithms are amenable to randomisation (trace estimation, low rank approximation, norm estimation, multiplication)?
+3. What applications are there to randomised linear algebra such as higher order polynomial regression?

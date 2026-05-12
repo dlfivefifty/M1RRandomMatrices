@@ -366,19 +366,22 @@ The possibilities for projects related to universality are endless and I encoura
 \item[1. ] Give a detailed explanation of Catalan numbers and the full proof of the semicircle law.
 
 
-\item[2. ] Hermitian random matrices also satisfy universality properties. How do histograms of their eigenvalue statistics (both global and local) compare to the symmetric case?
+\item[2. ] Other local statistics also exhibit universality, for example, the spacing between two eigenvalues in the \emph{bulk} (i.e. away from the edges of the semicircle). Explore this phenomena. 
 
 
-\item[3. ] A \emph{Wishart ensemble} is a random symmetric matrix $X X^\ensuremath{\top}$ where $X \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ is a rectangular matrix with random entries. It also exhibits universality but depending on the ratio $\ensuremath{\alpha} = m/n$. Can you explore how the global and local statistics behave? Do they match the Wigner ensemble case?
+\item[3. ] Hermitian random matrices also satisfy universality properties. How do histograms of their eigenvalue statistics (both global and local) compare to the symmetric case?
 
 
-\item[4. ] The spacing of zeros of the Riemann Zeta function on the critical line match the universality. to higher accuracy?
+\item[4. ] A \emph{Wishart ensemble} is a random symmetric matrix $X X^\ensuremath{\top}$ where $X \ensuremath{\in} \ensuremath{\bbR}^{m \ensuremath{\times} n}$ is a rectangular matrix with random entries. It also exhibits universality but depending on the ratio $\ensuremath{\alpha} = m/n$, where the eigenvalue distributions tend to the \href{https://en.wikipedia.org/wiki/Marchenko\ensuremath{\endash}Pastur_distribution}{Marchenko\ensuremath{\endash}Pastur distribution}. Explore this phenomena and how $\ensuremath{\alpha}$ dictates which Marchenko\ensuremath{\endash}Pastur distribution arises. Does the largest eigenvalue still follow the Tracy\ensuremath{\endash}Widom distribution?
 
 
-\item[5. ] What happens when the 4-moment condition breaks down? I.e. what are eigenvalue statistics for matrices with heavytailed entries?
+\item[5. ] The spacing of zeros of the Riemann Zeta function on the critical line match universality, in particular, the spacing of  eigenvalues in the bulk. Explore computation of zeros of Riemann Zeta functions (using eg. \texttt{scipy.special.zeta}) and compare with suitably-rescaled random matrix statistics.
 
 
-\item[6. ] One can consider matrices associated with random networks, a la as discussed in Introduction to Applied Mathematics. How connected does a random network need to be to exhibit universality?
+\item[6. ] What happens when the moments are no longer defined? I.e. what are eigenvalue statistics for matrices with heavytailed entries?
+
+
+\item[7. ] One can consider matrices associated with random networks, a la as discussed in Introduction to Applied Mathematics. If a network is completely connected it will be a Wigner ensemble. Explore experimentally how connected  a random network needs to be to exhibit universality.
 
 \end{itemize}
 

@@ -32,14 +32,14 @@ For large $n$ we can compare a histogram of samples of $S_n$ to a Gaussian:
 
 They look very close! In fact, by making $n$ and the number of samples large enough we can make the histogram look arbitrarily close to a Gaussian. This phenomena is independent of the distribution of $X_k$ provided the moments are finite: we always get a normal distribution (shifted and scaled to match the mean and variance).
 
-We are going to show why this phenomena is true using the Method of Moments: we want to show the moment $\ensuremath{\bbE}[S_n^k]$ tend to the moments of a Normal distribution. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
+We are going to show why this phenomena is true using the Method of Moments: we want to show the moment $\ensuremath{\bbE}S_n^k$ tend to the moments of a Normal distribution. We can deduce the moments experimentally by averaging over many samples and letting $n$ increase:
 
 
 \includegraphics[width=0.6\linewidth,height=0.45\linewidth]{figures/I.CLT_2_1.pdf}
 
-A sensible conjecture then is that $\ensuremath{\bbE}[S_n^k]$ is zero when $k$ is odd whilst
+A sensible conjecture then is that $\ensuremath{\bbE}S_n^k$ is zero when $k$ is odd whilst
 \[
-\ensuremath{\bbE}[S_n^2] \ensuremath{\rightarrow} 1,\quad \ensuremath{\bbE}[S_n^4] \ensuremath{\rightarrow} 3, \quad \ensuremath{\bbE}[S_n^6] \ensuremath{\rightarrow} 15.
+\ensuremath{\bbE}S_n^2 \ensuremath{\rightarrow} 1,\quad \ensuremath{\bbE}S_n^4 \ensuremath{\rightarrow} 3, \quad \ensuremath{\bbE}S_n^6 \ensuremath{\rightarrow} 15.
 \]
 Thus we are left with the tasks of: (1) deducing an exact formula for these moments, and (2) proving that the Gaussian has the same moments.
 
@@ -62,11 +62,11 @@ Note this satisfies a simple recurrence:
 \]
 We can check the first few double factorials:
 \[
-1!! = 1,\quad 3!! = 3,\quad 4!! = 15
+1!! = 1,\quad 3!! = 3,\quad 5!! = 15
 \]
-which exactly match our predicted values for the first few even moments $\ensuremath{\bbE}[S_n^2],\ensuremath{\bbE}[S_n^4],\ensuremath{\bbE}[S_n^6]$.  We claim this holds true for all even moments: $\ensuremath{\bbE}[S_n^{2m}] = (2m-1)!!$.
+which exactly match our predicted values for the first few even moments $\ensuremath{\bbE}S_n^2,\ensuremath{\bbE}S_n^4,\ensuremath{\bbE}S_n^6$.  We claim this holds true for all even moments: $\ensuremath{\bbE}S_n^{2m} = (2m-1)!!$.
 
-To prove this result we will combine a combinatorial argument (to reduce $\ensuremath{\bbE}[S_n^{2m}]$ to $(2m-1)!!$) with an integration-by-parts argument (to reduce $\ensuremath{\mu}_{2m}^N$ to $(2m-1)!!$). For the combinatorial argument we note that the double factorial  counts the number of ways to partition $\{1,\ensuremath{\ldots},2m\}$ into $m$ different pairs, that is to write
+To prove this result we will combine a combinatorial argument (to reduce $\ensuremath{\bbE}S_n^{2m}$ to $(2m-1)!!$) with an integration-by-parts argument (to reduce $\ensuremath{\mu}_{2m}^N$ to $(2m-1)!!$). For the combinatorial argument we note that the double factorial  counts the number of ways to partition $\{1,\ensuremath{\ldots},2m\}$ into $m$ different pairs, that is to write
 \[
 \{1,\ensuremath{\ldots},2m\} = \{x_1,y_1\} \ensuremath{\cup} \ensuremath{\cdots} \ensuremath{\cup} \{x_m,y_m\}
 \]
@@ -87,7 +87,7 @@ This relationship holds for all $m$:
 \begin{lemma}[pair partitions] The number of partitions of $2m$ into pairs equals $(2m-1)!!$.
 
 \end{lemma}
-\textbf{Proof} The relationship between the double factorial and the number of pair partitions can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. If we assume the number of pairings of $2, 4, \ensuremath{\ldots}, 2m$ are given by $3!!,4!!,\ensuremath{\ldots},(2m-1)!!$ then we deduce the number of pairings of $2(m+1)$ as follows. We can pair the first number ($1$) with a choice of the $2m+1$ other numbers ($2,3,\ensuremath{\ldots},$ or $2m+2$). But then by the induction hypothesis the remaining $2m$ numbers have exactly $(2m-1)!!$ pairings. Thus we have
+\textbf{Proof} The relationship between the double factorial and the number of pair partitions can be deduced by a very simple inductive argument. When $m = 1$ we have exactly $1!! = 1$ pairings. If we assume the number of pairings of $2, 4, \ensuremath{\ldots}, 2m$ are given by $3!!,5!!,\ensuremath{\ldots},(2m-1)!!$ then we deduce the number of pairings of $2(m+1)$ as follows. We can pair the first number ($1$) with a choice of the $2m+1$ other numbers ($2,3,\ensuremath{\ldots},$ or $2m+2$). But then by the induction hypothesis the remaining $2m$ numbers have exactly $(2m-1)!!$ pairings. Thus we have
 \[
 \underbrace{(2m+1)}_{\hbox{Choices for $1$}} \times \underbrace{(2m-1)!!}_{\hbox{Choices for pairing remaining $2m$ elements}} = (2m+1)!!
 \]
@@ -125,20 +125,20 @@ I.e., $\ensuremath{\mu}_k^N = (k-1) \ensuremath{\mu}_{k-2}^N$, but this is exact
 \ensuremath{\QED}
 
 \section{Proof of CLT using Method of Moments}
-We now want to show that the moments $\ensuremath{\bbE}[S_n^k]$ for
+We now want to show that the moments $\ensuremath{\bbE}S_n^k$ for
 \[
-S_n := {X_1 + \ensuremath{\ldots} + X_n \over \sqrt{n}}.
+S_n := {X_1 + \ensuremath{\cdots} + X_n \over \sqrt{n}}.
 \]
 are also given by the double factorial as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ and hence match the moments of a Normal Distribution.  We show this by relating the moments to the number of pair partitions:
 
-\begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}$ be iid variables with $\ensuremath{\bbE}[X_j] = 0$, $\ensuremath{\bbE}[X_j^2] = 1$, and all other moments are finite. Then for all $k$ we have
+\begin{theorem}[CLT] Let $X_1, X_2, \ensuremath{\ldots}, X_n$ be iid variables with $\ensuremath{\bbE}X_j = 0$, $\ensuremath{\bbE}X_j^2 = 1$, and all other moments are finite. Then for all $k$ we have
 \[
-\ensuremath{\bbE}[S_n^k] \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} \ensuremath{\mu}_k^N.
+\ensuremath{\bbE}S_n^k \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} \ensuremath{\mu}_k^N.
 \]
 \end{theorem}
-\textbf{Proof} We are going to mimick the proof of the semicircle law as much as possible. The $X_j$  are iid and we can write their moments as
+\textbf{Proof} We are going to present a slightly unusual argument that mimics the upcoming proof of random matrix universality as much as possible. The $X_j$  are iid and we can write their moments as
 \[
-\ensuremath{\mu}_k = \ensuremath{\bbE}[X_j^k]
+\ensuremath{\mu}_k = \ensuremath{\bbE}X_j^k
 \]
 where $\ensuremath{\mu}_0 = 1$ and by assumption $\ensuremath{\mu}_1 = 0$ and $\ensuremath{\mu}_2 = 1$.
 
@@ -146,26 +146,34 @@ We first note we can naively expand
 \[
 (X_1 + \ensuremath{\cdots} + X_n)^k = \ensuremath{\sum}_{i_1,\ensuremath{\ldots},i_k=1}^n X_{i_1} \ensuremath{\cdots} X_{i_k},
 \]
-i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the differen $i_\ensuremath{\ell}$ match, but instead we are going to divide the sum into different partitions to capture this in a more combinatorial way.
+i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the differen $i_\ensuremath{\ell}$ match, but instead we are going to break up the sum according to whether the components are the same or different, which can be identified with partitions of $\{1,\ensuremath{\ldots},n\}$.
 
 Let's walk through some simple cases. For $k= 1$ the result is trivial:
 \meeq{
-\ensuremath{\bbE}[S_n] = n^{-1/2} \ensuremath{\sum}_{i=1}^n \ensuremath{\bbE}[X_i] = 0.
+\ensuremath{\bbE}S_n = n^{-1/2} \ensuremath{\sum}_{i=1}^n \ensuremath{\bbE}X_i = 0.
 }
-For $k = 2$ we consider two different cases: either $i_1 = i_2$ or $i_1 \ensuremath{\neq} i_2$.  We can associate these with partitions of $2$ numbers as $\{1,2\}$ (when they match) or $\{1\}, \{2 \}$ (when they differ). Here is a table of which partitions correspond to which terms, and how many of each term we have, where now we assume $i_1 \ensuremath{\neq} i_2$:
+For $k = 2$ we consider
+\[
+\ensuremath{\bbE}S_n^2 = n^{-1} \ensuremath{\sum}_{i_1,i_2=1}^n \ensuremath{\bbE}[X_{i_1}X_{i_2}]
+\]
+by breaking up the sum over two different cases: either $i_1 = i_2$ or $i_1 \ensuremath{\neq} i_2$.  We can associate these with partitions of $2$ numbers as either $\{1,2\}$ (when they match) or $\{1\}, \{2 \}$ (when they differ). Here is a table of which partitions correspond to which terms, and how many of each type of term we have, where now we assume $i_1 \ensuremath{\neq} i_2$:
 \[
 \begin{array}{c | c | c}
 \hbox{Partition} & \hbox{Term} & \hbox{Count} \\
 \hline
-  \{1\}, \{2\}  & \ensuremath{\bbE}[X_{i_1} X_{i_2}] = \ensuremath{\mu}_1^2  = 0  & n(n-1) = n^2 + O(n)\\
-  \{1,2\}  & \ensuremath{\bbE} X_{i_1}^2 = \ensuremath{\mu}_1^2 = 1 &  n
+  \{1\}, \{2\} & \ensuremath{\bbE}[X_{i_1} X_{i_2}] = \ensuremath{\bbE}X_{i_1} \ensuremath{\bbE}X_{i_2}  = \ensuremath{\mu}_1^2  = 0  & n(n-1) = n^2 + O(n)\\
+    \{1,2\} & \ensuremath{\bbE} X_{i_1}^2 = \ensuremath{\mu}_2 = 1 &  n
 \end{array}
 \]
-Note since $n^2 = n + n(n-1)$ we have accounted for all terms. But the only terms that are non-zero are those associated with $\{1,2\}$. Thus we find:
+Note since $n^2 = n + n(n-1)$ we have accounted for all terms. But the only terms that are non-zero are those associated with $\{1,2\}$. Thus we find the second moment reduces to
 \[
 \ensuremath{\bbE} S_n^2 = n^{-1} \ensuremath{\sum}_{i_1=1}^n  \ensuremath{\bbE} X_{i_1}^2 = 1.
 \]
-For $n = 3$ we can similarly divide the cases according to the different partitions of 3 elements based on which terms match, where  now we assume $i_1 \ensuremath{\neq} i_2 \ensuremath{\neq} i_3$:
+For $n = 3$ we consider
+\[
+\ensuremath{\bbE}S_n^3 = n^{-3/2} \ensuremath{\sum}_{i_1,i_2,u_3=1}^n \ensuremath{\bbE}[X_{i_1}X_{i_2}X_{i_3}]
+\]
+by breaking up the cases according to the different partitions of 3 elements based on which terms match, where  now we assume $i_1 \ensuremath{\neq} i_2 \ensuremath{\neq} i_3$:
 \[
 \begin{array}{c | c | c}
 \hbox{Partition} & \hbox{Term} & \hbox{Count} \\
@@ -182,7 +190,7 @@ We have accounted for all $n^3 = n(n-1)(n-2) + 3n(n-1) + n$ terms and in this ca
 \begin{array}{c | c | c}
 \hbox{Partition} & \hbox{Term} & \hbox{Count} \\
 \hline
-\{1\}, \{2\}, \{3\}, \{4\} & \ensuremath{\bbE}[X_{i_1} X_{i_2} X_{i_3} X_{i_4}] = \ensuremath{\mu}_1^4 0 & n (n-1)(n-2)(n-3) = n^4 + O(n^2) \\
+\{1\}, \{2\}, \{3\}, \{4\} & \ensuremath{\bbE}[X_{i_1} X_{i_2} X_{i_3} X_{i_4}] = \ensuremath{\mu}_1^4 = 0 & n (n-1)(n-2)(n-3) = n^4 + O(n^2) \\
 \{1,2\}, \{3\}, \{4\} & \ensuremath{\bbE}[X_{i_1}^2 X_{i_3} X_{i_4}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1^2 = 0 & n(n-1)(n-2)= n^3 + O(n^2) \\
 \{1,3\}, \{2\}, \{4\} & \ensuremath{\bbE}[X_{i_1}^2 X_{i_2} X_{i_4}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1^2 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
 \{1,4\}, \{2\}, \{3\} & \ensuremath{\bbE}[X_{i_1}^2 X_{i_2} X_{i_3}] = \ensuremath{\mu}_2 \ensuremath{\mu}_1^2 = 0 & n(n-1)(n-2) = n^3 + O(n^2)\\
@@ -195,22 +203,22 @@ We have accounted for all $n^3 = n(n-1)(n-2) + 3n(n-1) + n$ terms and in this ca
 \{1,2,3\}, \{4\} & \ensuremath{\bbE}[X_{i_1}^3 X_{i_4}] =\ensuremath{\mu}_3 \ensuremath{\mu}_1 = 0 & n(n-1) = n^2 + O(n) \\
 \{1,2,4\}, \{3\} & \ensuremath{\bbE}[X_{i_1}^3 X_{i_3}] =\ensuremath{\mu}_3 \ensuremath{\mu}_1 = 0 & n(n-1) = n^2 + O(n) \\
 \{1\}, \{2,3,4\} & \ensuremath{\bbE}[X_{i_1} X_{i_2}^3] = \ensuremath{\mu}_1 \ensuremath{\mu}_3 = 0 & n(n-1) = n^2 + O(n) \\
-\{1,2,3,4\} & \ensuremath{\bbE}[X_{i_1}^4] = \ensuremath{\mu}_4 & n
+\{1,2,3,4\} & \ensuremath{\bbE}X_{i_1}^4 = \ensuremath{\mu}_4 & n
 \end{array}
 \]
 The only non-zero terms are those of pair partitions (there are $n^2 + O(n)$ of those) and a partition with 4 elements (there are only $n$ of those). Hence we deduce:
 \meeq{
-\ensuremath{\bbE} S_n^4 = n^{-2} \ensuremath{\sum}_{\hbox{pair partitions}} \underbrace{n(n-1)}_{\hbox{terms per partition}}\\
-&\qquad  + n^{-2} \ensuremath{\sum}_{\hbox{parititions with 4 elements}} \underbrace{n}_{\hbox{terms per partition}}    \ensuremath{\mu}_4 \\
+\ensuremath{\bbE} S_n^4 = n^{-2} \ensuremath{\sum}_{\hbox{pair partitions}}\qquad \underbrace{n(n-1)}_{\hbox{terms per partition}}\\
+&\qquad  + n^{-2} \ensuremath{\sum}_{\hbox{parititions with 4 elements}}\qquad \underbrace{n}_{\hbox{terms per partition}}  \qquad  \ensuremath{\mu}_4 \\
 &=
 n^{-2} \underbrace{3}_{\hbox{number of pair partitions}} (n^2 + O(n)) + n^{-1} \ensuremath{\mu}_4\\
 & \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} 3!!
 }
-At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ partitions where each element differs, but because of independence these all contribute zero because indepedence guarantees:
+At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ terms where each element differ, corresponding to the partition $\{1\},\ensuremath{\ldots},\{k\}$, but because of independence these all contribute zero because indepedence guarantees:
 \[
 \ensuremath{\bbE}[X_{i_1} \ensuremath{\cdots} X_{i_k}] = \ensuremath{\mu}_1^k = 0
 \]
-Each partition with a single pair has $n^{k-1} + O(n^{k-2})$ terms, but also vanishes by the same argument. For even $k$ this continues until we reach exactly $k/2$ pairs, in which case the moments are, eg.,
+Each partition with a single pair has associated with it $n^{k-1} + O(n^{k-2})$ terms, but these also vanishes by the same argument since there are terms that appear onde. For even $k$ this continues until we reach exactly $k/2$ pairs, the partition that has no singletons, in which case the moments are
 \[
 \ensuremath{\bbE}[X_{i_1}^2 \ensuremath{\cdots} X_{i_{k/2}}^2] = \ensuremath{\bbE}X_{i_1}^2 \ensuremath{\cdots} \ensuremath{\bbE}X_{i_{k/2}}^2 = \ensuremath{\mu}_2^{k/2} = 1,
 \]
@@ -218,11 +226,11 @@ and each possible pairing has $n (n-1) \ensuremath{\cdots} (n-k/2) = n^{k/2} + O
 \meeq{
 \ensuremath{\bbE} S_n^k = n^{-k/2} \ensuremath{\sum}_{\hbox{pair partitions of $k$}}  \underbrace{[n^{k/2} + O(n^{k/2-1})]}_{\hbox{number of terms per partition}} + O(n^{-1}) \ccr
 = (k-1)!! + O(n^{-1}) \\
-&\underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} (k-1)!!.
+&\underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} (k-1)!!
 }
 When $k$ is odd, the non-vanishing partition with the most number of terms correspond to a single 3 elements and $(k-3)/2$ pairs. As there are only $n (n-1) \ensuremath{\cdots} (n-(k-3)/2) = n^{(k-1)/2} + O(n^{(k-3)/2})$ of these, the scaling $n^{-k/2}$ dominates and we have
 \[
-\ensuremath{\bbE} S_n^k \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} 0.
+\ensuremath{\bbE} S_n^k = n^{-1/2} + O(n^{-3/2}) \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} 0.
 \]
 \ensuremath{\QED}
 
@@ -240,7 +248,7 @@ is the same Cauchy distribution. (Note the division by $n$, not $\sqrt{n}$, whic
 While I expect most projects to be on random matrices, there are some interesting angles for projects that focus more on the CLT. Here are a few examples:
 
 \begin{itemize}
-\item[1. ] Give a detailed explanation of the Method of Moments and a comparison to an alternative analysis-based proof using the moment generating function $\ensuremath{\bbE}[\E^{t X}]$.
+\item[1. ] Give a detailed explanation of the Method of Moments and a comparison to an alternative analysis-based proof using the moment generating function $\ensuremath{\bbE}\E^{t X}$.
 
 
 \item[2. ] Explore multiplicative version of the CLT involving rescaled products of positive iid random numbers. What distribution arises as the number of products becomes infinite?

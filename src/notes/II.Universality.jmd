@@ -21,7 +21,7 @@ We will see that in the matrix case the global distribution of eigenvalues is en
 $$
 𝐄 A_n^k := {1 \over n} 𝔼 \Tr A_n^k
 $$
-where $\Tr$ is the trace of a matrix (sum of the diagonal).  It may not be obvious but these simple matrix-versions of "expectations" are equivalent to moments of the eigenvalue distribution. As the dimension of the matrix becomes large ($n → ∞$) we will show these matrix moments tend to the moments of a semicircle.
+where $\Tr$ is the trace of a matrix (sum of the diagonal).  It may not be obvious but these simple matrix-versions of ``expectations" are equivalent to moments of the eigenvalue distribution. As the dimension of the matrix becomes large ($n → ∞$) we will show these matrix moments tend to the moments of a semicircle.
 
 
 
@@ -113,7 +113,7 @@ $$
 $$
 
 **Proof**
-We know that a symmetric matrix matrix is _diagonalisable_:
+We know that a symmetric matrix is _diagonalisable_:
 $$
 A = V \underbrace{\begin{bmatrix} λ_1 &  &  \\  & ⋱ &  \\  &  & λ_n \end{bmatrix}}_{Λ} V^{-1}.
 $$
@@ -137,11 +137,11 @@ We now have a plan of attack mirroring the CLT: (1) deduce a formula for the lim
 
 # Moments of the semicircle distribution
 
-We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the the Catalan numbers $C_m$ which play a very similar row as $(2m-1)!!$:
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the Catalan numbers $C_m$ which play a very similar row as $(2m-1)!!$:
 
 **Definition (Catalan numbers)**
 $$
-C_m := {1 \over n+1} \begin{pmatrix} 2m \\ m \end{pmatrix} =  {(2m)! \over (m+1)! m!}.
+C_m := {1 \over m+1} \begin{pmatrix} 2m \\ m \end{pmatrix} =  {(2m)! \over (m+1)! m!}.
 $$
 ∎
 
@@ -196,10 +196,10 @@ Thus we see the pattern: $1$ cannot be paired with any odd number since then the
 Putting all this together we have the total number of pairings:
 $$
 \begin{align*}
-\underbrace{C_n}_{\hbox{$\{1,2\}$ is a pair}} &+ 
-\underbrace{C_{n-1}}_{\hbox{$\{1,4\}$ is a pair}} + 
-\underbrace{C_2 C_{n-2}}_{\hbox{$\{1,6\}$ is a pair}} +
-\underbrace{C_3 C_{n-3}}_{\hbox{$\{1,8\}$ is a pair}} \\
+\underbrace{C_m}_{\hbox{$\{1,2\}$ is a pair}} &+ 
+\underbrace{C_{m-1}}_{\hbox{$\{1,4\}$ is a pair}} + 
+\underbrace{C_2 C_{m-2}}_{\hbox{$\{1,6\}$ is a pair}} +
+\underbrace{C_3 C_{m-3}}_{\hbox{$\{1,8\}$ is a pair}} \\
 & + ⋯ + 
 \underbrace{C_m}_{\hbox{$\{1,2(m+1)\}$ is a pair}}.
 \end{align*}
@@ -227,15 +227,15 @@ The case of $k$ odd follows from symmetry. For even $k$ we use the change of var
 $$
 \meeq{
 ∫_{-2}^2 x^k {\sqrt{4-x^2} \over 2π} \dx = ∫_0^π (2 \cos θ)^k {\sqrt{4-(2 \cos θ)^2} \over 2π} 2 \sin θ \Dθ \\
-&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \sin^2 θ \Dθ = {2^{k+1} \over 2π} ∫_0^π \cos^k θ (1-\cos^2 θ) \Dθ \\
-&= {2^{k+1} \over 2π} ∫_0^π \cos^k θ \Dθ - {2^{k+1} \over 2π} ∫_0^π \cos^{k+2} θ \Dθ.
+&= {2^{k+1} \over π} ∫_0^π \cos^k θ \sin^2 θ \Dθ = {2^{k+1} \over π} ∫_0^π \cos^k θ (1-\cos^2 θ) \Dθ \\
+&= {2^{k+1} \over π} \br[ ∫_0^π \cos^k θ \Dθ - ∫_0^π \cos^{k+2} θ \Dθ].
 }
 $$
 
 We claim that
 $$
-∫_0^π \cos^{2k} θ \Dθ = {π \over 2^{2n}} \begin{pmatrix}
-2n \\ n
+∫_0^π \cos^{2m} θ \Dθ = {π \over 2^{2m}} \begin{pmatrix}
+2m \\ m
 \end{pmatrix}
 $$
 which can be seen, eg., by writing
@@ -276,11 +276,11 @@ A^3 𝐞_j = \Vectt[∑_{i_2,i_3} a_{1 i_2} a_{i_2 i_3} a_{i_3 j}, ⋮, ∑_{i_1
 $$
 By induction (exercise) we can thus deduce that the $j$-th column of $A^k$ is given by
 $$
-A^k 𝐞_j = \Vectt[∑_{i_2,…,i_k} a_{1 i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}, ⋮, ∑_{i_2,…,i_k} a_{n i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j}].
+A^k 𝐞_j = \Vectt[∑_{i_2,…,i_k} a_{1 i_2} a_{i_2 i_3} ⋯ a_{i_k j}, ⋮, ∑_{i_2,…,i_k} a_{n i_2} a_{i_2 i_3} ⋯ a_{i_k j}].
 $$
 But now we just sum over $j$ to get the trace:
 $$
-∑_{j=1}^n 𝐞_j^⊤ A^k 𝐞_j = ∑_{j=1}^n ∑_{i_2,…,i_k} a_{j i_2} a_{i_2 i_3} ⋯ a_{i_{k-1} j} = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
+∑_{j=1}^n 𝐞_j^⊤ A^k 𝐞_j = ∑_{j=1}^n ∑_{i_2,…,i_k} a_{j i_2} a_{i_2 i_3} ⋯ a_{i_k j} = ∑_{i_1,…,i_k = 1}^n a_{i_1 i_2} a_{i_2 i_3} ⋯ a_{i_k i_1}.
 $$
 
 ∎
@@ -299,31 +299,31 @@ $$
 **Proof**
 We will only give a sketch of the argument, leaving the technical details to a possible poster project. The entries  are iid and we can write their moments as
 $$
-μ_k = 𝔼 a_{ij}^k
+μ_k := 𝔼 a_{ij}^k
 $$
 where $μ_0 = 1$ and by assumption $μ_1 = 0$ and $μ_2 = 1$.
 
 
 Let's look at some low order cases using the explicit expansion of the trace of powers of a matrix. When $k = 1$ the result is trivial:
 $$
-{𝐄 A_n \over \sqrt{n}} = {1 \over n^{3/2}} ∑_{i=1}^n 𝔼[a_{ii}] = 0.
+{𝐄 A_n \over \sqrt{n}} = {1 \over n^{3/2}} ∑_{i=1}^n 𝔼a_{ii} = 0.
 $$
 For the $k = 2$ case we first write
 $$
 {𝐄 A_n^2 \over n}  = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[a_{i_1i_2} a_{i_2i_1}].
 $$
-Now this clearly simplifies, but to prepare for the general case we again break the sum into two different cases: either the two terms equal ($a_{i_1i_2} = a_{i_1i_2}$ or $a_{i_1i_2} = a_{i_2i_1}$) or they differ. But in this case all terms fall into the first category:
+Now this clearly simplifies, but to prepare for the general case we again break the sum into two different cases: either the two terms equal ($a_{i_1i_2} = a_{i_1i_2}$ or $a_{i_1i_2} = a_{i_2i_1}$) or they differ. We associate these two cases with the partitions $\{1,2\}$ (terms match) and $\{1\}, \{2\}$ (terms differ).  But in this case all terms fall into the matching category:
 $$
 \begin{array}{c | c | c}
 \hbox{Partition} & \hbox{Term} & \hbox{Count} \\
 \hline
-  \{1\}, \{2\}  & 𝔼[a_{i_1i_2} a_{i_2i_1}] = 𝔼a_{i_1i_2}^2 = μ_2 = 1  & n^2 \\
-  \{1,2\}  &  \hbox{Not possible!} &  0.
+  \{1\}, \{2\}  &  \hbox{Not possible!} &  0\\
+    \{1,2\} & 𝔼[a_{i_1i_2} a_{i_2i_1}] = 𝔼a_{i_1i_2}^2 = μ_2 = 1  & n^2 
 \end{array}
 $$
 We thus have 
 $$
-{𝐄 A_n \over n} = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1.
+{𝐄 A_n \over n} = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1 = C_1.
 $$
 
 For $k = 3$ we consider different cases of writing
@@ -337,7 +337,7 @@ $$
 \hline
   \{1\}, \{2\}, \{3\}  & 𝔼[a_{i_1 i_2} a_{i_2i_3} a_{i_3i_1}] = μ_1^3  = 0   &  n (n-1)(n-2) = n^3 + O(n^2) \\
   \{1,2\}, \{3\}  & 𝔼[a_{i_1i_2} a_{i_2i_1} a_{i_1i_1}] = 𝔼[a_{i_1i_2}^2 a_{i_1i_1}] = μ_2 μ_1 = 0  &  n (n-1)= n^3 + O(n^2) \\
-  \{1,3\}, \{3\}  & 𝔼[a_{i_1i_2} a_{i_2i_2} a_{i_2i_1}] = 𝔼[a_{i_1i_2}^2 a_{i_2i_2}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  \\
+  \{1,3\}, \{2\}  & 𝔼[a_{i_1i_2} a_{i_2i_2} a_{i_2i_1}] = 𝔼[a_{i_1i_2}^2 a_{i_2i_2}] = μ_2 μ_1 = 0 &  n (n-1)= n^3 + O(n^2)  \\
   \{1\},  \{2,3\}  & 𝔼[a_{i_1i_1} a_{i_1i_3} a_{i_3i_1}]  = 𝔼[a_{i_1i_1} a_{i_1i_3}^2]  = μ_1 μ_2 = 0 &  n (n-1)= n^3 + O(n^2)  \\
  \{1,2,3\} & 𝔼[a_{i_1i_1} a_{i_1i_1} a_{i_1i_1}] = 𝔼 a_{i_1i_1}^3 = μ_3&  n
 \end{array}
@@ -376,7 +376,7 @@ $$
 \{1,2,3,4\} & 𝔼[a_{i_1i_2} a_{i_2i_1} a_{i_1i_2} a_{i_2i_1}] = μ_4 & n^2
 \end{array}
 $$
-One could go through case-by-case and argue why the "Not possible!" cases aren't possible. For example, we know $\{1,2\}, \{3\}, \{4\}$ cannot happen as if the first two terms are equal they must be of the form $a_{i_1i_2} a_{i_2 i_1}$, but that implies the last two terms also have to be equal. But we don't even need to do this: when you add up all the possible terms we get exactly $n^4$, and hence there cannot be any more. 
+One could go through case-by-case and argue why the ``Not possible!" cases aren't possible. For example, we know $\{1,2\}, \{3\}, \{4\}$ cannot happen as if the first two terms are equal they must be of the form $a_{i_1i_2} a_{i_2 i_1}$, but that implies the last two terms also have to be equal. But we don't even need to do this: when you add up all the possible terms we get exactly $n^4$, and hence there cannot be any more. 
 
 Thus the moment reduces to (where the summation index indicates which type of partition the terms correspond to)
 $$
@@ -391,7 +391,7 @@ which matches the Catalan number $C_2$.
 
 Now for the key insight that mirrors the proof the CLT: when we break apart the sum into different categories of partitions, the the  largest terms that do not vanish are those corresponding to non-crossing pairs of $4$, in this case
 $$
-(\{1,2\}, \{3,4\}) \qquad (\{1,4\}, \{2,3\})
+\{1,2\}, \{3,4\} \qquad \{1,4\}, \{2,3\}
 $$
 Each of these contributes exactly $n^3 + O(n^2)$, and hence as $n → ∞$ the moment tends to the number of non-crossing pairs of $4$.
 

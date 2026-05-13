@@ -16,7 +16,7 @@ where $\Tr$ is the trace of a matrix (sum of the diagonal).  It may not be obvio
 
 Note that moments are only guaranteed to uniquely define a density in the special case where the probability density decays sufficiently fast, but this is something the Gaussian and semicircle both satisfy.
 
-\textbf{Further reading}: \href{https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf}{Topics in Random Matrix Theory} by Terry Tao gives a more advanced, higher level introduction to random matrix theory, though perhaps too high a level for most 1st year students. The field of Random Matrix Theory and universality grew out of a beautiful collaboration between theoretical physcists, statisticians, and pure mathematics and involves the synthesis of tools between these different areas.
+\textbf{Further reading}: \href{https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf}{Topics in Random Matrix Theory} by Terry Tao gives a more advanced, higher level introduction to random matrix theory, though perhaps too high a level for most 1st year students. The field of Random Matrix Theory and universality grew out of a beautiful collaboration between theoretical physicists, statisticians, and pure mathematicians and involves the synthesis of tools between these different areas.
 
 \section{Experimental observation of universality}
 As a simple example,  consider $A_n \ensuremath{\in} \ensuremath{\bbR}^{n \ensuremath{\times} n}$ which is symmetric ($A_n = A_n^\ensuremath{\top}$) and whose entries on and above the diagonal are iid random variables taking values $\ensuremath{\pm}1$ with equal probability (and entries below the diagonal defined by symmetry). Each sample of $A_n$ will have $n$ eigenvalues, which we denote $\ensuremath{\sigma}(A_n) = \set{\ensuremath{\lambda}_1,\ensuremath{\ldots},\ensuremath{\lambda}_n}$ (for concreteness we can assume they are sorted from smallest to largest). If we plot a histogram of rescaled eigenvalues $\ensuremath{\sigma}(A_n/ \sqrt{n}) = \set{{\ensuremath{\lambda}_1 \over \sqrt{n}}, \ensuremath{\ldots}, {\ensuremath{\lambda}_n \over \sqrt{n}}}$ of a \emph{single sample} $A_n$ we get a semicircle:
@@ -101,7 +101,7 @@ Thus we deduce
 We now have a plan of attack mirroring the CLT: (1) deduce a formula for the limit of $\ensuremath{\sigma}_{nk} = \ensuremath{\bm{\mathrm{E}}} A_n^k$ as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ and (2) show these match the moments of the semicircle distribution.
 
 \section{Moments of the semicircle distribution}
-We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the Catalan numbers $C_m$ which play a very similar row as $(2m-1)!!$:
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the Catalan numbers $C_m$ which play a very similar role as $(2m-1)!!$:
 
 \begin{definition}[Catalan numbers]
 \[
@@ -156,10 +156,10 @@ We will do a proof by induction similar to that showing the number of all pair p
 \item[3. ] If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(m-1)$ remaining numbers to pair. 
 
 
-\item[4. ] Th number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over.
+\item[4. ] The number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over.
 
 \end{itemize}
-Thus we see the pattern: $1$ cannot be paired with any odd number since then there will always be one left over. Otherwise, if $1$ is paired with an even number $2k$ we have to independently pair the $2(k-1)$ numbers $\{2,\ensuremath{\ldots},2k-1\}$ and the $2(n+1-k)$ numbers $\{2k+1,\ensuremath{\ldots},2(n+1)\}$. Thus there are $C_{k-1} C_{n+1-k}$ possibilities.
+Thus we see the pattern: $1$ cannot be paired with any odd number since then there will always be one left over. Otherwise, if $1$ is paired with an even number $2k$ we have to independently pair the $2(k-1)$ numbers $\{2,\ensuremath{\ldots},2k-1\}$ and the $2(m+1-k)$ numbers $\{2k+1,\ensuremath{\ldots},2(m+1)\}$. Thus there are $C_{k-1} C_{m+1-k}$ possibilities.
 
 Putting all this together we have the total number of pairings:
 \begin{align*}
@@ -274,11 +274,11 @@ Now this clearly simplifies, but to prepare for the general case we again break 
 \]
 We thus have 
 \[
-{\ensuremath{\bm{\mathrm{E}}} A_n \over n} = {1 \over n^2} \ensuremath{\sum}_{i_1,i_2=1}^n \ensuremath{\bbE}[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1 = C_1.
+{\ensuremath{\bm{\mathrm{E}}} A_n^2 \over n} = {1 \over n^2} \ensuremath{\sum}_{i_1,i_2=1}^n \ensuremath{\bbE}[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1 = C_1.
 \]
 For $k = 3$ we consider different cases of writing
 \[
-{\ensuremath{\bm{\mathrm{E}}} A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} \ensuremath{\sum}_{i_1,i_2,i_3=1}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_1i_2}].
+{\ensuremath{\bm{\mathrm{E}}} A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} \ensuremath{\sum}_{i_1,i_2,i_3=1}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_3i_1}].
 \]
 We want to think of the ways in which each of these three terms can be equal (note we are interested in the terms matching, \emph{not} the indices). This has  the same number of ways as partitioning a set of 3. Assuming now $i_1 \ensuremath{\neq} i_2 \ensuremath{\neq} i_3$ we note $a_{i_1i_2} \ensuremath{\neq} a_{i_2 i_3} \ensuremath{\neq} a_{i_3 i_1}$ (of course since they are random variables they might accidentally be equal, so here I just mean that they aren't guaranteed to be the same by symmetry). Thus we have the following types of terms, each associated with the specified partition of 3:
 \[
@@ -298,7 +298,7 @@ Note that they combine to give all $n^3$ possibilities. But the only non-zero mo
 \]
 Let's do one more example. For $k = 4$ we have:
 \meeq{
-{\ensuremath{\bm{\mathrm{E}}} A_n \over n^2} = {1 \over n^3} \ensuremath{\sum}_{i_1,i_2,i_3,i_4=1}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
+{\ensuremath{\bm{\mathrm{E}}} A_n^4 \over n^2} = {1 \over n^3} \ensuremath{\sum}_{i_1,i_2,i_3,i_4=1}^n \ensuremath{\bbE}[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
 }
 We can again divide the sum up by which terms are equal, which are one-to-one with the number of partitions of 4 (here the restrictions on when $i_\ensuremath{\alpha}$ can be equal is quite complicated so we leave the count as an exercise, the first one being the most challenging!):
 \[
@@ -339,7 +339,7 @@ Now for the key insight that mirrors the proof the CLT: when we break apart the 
 \]
 Each of these contributes exactly $n^3 + O(n^2)$, and hence as $n \ensuremath{\rightarrow} \ensuremath{\infty}$ the moment tends to the number of non-crossing pairs of $4$.
 
-This pattern holds true for all $k$. When $k$ is odd, we have $n^k$ total terms which we can divide up according to the partitions of $k$ numbers. But the only ones that actually contribute are those with no single element in a partition. We omit the details but what remains grows slower than $n^{-k/2-1}$ and hence the moment tends to zero. When $k$ is even, the only terms that grow precisely like $n^{-k/2-1}$ are those corresponding to non-crossing pair partitions of $k$. Since each of these corresponds to a pair we know its expectation is
+This pattern holds true for all $k$. When $k$ is odd, we have $n^k$ total terms which we can divide up according to the partitions of $k$ numbers. But the only ones that actually contribute are those with no single element in a partition. We omit the details but what remains grows slower than $n^{k/2+1}$ and hence the moment tends to zero. When $k$ is even, the only terms that grow precisely like $n^{k/2+1}$ are those corresponding to non-crossing pair partitions of $k$. Since each of these corresponds to a pair we know its expectation is
 \[
 \ensuremath{\mu}_2^{k/2} = 1.
 \]

@@ -19,7 +19,7 @@ $$
 $$
 then we claim that the rescaled sum
 $$
-S_n := {X_1 + ⋯ + X_n \over \sqrt{n}}.
+S_n := {X_1 + ⋯ + X_n \over \sqrt{n}}
 $$
 looks like $𝒩$ as $n → ∞$.
 
@@ -189,7 +189,7 @@ where $μ_0 = 1$ and by assumption $μ_1 = 0$ and $μ_2 = 1$.
 $$
 (X_1 + ⋯ + X_n)^k = ∑_{i_1,…,i_k=1}^n X_{i_1} ⋯ X_{i_k},
 $$
-i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the differen $i_ℓ$ match, but instead we are going to break up the sum according to whether the components are the same or different, which can be identified with partitions of $\{1,…,n\}$.
+i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the different $i_ℓ$ match, but instead we are going to break up the sum according to whether the components are the same or different, which can be identified with partitions of $\{1,…,n\}$.
 
 Let's walk through some simple cases. For $k= 1$ the result is trivial:
 $$
@@ -214,9 +214,9 @@ Note since $n^2 = n + n(n-1)$ we have accounted for all terms. But the only term
 $$
 𝔼 S_n^2 = n^{-1} ∑_{i_1=1}^n  𝔼 X_{i_1}^2 = 1.
 $$
-For $n = 3$ we consider
+For $k = 3$ we consider
 $$
-𝔼S_n^3 = n^{-3/2} ∑_{i_1,i_2,u_3=1}^n 𝔼[X_{i_1}X_{i_2}X_{i_3}]
+𝔼S_n^3 = n^{-3/2} ∑_{i_1,i_2,i_3=1}^n 𝔼[X_{i_1}X_{i_2}X_{i_3}]
 $$
 by breaking up the cases according to the different partitions of 3 elements based on which terms match, where  now we assume $i_1 ≠ i_2 ≠ i_3$:
 $$
@@ -263,11 +263,11 @@ n^{-2} \underbrace{3}_{\hbox{number of pair partitions}} (n^2 + O(n)) + n^{-1} �
 }
 $$
 
-At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ terms where each element differ, corresponding to the partition $\{1\},…,\{k\}$, but because of independence these all contribute zero because indepedence guarantees:
+At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ terms where each element differ, corresponding to the partition $\{1\},…,\{k\}$, but because of independence these all contribute zero because independence guarantees:
 $$
 𝔼[X_{i_1} ⋯ X_{i_k}] = μ_1^k = 0
 $$
-Each partition with a single pair has associated with it $n^{k-1} + O(n^{k-2})$ terms, but these also vanishes by the same argument since there are terms that appear onde. For even $k$ this continues until we reach exactly $k/2$ pairs, the partition that has no singletons, in which case the moments are
+Each partition with a single pair has associated with it $n^{k-1} + O(n^{k-2})$ terms, but these also vanishes by the same argument since there are terms that appear once. For even $k$ this continues until we reach exactly $k/2$ pairs, the partition that has no singletons, in which case the moments are
 $$
 𝔼[X_{i_1}^2 ⋯ X_{i_{k/2}}^2] = 𝔼X_{i_1}^2 ⋯ 𝔼X_{i_{k/2}}^2 = μ_2^{k/2} = 1,
 $$

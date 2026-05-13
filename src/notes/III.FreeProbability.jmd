@@ -4,8 +4,7 @@ options:
   out_height: "0.45\\linewidth"
 ---
 
-We now switch our attention and ask: given two (symmetric) random matrices $A_n, B_n ∈ ℝ^{n × n}$ 
-and $B_n$, what are the distribution of the eigenvalues of $A_n+B_n$? If both $A_n$ and $B_n$ are Wigner matrices then so is their sum, so we are really interested in the case where one or both are not Wigner matrices (i.e., the distribution of the entries is not all the same or there is covariance between the entries). 
+We now switch our attention and ask: given two (symmetric) random matrices $A_n, B_n ∈ ℝ^{n × n}$, what are the distribution of the eigenvalues of $A_n+B_n$? If both $A_n$ and $B_n$ are Wigner matrices then so is their sum, so we are really interested in the case where one or both are not Wigner matrices (i.e., the distribution of the entries is not all the same or there is covariance between the entries). 
 The rather remarkable fact is that, as $n → ∞$,  if we know the global distribution of $A_n$ and $B_n$, in the form of knowing the moments $𝐄 A_n^k$ and $𝐄 B_n^k$, under very broad conditions we can deduce the global distribution of $A_n+B_n$, in the form of knowing the moments $𝐄 (A_n+B_n)^k$, where again we use
 $$
 𝐄 f(A_n) := {1 \over n} 𝔼 \Tr f(A_n).
@@ -16,9 +15,9 @@ $$
     𝐄 f(A) = \lim_{n → ∞} 𝐄 f(A_n).
 $$
 (We have seen in the section on universality that even though $A_n$ itself doesn't really have a limit, $𝐄 f(A_n)$ will converge, and in particular behave like a semicircle.)
-By writing down the rules of $𝐄$ we can deduce explicit formulæ for the moments 𝐄 (A+B)^k, which will tell us the large $n$ behaviour of the eigenvalues of $A+B$. This can be thought of as a _free convolution_, a non-commutative analogue of convolution. 
+By writing down the rules of $𝐄$ we can deduce explicit formulae for the moments 𝐄 (A+B)^k, which will tell us the large $n$ behaviour of the eigenvalues of $A+B$. This can be thought of as a _free convolution_, a non-commutative analogue of convolution. 
 
-**Further Reading** [Free Probabilty Theory](https://rolandspeicher.com/wp-content/uploads/2025/04/free-probability_v2.pdf) by Roland Speicher is an advanced introduction to the topic whilst [Random Matrix Theory](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B291B4E6728E10537C2406CE4C341923/S0962492904000236a.pdf/div-class-title-random-matrix-theory-div.pdf) by Edelman and Rao gives a gentle but brief introduction.  Free Probability was introduced by [Dan Voiculescu](https://en.wikipedia.org/wiki/Dan-Virgil_Voiculescu), a prominant Berkeley operator theorist, in the 1980s. The connection with random matrix theory actually came much later in the early 1990s, as well as a detailed combinatorial description of Free Probability in terms of non-crossing partitions by Speicher.  It is a very modern and technical subject, and there is unfortunately limited material written for 1st year students beyond these notes. Rather exceptionally for an idea arising in pure mathematics, it has had an impact in a wide range of applications including wireless communication, quantum information, and most recently machine learning (where it has been used to study the transition from random-like behaviour of untrained networks to non-random behaviour of trained networks).
+**Further Reading** [Free Probability Theory](https://rolandspeicher.com/wp-content/uploads/2025/04/free-probability_v2.pdf) by Roland Speicher is an advanced introduction to the topic whilst [Random Matrix Theory](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B291B4E6728E10537C2406CE4C341923/S0962492904000236a.pdf/div-class-title-random-matrix-theory-div.pdf) by Edelman and Rao gives a gentle but brief introduction.  Free Probability was introduced by [Dan Voiculescu](https://en.wikipedia.org/wiki/Dan-Virgil_Voiculescu), a prominent Berkeley operator theorist, in the 1980s. The connection with random matrix theory actually came much later in the early 1990s, as well as a detailed combinatorial description of Free Probability in terms of non-crossing partitions by Speicher.  It is a very modern and technical subject, and there is unfortunately limited material written for 1st year students beyond these notes. Rather exceptionally for an idea arising in pure mathematics, it has had an impact in a wide range of applications including wireless communication, quantum information, and most recently machine learning (where it has been used to study the transition from random-like behaviour of untrained networks to non-random behaviour of trained networks).
 
 # Experimental observation of free convolutions
 
@@ -56,7 +55,7 @@ With classical probability we have the feature that the expectations of the prod
 $$
 𝔼[f(X) g(Y)] = 𝔼[f(X)] 𝔼[g(Y)].
 $$
-We will see this particular property _does_ hold true for free probabilty. Where free probability differs to classical random variables is in alternating products: since $X$ and $Y$ are _commutative_, if we have polynomials $f_1,…,f_n$ and $g_1,…,g_n$ then we clearly have
+We will see this particular property _does_ hold true for free probability. Where free probability differs to classical random variables is in alternating products: since $X$ and $Y$ are _commutative_, if we have polynomials $f_1,…,f_n$ and $g_1,…,g_n$ then we clearly have
 $$
 𝔼[f_1(X) g_1(Y) ⋯ f_n(X) g_n(Y)] = 𝔼[f_1(X) ⋯ f_n(X)] 𝔼[g_1(Y) ⋯ g_n(Y)],
 $$
@@ -67,7 +66,7 @@ Free probability comes from defining how these mixed moments behave in the case 
 
 **Definition (free random variables)** $A$ and $B$ are _free random variables_ equipped with an expectation $𝐄$ if for all polynomials $f_1,…,f_n$ and $g_1,…,g_n$ such that $𝐄 f_k(A) = 𝐄 g_k(B) = 0$ we have
 $$
-𝐄[f_1(A) g_1(B) … f_n(A) g_n(A)] = 0,
+𝐄[f_1(A) g_1(B) … f_n(A) g_n(B)] = 0,
 $$
 where the identity element satisfies $𝐄 1 = 1$.
 ∎
@@ -204,14 +203,14 @@ R_{A+B}(z) = R_A(z) + R_B(z).
 $$
 Proving this is a very serious combinatorial problem connected to noncrossing partitions, which could be an excellent poster project.
 
-**Example (adding two semicircles)** We conclude with an example where we can do everything explicitly. Suppose $A$ and $B$ are the large $n$ limits of two indepedent Wigner ensembles. We know that $A+B$ is also the large end limit of a Wigner ensemble (but with double the variance) so will also have a semicircle eigenvalue distribution. How do we see this fact come out of free convolution? In this case the moments are identical:
+**Example (adding two semicircles)** We conclude with an example where we can do everything explicitly. Suppose $A$ and $B$ are the large $n$ limits of two independent Wigner ensembles. We know that $A+B$ is also the large $n$ limit of a Wigner ensemble (but with double the variance) so will also have a semicircle eigenvalue distribution. How do we see this fact come out of free convolution? In this case the moments are identical:
 $$
 𝐄 A^k = 𝐄 B^k = \begin{cases} C_{k/2} & k\hbox{ even} \\
     0 & k\hbox{ odd} \end{cases}.
 $$
 We therefore have
 $$
-G̃_A(z) ≡ G̃_B(z) = z + ∑_{k=2}^∞ 𝐄 A^{k-1} z^k = C_0 z + C_1 z^3 + C_2 z^4 + ⋯.
+G̃_A(z) ≡ G̃_B(z) = z + ∑_{k=2}^∞ 𝐄 A^{k-1} z^k = C_0 z + C_1 z^3 + C_2 z^5 + ⋯.
 $$
 Now comes the key trick: we can use the recurrence for Catalan numbers to deduce
 $$

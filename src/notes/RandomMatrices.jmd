@@ -10,4 +10,4 @@ II. _Universality_. Eigenvalue statistics have universality properties that emer
 
 III. _Free Probability_. Algebraic manipulations of random matrices have the property that their eigenvalue distribution can be deduced via _Free Probability_, which can be viewed as a non-commutative version of probability that originally arose in operator algebra theory. This leads to a non-commutative analogue  of convolution. We observe this phenomena experimentally and discuss some of the beautiful properties of the _free convolution_. 
 
-IV. _Randomised Linear Algebra_. We can incorporate randomness into linear problems like least squares (i.e., regression) and achieve fairly accurate results with much fewer computational cost. This chapter introduces least squares and explores, experimentally, the practical realisation of randomised linear algebra.
+IV. _Randomised Linear Algebra_. We can incorporate randomness into linear problems like least squares (i.e., regression) and achieve fairly accurate results with much less computational cost. This chapter introduces least squares and explores, experimentally, the practical realisation of randomised linear algebra.

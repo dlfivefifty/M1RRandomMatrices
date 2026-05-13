@@ -27,7 +27,7 @@ where $\Tr$ is the trace of a matrix (sum of the diagonal).  It may not be obvio
 
  Note that moments are only guaranteed to uniquely define a density in the special case where the probability density decays sufficiently fast, but this is something the Gaussian and semicircle both satisfy.
 
- **Further reading**: [Topics in Random Matrix Theory](https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf) by Terry Tao gives a more advanced, higher level introduction to random matrix theory, though perhaps too high a level for most 1st year students. The field of Random Matrix Theory and universality grew out of a beautiful collaboration between theoretical physcists, statisticians, and pure mathematics and involves the synthesis of tools between these different areas.
+ **Further reading**: [Topics in Random Matrix Theory](https://terrytao.wordpress.com/wp-content/uploads/2011/02/matrix-book.pdf) by Terry Tao gives a more advanced, higher level introduction to random matrix theory, though perhaps too high a level for most 1st year students. The field of Random Matrix Theory and universality grew out of a beautiful collaboration between theoretical physicists, statisticians, and pure mathematicians and involves the synthesis of tools between these different areas.
 
 
 # Experimental observation of universality
@@ -137,7 +137,7 @@ We now have a plan of attack mirroring the CLT: (1) deduce a formula for the lim
 
 # Moments of the semicircle distribution
 
-We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the Catalan numbers $C_m$ which play a very similar row as $(2m-1)!!$:
+We now establish the moments of the semicircle distribution, using a combinatorial construction with a similar flavour (but not the same!) as the relationship between the normal distribution and double factorials. In the case of the semicircle the key object are the Catalan numbers $C_m$ which play a very similar role as $(2m-1)!!$:
 
 **Definition (Catalan numbers)**
 $$
@@ -188,10 +188,10 @@ We will do a proof by induction similar to that showing the number of all pair p
 1. If $1$ is paired with $2$, there are $2m$ remaining numbers to pair, i.e., $C_m$ possibilities.
 2. The number $1$ cannot be paired with $3$ as then there is no possibility of pairing $2$ with another number without crossing with $\{1,3\}$.
 3. If $1$ is paired with $4$ then $\{2,3\}$ must be a pair and there are $2(m-1)$ remaining numbers to pair. 
-4. Th number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over.
+4. The number $1$ cannot be paired with $5$ since we cannot pair $\{2,3,4\}$ without having a left over.
 
 
-Thus we see the pattern: $1$ cannot be paired with any odd number since then there will always be one left over. Otherwise, if $1$ is paired with an even number $2k$ we have to independently pair the $2(k-1)$ numbers $\{2,…,2k-1\}$ and the $2(n+1-k)$ numbers $\{2k+1,…,2(n+1)\}$. Thus there are $C_{k-1} C_{n+1-k}$ possibilities.
+Thus we see the pattern: $1$ cannot be paired with any odd number since then there will always be one left over. Otherwise, if $1$ is paired with an even number $2k$ we have to independently pair the $2(k-1)$ numbers $\{2,…,2k-1\}$ and the $2(m+1-k)$ numbers $\{2k+1,…,2(m+1)\}$. Thus there are $C_{k-1} C_{m+1-k}$ possibilities.
 
 Putting all this together we have the total number of pairings:
 $$
@@ -323,12 +323,12 @@ $$
 $$
 We thus have 
 $$
-{𝐄 A_n \over n} = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1 = C_1.
+{𝐄 A_n^2 \over n} = {1 \over n^2} ∑_{i_1,i_2=1}^n 𝔼[\underbrace{a_{i_1i_2} a_{i_2i_1}}_{\hbox{always match}}]  = 1 = C_1.
 $$
 
 For $k = 3$ we consider different cases of writing
 $$
-{𝐄 A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} ∑_{i_1,i_2,i_3=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_1i_2}].
+{𝐄 A_n^3 \over n^{3/2}} = {1 \over n^{5/2}} ∑_{i_1,i_2,i_3=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_3i_1}].
 $$
 We want to think of the ways in which each of these three terms can be equal (note we are interested in the terms matching, _not_ the indices). This has  the same number of ways as partitioning a set of 3. Assuming now $i_1 ≠ i_2 ≠ i_3$ we note $a_{i_1i_2} ≠ a_{i_2 i_3} ≠ a_{i_3 i_1}$ (of course since they are random variables they might accidentally be equal, so here I just mean that they aren't guaranteed to be the same by symmetry). Thus we have the following types of terms, each associated with the specified partition of 3:
 $$
@@ -351,7 +351,7 @@ $$
 Let's do one more example. For $k = 4$ we have:
 $$
 \meeq{
-{𝐄 A_n \over n^2} = {1 \over n^3} ∑_{i_1,i_2,i_3,i_4=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
+{𝐄 A_n^4 \over n^2} = {1 \over n^3} ∑_{i_1,i_2,i_3,i_4=1}^n 𝔼[a_{i_1i_2}a_{i_2i_3}a_{i_3i_4}a_{i_4i_1}]
 }
 $$
 We can again divide the sum up by which terms are equal, which are one-to-one with the number of partitions of 4 (here the restrictions on when $i_α$ can be equal is quite complicated so we leave the count as an exercise, the first one being the most challenging!):
@@ -395,7 +395,7 @@ $$
 $$
 Each of these contributes exactly $n^3 + O(n^2)$, and hence as $n → ∞$ the moment tends to the number of non-crossing pairs of $4$.
 
-This pattern holds true for all $k$. When $k$ is odd, we have $n^k$ total terms which we can divide up according to the partitions of $k$ numbers. But the only ones that actually contribute are those with no single element in a partition. We omit the details but what remains grows slower than $n^{-k/2-1}$ and hence the moment tends to zero. When $k$ is even, the only terms that grow precisely like $n^{-k/2-1}$ are those corresponding to non-crossing pair partitions of $k$. Since each of these corresponds to a pair we know its expectation is
+This pattern holds true for all $k$. When $k$ is odd, we have $n^k$ total terms which we can divide up according to the partitions of $k$ numbers. But the only ones that actually contribute are those with no single element in a partition. We omit the details but what remains grows slower than $n^{k/2+1}$ and hence the moment tends to zero. When $k$ is even, the only terms that grow precisely like $n^{k/2+1}$ are those corresponding to non-crossing pair partitions of $k$. Since each of these corresponds to a pair we know its expectation is
 $$
 μ_2^{k/2} = 1.
 $$

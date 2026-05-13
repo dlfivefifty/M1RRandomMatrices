@@ -9,7 +9,7 @@ The CLT is the fundamental result that when we add many independent samples of a
 }
 then we claim that the rescaled sum
 \[
-S_n := {X_1 + \ensuremath{\cdots} + X_n \over \sqrt{n}}.
+S_n := {X_1 + \ensuremath{\cdots} + X_n \over \sqrt{n}}
 \]
 looks like $\ensuremath{\scrN}$ as $n \ensuremath{\rightarrow} \ensuremath{\infty}$.
 
@@ -146,7 +146,7 @@ We first note we can naively expand
 \[
 (X_1 + \ensuremath{\cdots} + X_n)^k = \ensuremath{\sum}_{i_1,\ensuremath{\ldots},i_k=1}^n X_{i_1} \ensuremath{\cdots} X_{i_k},
 \]
-i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the differen $i_\ensuremath{\ell}$ match, but instead we are going to break up the sum according to whether the components are the same or different, which can be identified with partitions of $\{1,\ensuremath{\ldots},n\}$.
+i.e., a sum with $n^k$ terms. Since we know $X_i$ commute, one angle of proof is to simplify this using the multinomial expansion to combine the terms where the different $i_\ensuremath{\ell}$ match, but instead we are going to break up the sum according to whether the components are the same or different, which can be identified with partitions of $\{1,\ensuremath{\ldots},n\}$.
 
 Let's walk through some simple cases. For $k= 1$ the result is trivial:
 \meeq{
@@ -169,9 +169,9 @@ Note since $n^2 = n + n(n-1)$ we have accounted for all terms. But the only term
 \[
 \ensuremath{\bbE} S_n^2 = n^{-1} \ensuremath{\sum}_{i_1=1}^n  \ensuremath{\bbE} X_{i_1}^2 = 1.
 \]
-For $n = 3$ we consider
+For $k = 3$ we consider
 \[
-\ensuremath{\bbE}S_n^3 = n^{-3/2} \ensuremath{\sum}_{i_1,i_2,u_3=1}^n \ensuremath{\bbE}[X_{i_1}X_{i_2}X_{i_3}]
+\ensuremath{\bbE}S_n^3 = n^{-3/2} \ensuremath{\sum}_{i_1,i_2,i_3=1}^n \ensuremath{\bbE}[X_{i_1}X_{i_2}X_{i_3}]
 \]
 by breaking up the cases according to the different partitions of 3 elements based on which terms match, where  now we assume $i_1 \ensuremath{\neq} i_2 \ensuremath{\neq} i_3$:
 \[
@@ -214,11 +214,11 @@ The only non-zero terms are those of pair partitions (there are $n^2 + O(n)$ of 
 n^{-2} \underbrace{3}_{\hbox{number of pair partitions}} (n^2 + O(n)) + n^{-1} \ensuremath{\mu}_4\\
 & \underset{n \ensuremath{\rightarrow} \ensuremath{\infty}}{\ensuremath{\longrightarrow}} 3!!
 }
-At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ terms where each element differ, corresponding to the partition $\{1\},\ensuremath{\ldots},\{k\}$, but because of independence these all contribute zero because indepedence guarantees:
+At this point the argument is clear for general $k$. There are $n^k + O(n^{k-1})$ terms where each element differ, corresponding to the partition $\{1\},\ensuremath{\ldots},\{k\}$, but because of independence these all contribute zero because independence guarantees:
 \[
 \ensuremath{\bbE}[X_{i_1} \ensuremath{\cdots} X_{i_k}] = \ensuremath{\mu}_1^k = 0
 \]
-Each partition with a single pair has associated with it $n^{k-1} + O(n^{k-2})$ terms, but these also vanishes by the same argument since there are terms that appear onde. For even $k$ this continues until we reach exactly $k/2$ pairs, the partition that has no singletons, in which case the moments are
+Each partition with a single pair has associated with it $n^{k-1} + O(n^{k-2})$ terms, but these also vanishes by the same argument since there are terms that appear once. For even $k$ this continues until we reach exactly $k/2$ pairs, the partition that has no singletons, in which case the moments are
 \[
 \ensuremath{\bbE}[X_{i_1}^2 \ensuremath{\cdots} X_{i_{k/2}}^2] = \ensuremath{\bbE}X_{i_1}^2 \ensuremath{\cdots} \ensuremath{\bbE}X_{i_{k/2}}^2 = \ensuremath{\mu}_2^{k/2} = 1,
 \]

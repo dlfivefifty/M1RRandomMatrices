@@ -8,7 +8,7 @@ Our last topic is _randomised linear algebra_: how can we incorporate random mat
 
 In this section we will focus on a much simpler problem which can in many ways be viewed as a baby version of training a Neural Network: linear regression. (Indeed, linear regression can be thought of as a "one-layer" Neural Network.)  We will first review least squares, where rectangular systems are ``solved'' by finding a vector that minimises the error in norm, with linear regression being a classic application. We then explore experimentally how using a random _sketch matrix_ can substantially reduce the sizes of matrices involved, and by averaging over multiple sketches we can obtain a good approximation to the true least squares system. 
 
-**Further Reading**  For simplicity we focus on experimental implementation and observation of randomised linear algebra, but  [Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf) gives  an overview of the mathematical proofs of wat we observe. It also discusses some other simple problems that could form good posters like trace estimation (approximating the trace of a matrix without evaluating every single diagonal). Randomised linear algebra is a very active research area and so there will probably be a lot of progress in the next few years.
+**Further Reading**  For simplicity we focus on experimental implementation and observation of randomised linear algebra, but  [Martinsson & Tropp 2020](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/4486926746CFF4547F42A2996C7DC09C/S0962492920000021a.pdf/div-class-title-randomized-numerical-linear-algebra-foundations-and-algorithms-div.pdf) gives  an overview of the mathematical proofs of what we observe. It also discusses some other simple problems that could form good posters like trace estimation (approximating the trace of a matrix without evaluating every single diagonal). Randomised linear algebra is a very active research area and so there will probably be a lot of progress in the next few years.
 
 
 
@@ -83,7 +83,7 @@ c̃ = P * A \ (P * 𝐛)
 plot!(t, c̃[1] .+ c̃[2] .* t; label="Randomised least squares (1x)")
 ```
 
-This is a single sample and, to the eye, it performs fairly well even compared to the true least squares solution. Going further, we see that averaging over multiple trials is almost indistiguishable from the true least squares approximation:
+This is a single sample and, to the eye, it performs fairly well even compared to the true least squares solution. Going further, we see that averaging over multiple trials is almost indistinguishable from the true least squares approximation:
 ```julia{julia; echo=false}
 c̄ = mean((P = randn(r,n); P * A \ (P * 𝐛)) for _=1:100)
 plot!(t, c̄[1] .+ c̄[2] .* t; label="Randomised least squares (100x)")

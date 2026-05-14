@@ -30,3 +30,4 @@ Manifest.toml
 *.out
 *.fdb_latexmk
 *.fls
+*.ipynb_checkpoints

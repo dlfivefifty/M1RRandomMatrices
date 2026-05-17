@@ -99,12 +99,19 @@ can be expressed as functions of the moments
 \end{lemma}
 \textbf{Proof} The proceeding example can be turned into a proof by induction. We leave this as a possible poster project. \ensuremath{\QED}
 
-Unfortunately, there is no simple formula for the relationship between the moments of $A$ and $B$ and those of the mixed moments, but they can be derived systematically like we did for the first four moments. Note the cyclic property of trace we can be used to simplify some calculations because we have
+Unfortunately, there is no simple formula for the relationship between the moments of $A$ and $B$ and those of the mixed moments, but they can be derived systematically like we did for the first four moments. Note the cyclic property of trace applies for free probability too:
+
+\begin{lemma}[free cyclic property] Mixed moments have a cyclic property:
 \[
 \ensuremath{\bm{\mathrm{E}}}[A^{k_1} B^{j_1} \ensuremath{\cdots} A^{k_n} B^{j_n}] = \ensuremath{\bm{\mathrm{E}}}[ B^{j_1} \ensuremath{\cdots} A^{k_n} B^{j_n} A^{k_1}] = 
 \ensuremath{\bm{\mathrm{E}}}[B^{j_n} A^{k_1} B^{j_1} \ensuremath{\cdots} A^{k_n}].
 \]
-For example, we can deduce all moments up to degree 4 using the above calculations:
+\end{lemma}
+\textbf{Proof}  This is a simple proof by induction that be discussed in a poster.
+
+\ensuremath{\QED}
+
+We can used this to help deduce all moments up to degree 4 using the above calculations:
 \meeq{
 \ensuremath{\bm{\mathrm{E}}}[AB] = \ensuremath{\bm{\mathrm{E}}}[BA] = \ensuremath{\bm{\mathrm{E}}}A \ensuremath{\bm{\mathrm{E}}}B \ccr
 \ensuremath{\bm{\mathrm{E}}}[ABA] =\ensuremath{\bm{\mathrm{E}}}[A^2 B]  =\ensuremath{\bm{\mathrm{E}}}[B A^2] = \ensuremath{\bm{\mathrm{E}}}A^2 \ensuremath{\bm{\mathrm{E}}}B \ccr
@@ -132,10 +139,14 @@ An implication of the previous lemma is that the expectation of all polynomials 
 }
 Note that up until the 4th moment the calculation is equivalent to classical convolution, and in particular the calcluation is an affine function of each of the ``input" moments. The 4th moment is where free convolution starts to differ, and the last term is a truely nonlinear function of the moments.  
 
-Unfortunately there is no simple combinatorial formula for these expressions. But there is a miraculous equivalent way of constructing them. Consider the Stieltjes transform associated with the moments of $A$, i.e., the moment generating function of the form:
+Unfortunately there is no simple combinatorial formula for these expressions. But there is a miraculous equivalent way of constructing them in terms of the \emph{Stieltjes transform}:
+
+\begin{definition}[Stieltjes transform] The Stieltjes transform of a free random variable is the following moment generating function:
 \[
 G_A(z) := {1 \over z} + {\ensuremath{\bm{\mathrm{E}}} A \over z^2} + {\ensuremath{\bm{\mathrm{E}}} A^2  \over z^3} + \ensuremath{\cdots}.
 \]
+It is also called the Cauchy transform. \end{definition}
+
 I like to think of this as a ``Taylor series around \ensuremath{\infty}"; actually, in a neighbourhood of \ensuremath{\infty} in the complex plane (hence the usage of $z$) but this is beyond what you have learned as 1st year students. Thus it is conceptually easier to recast this as a Taylor series around the origin via the transformation:
 \[
 \tilde{G}_A(z) := G_A(z^{-1}) = z + \ensuremath{\sum}_{k=2}^\ensuremath{\infty} \ensuremath{\bm{\mathrm{E}}} A^{k-1} z^k.
@@ -152,15 +163,22 @@ where $r_{A,k}$ can be deduced from $\tilde{r}_{A,k}$, since we have
 \[
 G_A(G_A^{-1}(w)) = \tilde{G}_A(1/G_A^{-1}(w)) = \tilde{G}_A(\tilde{G}_A^{-1}(w)) = w.
 \]
-We now define the \emph{R-transform}:
+Addition of free random variables can be reduced to a simple formula involving the \emph{R-transform}:
+
+\begin{definition}[R-transform] The \emph{R-transform} is defined in terms of the inverse of the Stieltjes transform as follows:
 \[
 R_A(w) := G_A^{-1}(w) - {1 \over w} = {r_{A,2} \over w^2} + {r_{A,3} \over w^3} + \ensuremath{\cdots}.
 \]
+\end{definition}
+
 The miraculous fact is that the R-transform of $A+B$ is given by the sum of the R-transforms of $A$ and $B$:
+
+\begin{theorem}[addition of free random variables] The free convolution can be expressed in terms of the R-transform as follows:
 \[
 R_{A+B}(z) = R_A(z) + R_B(z).
 \]
-Proving this is a very serious combinatorial problem connected to noncrossing partitions, which could be an excellent poster project.
+\end{theorem}
+\textbf{Proof} Proving this is a very serious combinatorial problem connected to noncrossing partitions, which could be an excellent poster project. \ensuremath{\QED} 
 
 \textbf{Example (adding two semicircles)} We conclude with an example where we can do everything explicitly. Suppose $A$ and $B$ are the large $n$ limits of two independent Wigner ensembles. We know that $A+B$ is also the large $n$ limit of a Wigner ensemble (but with double the variance) so will also have a semicircle eigenvalue distribution. How do we see this fact come out of free convolution? In this case the moments are identical:
 \[
